@@ -1,0 +1,98 @@
+# ==============================================================================
+# NVC-DelayFormer: Comprehensive Git Ignore Rules
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Large Raw Data & Downloads (>25 GB total - Exceeds Git limits)
+# ------------------------------------------------------------------------------
+data/downloads/
+data/downloads_shin2018/
+data/raw/
+data/raw_test/
+data/proc_test/
+data/processed_buccino/
+data/processed_buccino_rl/
+data/processed_real/
+data/processed_shin2017_mi/
+data/processed_shin2018/
+data/processed_shin2018_nback/
+*.zip
+*.tar
+*.tar.gz
+*.mat
+
+# ------------------------------------------------------------------------------
+# 2. Python & Build Artifacts
+# ------------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+build/
+dist/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ------------------------------------------------------------------------------
+# 3. Testing, Coverage & Environment Caches
+# ------------------------------------------------------------------------------
+.pytest_cache/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.pyre/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ------------------------------------------------------------------------------
+# 4. LaTeX Temporary & Auxiliary Compilation Files
+# (Preserves manuscript/main.tex, references.bib, main.pdf, and figures)
+# ------------------------------------------------------------------------------
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.spl
+*.synctex.gz
+*.toc
+*.fls
+*.fdb_latexmk
+manuscript/manuscript.pdf
+
+# ------------------------------------------------------------------------------
+# 5. Scratch, Temporary & Deprecated Files
+# ------------------------------------------------------------------------------
+tmp/
+scratch/
+latex_cbm/
+.codex-remote-attachments/
+
+# ------------------------------------------------------------------------------
+# 6. IDEs & Operating System Artifacts
+# ------------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db

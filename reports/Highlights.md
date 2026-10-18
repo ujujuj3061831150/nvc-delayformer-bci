@@ -1,0 +1,7 @@
+# Research Highlights
+
+- Physiology-guided temporal fusion aligns asynchronous EEG and fNIRS signals.
+- Cross-subject accuracy reaches 79.37% on arithmetic and 66.32% on motor imagery.
+- Neurovascular delay and causal priors confer a net 4.94 pp cross-subject gain.
+- Model exceeds shrinkage-LDA by +8.27 pp on motor imagery and +7.90 pp on memory.
+- Forward inference achieves 2.22 ms device-resident GPU execution latency.

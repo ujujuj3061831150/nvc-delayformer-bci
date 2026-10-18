@@ -1,0 +1,43 @@
+{
+  "shapes": {
+    "EEG encoder": [
+      2,
+      250,
+      64
+    ],
+    "fNIRS encoder": [
+      2,
+      124,
+      64
+    ],
+    "reconstruction": [
+      2,
+      36,
+      124
+    ],
+    "latent logits": [
+      2,
+      2
+    ],
+    "direct logits": [
+      2,
+      2
+    ]
+  },
+  "attention": [
+    2,
+    4,
+    124,
+    250
+  ],
+  "logits": [
+    2,
+    2
+  ],
+  "trainable_parameters": 92293,
+  "readout_equation_matches_forward": true,
+  "mask_boundary_and_rows_verified": true,
+  "masked_attention_zero": true,
+  "mbll_matrix_verified": true,
+  "mbll_physical_unit_provenance": "unresolved; manuscript uses computational units"
+}

@@ -1,0 +1,2256 @@
+{
+  "stats": {
+    "n": 29,
+    "mean": 65.51724497614235,
+    "sd_ddof0": 10.578148133433881,
+    "sd_ddof1": 10.765386530206845,
+    "t_ci95": [
+      61.42231094117155,
+      69.61217901111314
+    ],
+    "chance_subject_t_p": 1.8662170680444023e-08
+  },
+  "paired": {
+    "EEGNet": {
+      "t": 3.2722164147231827,
+      "p_t": 0.00283449634718153,
+      "p_w": 0.0029922761023044586,
+      "dz": 0.6076353337205217,
+      "delta_pp": 7.586207369278217
+    },
+    "fNIRS-CNN": {
+      "t": 4.617683785888954,
+      "p_t": 7.883671746463901e-05,
+      "p_w": 0.00023075803988586999,
+      "dz": 0.8574823522153386,
+      "delta_pp": 11.206897990456943
+    },
+    "Feature-Concat": {
+      "t": 2.929287088087326,
+      "p_t": 0.006686159544868222,
+      "p_w": 0.005061928267121436,
+      "dz": 0.5439549564400475,
+      "delta_pp": 5.977012576728032
+    },
+    "Standard-Attention": {
+      "t": 3.369838150774049,
+      "p_t": 0.002207534015345065,
+      "p_w": 0.0015414340612367515,
+      "dz": 0.6257632350099182,
+      "delta_pp": 7.356322017209283
+    }
+  },
+  "parameters": {
+    "NVC_fixed": {
+      "all": 92225,
+      "trainable": 92225
+    },
+    "NVC_learnable": {
+      "all": 92227,
+      "trainable": 92227
+    },
+    "EEGNet": {
+      "all": 36226,
+      "trainable": 36226
+    },
+    "fNIRS": {
+      "all": 17154,
+      "trainable": 17154
+    },
+    "Concat": {
+      "all": 53058,
+      "trainable": 53058
+    },
+    "Standard": {
+      "all": 69826,
+      "trainable": 69826
+    }
+  },
+  "shapes": {
+    "eeg_encoder.conv_spatial": {
+      "in": [
+        [
+          1,
+          28,
+          1000
+        ]
+      ],
+      "out": [
+        1,
+        32,
+        1000
+      ]
+    },
+    "eeg_encoder.conv_temporal": {
+      "in": [
+        [
+          1,
+          32,
+          250
+        ]
+      ],
+      "out": [
+        1,
+        64,
+        250
+      ]
+    },
+    "fnirs_encoder.conv_spatial": {
+      "in": [
+        [
+          1,
+          72,
+          124
+        ]
+      ],
+      "out": [
+        1,
+        32,
+        124
+      ]
+    },
+    "fnirs_encoder.conv_temporal": {
+      "in": [
+        [
+          1,
+          32,
+          124
+        ]
+      ],
+      "out": [
+        1,
+        64,
+        124
+      ]
+    },
+    "cross_attention.q_proj": {
+      "in": [
+        [
+          1,
+          124,
+          64
+        ]
+      ],
+      "out": [
+        1,
+        124,
+        64
+      ]
+    },
+    "cross_attention.k_proj": {
+      "in": [
+        [
+          1,
+          250,
+          64
+        ]
+      ],
+      "out": [
+        1,
+        250,
+        64
+      ]
+    },
+    "cross_attention.v_proj": {
+      "in": [
+        [
+          1,
+          250,
+          64
+        ]
+      ],
+      "out": [
+        1,
+        250,
+        64
+      ]
+    },
+    "cross_attention.out_proj": {
+      "in": [
+        [
+          1,
+          124,
+          64
+        ]
+      ],
+      "out": [
+        1,
+        124,
+        64
+      ]
+    },
+    "cross_attention.gate_proj": {
+      "in": [
+        [
+          1,
+          124,
+          64
+        ]
+      ],
+      "out": [
+        1,
+        124,
+        64
+      ]
+    },
+    "hrf_reconstructor": {
+      "in": [
+        [
+          1,
+          100,
+          124
+        ]
+      ],
+      "out": [
+        1,
+        36,
+        124
+      ]
+    },
+    "classifier.0": {
+      "in": [
+        [
+          1,
+          128
+        ]
+      ],
+      "out": [
+        1,
+        64
+      ]
+    },
+    "classifier.4": {
+      "in": [
+        [
+          1,
+          64
+        ]
+      ],
+      "out": [
+        1,
+        2
+      ]
+    },
+    "direct_readout": {
+      "in": [
+        [
+          1,
+          100
+        ]
+      ],
+      "out": [
+        1,
+        2
+      ]
+    }
+  },
+  "outputs": {
+    "logits": [
+      1,
+      2
+    ],
+    "attention": [
+      1,
+      4,
+      124,
+      250
+    ],
+    "recon": [
+      1,
+      36,
+      124
+    ]
+  },
+  "macs_dense_conv_linear": {
+    "eeg_encoder.conv_spatial": 896000,
+    "eeg_encoder.conv_temporal": 7680000,
+    "fnirs_encoder.conv_spatial": 285696,
+    "fnirs_encoder.conv_temporal": 1269760,
+    "cross_attention.q_proj": 507904,
+    "cross_attention.k_proj": 1024000,
+    "cross_attention.v_proj": 1024000,
+    "cross_attention.out_proj": 507904,
+    "cross_attention.gate_proj": 507904,
+    "hrf_reconstructor": 2232000,
+    "classifier.0": 8192,
+    "classifier.4": 128,
+    "direct_readout": 200
+  },
+  "macs_attention_qk_av": 3968000,
+  "macs_partial_total": 19911688,
+  "mask_boundary": {
+    "-5": {
+      "p00": -0.0,
+      "blocked00": false,
+      "blocked01": true
+    },
+    "0": {
+      "p00": -0.0,
+      "blocked00": false,
+      "blocked01": true
+    },
+    "5": {
+      "p00": -1.9444442987442017,
+      "blocked00": false,
+      "blocked01": true
+    }
+  },
+  "bib_structure": {
+    "entry_count": 33,
+    "cited_count": 28,
+    "undefined": [],
+    "unused": [
+      "benjamini1995controlling",
+      "cope1991system",
+      "lotte2018review",
+      "shapiro1965analysis",
+      "shin2018simultaneous"
+    ],
+    "missing_doi": [
+      "delpy1988estimation",
+      "buxton1998dynamics",
+      "strangman2002non",
+      "friston1998event",
+      "glover1999deconvolution",
+      "pinti2019present",
+      "benjamini1995controlling",
+      "shapiro1965analysis",
+      "vaswani2017attention",
+      "attwell2010glial",
+      "iadecola2004neurovascular",
+      "julien2006enigma",
+      "duncan1995measurement",
+      "cope1991system",
+      "gevins1997high",
+      "pfurtscheller1999event",
+      "girouard2006neurovascular",
+      "scholkmann2014review",
+      "buzsaki2012origin",
+      "scholkmann2013general",
+      "yin2015review",
+      "keles2016increasing",
+      "lotte2018review"
+    ],
+    "recent_cited": [
+      "salim2023lightweight",
+      "perez2024unraveling",
+      "acharya2025eegconvnext"
+    ]
+  },
+  "crossref": [
+    {
+      "key": "shin2017open",
+      "error": "HTTP Error 429: Too Many Requests",
+      "local": {
+        "type": "article",
+        "key": "shin2017open",
+        "title": "Open access dataset for {EEG+NIRS} single-trial classification",
+        "author": "Shin, Jaeyoung and von L{\\\"u}hmann, Alexander and Blankertz, Benjamin and Kim, Do-Won and Jeong, Jichai and Hwang, Han-Jeong and M{\\\"u}ller, Klaus-Robert",
+        "journal": "IEEE Transactions on Neural Systems and Rehabilitation Engineering",
+        "volume": "25",
+        "number": "10",
+        "pages": "1735--1745",
+        "year": "2017",
+        "doi": "10.1109/TNSRE.2016.2628057",
+        "publisher": "IEEE"
+      }
+    },
+    {
+      "key": "shin2018simultaneous",
+      "local": {
+        "type": "article",
+        "key": "shin2018simultaneous",
+        "title": "Simultaneous acquisition of {EEG} and {NIRS} during cognitive tasks for an open access dataset",
+        "author": "Shin, Jaeyoung and von L{\\\"u}hmann, Alexander and Kim, Do-Won and Mehnert, Jan and Hwang, Han-Jeong and M{\\\"u}ller, Klaus-Robert",
+        "journal": "Scientific Data",
+        "volume": "5",
+        "number": "1",
+        "pages": "180003",
+        "year": "2018",
+        "doi": "10.1038/sdata.2018.3",
+        "publisher": "Nature Publishing Group"
+      },
+      "crossref": {
+        "DOI": "10.1038/sdata.2018.3",
+        "title": [
+          "Simultaneous acquisition of EEG and NIRS during cognitive tasks for an open access dataset"
+        ],
+        "author": [
+          {
+            "given": "Jaeyoung",
+            "family": "Shin",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Alexander",
+            "family": "von Lühmann",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Do-Won",
+            "family": "Kim",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Jan",
+            "family": "Mehnert",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Han-Jeong",
+            "family": "Hwang",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Klaus-Robert",
+            "family": "Müller",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "volume": "5",
+        "issue": "1",
+        "page": null,
+        "article-number": "180003",
+        "published": {
+          "date-parts": [
+            [
+              2018,
+              2,
+              13
+            ]
+          ]
+        },
+        "container-title": [
+          "Scientific Data"
+        ]
+      },
+      "match_status": "DOI lookup"
+    },
+    {
+      "key": "lawhern2018eegnet",
+      "error": "HTTP Error 429: Too Many Requests",
+      "local": {
+        "type": "article",
+        "key": "lawhern2018eegnet",
+        "title": "{EEGNet}: a compact convolutional neural network for {EEG}-based brain--computer interfaces",
+        "author": "Lawhern, Vernon J and Solon, Amelia J and Waytowich, Nicholas R and Gordon, Stephen M and Hung, Chou P and Lance, Brent J",
+        "journal": "Journal of Neural Engineering",
+        "volume": "15",
+        "number": "5",
+        "pages": "056013",
+        "year": "2018",
+        "doi": "10.1088/1741-2552/aace8c",
+        "publisher": "IOP Publishing"
+      }
+    },
+    {
+      "key": "fazli2012enhanced",
+      "local": {
+        "type": "article",
+        "key": "fazli2012enhanced",
+        "title": "Enhanced performance by a hybrid {NIRS--EEG} brain computer interface",
+        "author": "Fazli, Siamac and Mehnert, Jan and Steinbrink, Jens and Curio, Gabriel and Villringer, Arno and M{\\\"u}ller, Klaus-Robert and Blankertz, Benjamin",
+        "journal": "NeuroImage",
+        "volume": "59",
+        "number": "1",
+        "pages": "519--529",
+        "year": "2012",
+        "doi": "10.1016/j.neuroimage.2011.07.084",
+        "publisher": "Elsevier"
+      },
+      "crossref": {
+        "DOI": "10.1016/j.neuroimage.2011.07.084",
+        "title": [
+          "Enhanced performance by a hybrid NIRS–EEG brain computer interface"
+        ],
+        "author": [
+          {
+            "given": "Siamac",
+            "family": "Fazli",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Jan",
+            "family": "Mehnert",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Jens",
+            "family": "Steinbrink",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Gabriel",
+            "family": "Curio",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Arno",
+            "family": "Villringer",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Klaus-Robert",
+            "family": "Müller",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Benjamin",
+            "family": "Blankertz",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "volume": "59",
+        "issue": "1",
+        "page": "519-529",
+        "article-number": null,
+        "published": {
+          "date-parts": [
+            [
+              2012,
+              1
+            ]
+          ]
+        },
+        "container-title": [
+          "NeuroImage"
+        ]
+      },
+      "match_status": "DOI lookup"
+    },
+    {
+      "key": "buccino2016hybrid",
+      "local": {
+        "type": "article",
+        "key": "buccino2016hybrid",
+        "title": "Hybrid {EEG-fNIRS} asynchronous brain-computer interface for multiple motor tasks",
+        "author": "Buccino, Alessia P and Keles, Hasan O and Omurtag, Ahmet",
+        "journal": "PLOS ONE",
+        "volume": "11",
+        "number": "1",
+        "pages": "e0146610",
+        "year": "2016",
+        "doi": "10.1371/journal.pone.0146610",
+        "publisher": "Public Library of Science"
+      },
+      "crossref": {
+        "DOI": "10.1371/journal.pone.0146610",
+        "title": [
+          "Hybrid EEG-fNIRS Asynchronous Brain-Computer Interface for Multiple Motor Tasks"
+        ],
+        "author": [
+          {
+            "given": "Alessio Paolo",
+            "family": "Buccino",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Hasan Onur",
+            "family": "Keles",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Ahmet",
+            "family": "Omurtag",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "volume": "11",
+        "issue": "1",
+        "page": "e0146610",
+        "article-number": null,
+        "published": {
+          "date-parts": [
+            [
+              2016,
+              1,
+              5
+            ]
+          ]
+        },
+        "container-title": [
+          "PLOS ONE"
+        ]
+      },
+      "match_status": "DOI lookup"
+    },
+    {
+      "key": "delpy1988estimation",
+      "local": {
+        "type": "article",
+        "key": "delpy1988estimation",
+        "title": "Estimation of optical pathlength through tissue from direct time of flight measurement",
+        "author": "Delpy, David T and Cope, Mark and van der Zee, Pieter and Arridge, Simon and Wray, Susan and Wyatt, John",
+        "journal": "Physics in Medicine \\& Biology",
+        "volume": "33",
+        "number": "12",
+        "pages": "1433--1442",
+        "year": "1988",
+        "publisher": "IOP Publishing"
+      },
+      "crossref": {
+        "DOI": "10.1088/0031-9155/33/12/008",
+        "title": [
+          "Estimation of optical pathlength through tissue from direct time of flight measurement"
+        ],
+        "author": [
+          {
+            "given": "D T",
+            "family": "Delpy",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "M",
+            "family": "Cope",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "P van der",
+            "family": "Zee",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "S",
+            "family": "Arridge",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "S",
+            "family": "Wray",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "J",
+            "family": "Wyatt",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "volume": "33",
+        "issue": "12",
+        "page": "1433-1442",
+        "article-number": null,
+        "published": {
+          "date-parts": [
+            [
+              1988,
+              12,
+              1
+            ]
+          ]
+        },
+        "container-title": [
+          "Physics in Medicine and Biology"
+        ]
+      },
+      "match_status": "title-search candidate; requires identity review"
+    },
+    {
+      "key": "buxton1998dynamics",
+      "error": "HTTP Error 429: Too Many Requests",
+      "local": {
+        "type": "article",
+        "key": "buxton1998dynamics",
+        "title": "Dynamics of blood flow and oxygenation changes during brain activation: the balloon model",
+        "author": "Buxton, Richard B and Wong, Eric C and Frank, Lawrence R",
+        "journal": "Magnetic Resonance in Medicine",
+        "volume": "39",
+        "number": "6",
+        "pages": "855--864",
+        "year": "1998",
+        "publisher": "Wiley Online Library"
+      }
+    },
+    {
+      "key": "strangman2002non",
+      "local": {
+        "type": "article",
+        "key": "strangman2002non",
+        "title": "A quantitative comparison of simultaneous {BOLD} {fMRI} and {NIRS} recordings during functional brain activation",
+        "author": "Strangman, Gary and Culver, Joseph P and Thompson, John H and Boas, David A",
+        "journal": "NeuroImage",
+        "volume": "17",
+        "number": "2",
+        "pages": "719--731",
+        "year": "2002",
+        "publisher": "Elsevier"
+      },
+      "crossref": {
+        "DOI": "10.1006/nimg.2002.1227",
+        "title": [
+          "A Quantitative Comparison of Simultaneous BOLD fMRI and NIRS Recordings during Functional Brain Activation"
+        ],
+        "author": [
+          {
+            "given": "Gary",
+            "family": "Strangman",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Joseph P.",
+            "family": "Culver",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "John H.",
+            "family": "Thompson",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "David A.",
+            "family": "Boas",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "volume": "17",
+        "issue": "2",
+        "page": "719-731",
+        "article-number": null,
+        "published": {
+          "date-parts": [
+            [
+              2002,
+              10
+            ]
+          ]
+        },
+        "container-title": [
+          "NeuroImage"
+        ]
+      },
+      "match_status": "title-search candidate; requires identity review"
+    },
+    {
+      "key": "friston1998event",
+      "local": {
+        "type": "article",
+        "key": "friston1998event",
+        "title": "Event-related {fMRI}: characterizing differential responses",
+        "author": "Friston, Karl J and Fletcher, Paul and Josephs, Oliver and Holmes, Andrew and Rugg, Michael D and Turner, Robert",
+        "journal": "NeuroImage",
+        "volume": "7",
+        "number": "1",
+        "pages": "30--40",
+        "year": "1998",
+        "publisher": "Elsevier"
+      },
+      "crossref": {
+        "DOI": "10.1006/nimg.1997.0306",
+        "title": [
+          "Event-Related fMRI: Characterizing Differential Responses"
+        ],
+        "author": [
+          {
+            "given": "K.J.",
+            "family": "Friston",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "P.",
+            "family": "Fletcher",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "O.",
+            "family": "Josephs",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "A.",
+            "family": "Holmes",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "M.D.",
+            "family": "Rugg",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "R.",
+            "family": "Turner",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "volume": "7",
+        "issue": "1",
+        "page": "30-40",
+        "article-number": null,
+        "published": {
+          "date-parts": [
+            [
+              1998,
+              1
+            ]
+          ]
+        },
+        "container-title": [
+          "NeuroImage"
+        ]
+      },
+      "match_status": "title-search candidate; requires identity review"
+    },
+    {
+      "key": "glover1999deconvolution",
+      "error": "HTTP Error 429: Too Many Requests",
+      "local": {
+        "type": "article",
+        "key": "glover1999deconvolution",
+        "title": "Deconvolution of impulse response in event-related {BOLD} {fMRI}",
+        "author": "Glover, Gary H",
+        "journal": "NeuroImage",
+        "volume": "9",
+        "number": "4",
+        "pages": "416--429",
+        "year": "1999",
+        "publisher": "Elsevier"
+      }
+    },
+    {
+      "key": "pinti2019present",
+      "local": {
+        "type": "article",
+        "key": "pinti2019present",
+        "title": "The present and future use of functional near-infrared spectroscopy ({fNIRS}) for cognitive neuroscience",
+        "author": "Pinti, Paola and Tachtsidis, Ilias and Hamilton, Antonia and Hirsch, Joy and Aichelburg, Clarisse and Gilbert, Sam and Burgess, Paul W",
+        "journal": "Annals of the New York Academy of Sciences",
+        "volume": "1464",
+        "number": "1",
+        "pages": "5--29",
+        "year": "2020",
+        "publisher": "Wiley Online Library"
+      },
+      "crossref": {
+        "DOI": "10.1093/oxfordhb/9780198827474.013.41",
+        "title": [
+          "Functional near infrared spectroscopy (fNIRS)"
+        ],
+        "author": [
+          {
+            "given": "Sarah",
+            "family": "Lloyd-Fox",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "volume": null,
+        "issue": null,
+        "page": null,
+        "article-number": null,
+        "published": {
+          "date-parts": [
+            [
+              2020,
+              12,
+              15
+            ]
+          ]
+        },
+        "container-title": [
+          "The Oxford Handbook of Developmental Cognitive Neuroscience"
+        ]
+      },
+      "match_status": "title-search candidate; requires identity review"
+    },
+    {
+      "key": "benjamini1995controlling",
+      "error": "HTTP Error 429: Too Many Requests",
+      "local": {
+        "type": "article",
+        "key": "benjamini1995controlling",
+        "title": "Controlling the false discovery rate: a practical and powerful approach to multiple testing",
+        "author": "Benjamini, Yoav and Hochberg, Yosef",
+        "journal": "Journal of the Royal Statistical Society: Series B (Methodological)",
+        "volume": "57",
+        "number": "1",
+        "pages": "289--300",
+        "year": "1995",
+        "publisher": "Wiley Online Library"
+      }
+    },
+    {
+      "key": "shapiro1965analysis",
+      "error": "HTTP Error 429: Too Many Requests",
+      "local": {
+        "type": "article",
+        "key": "shapiro1965analysis",
+        "title": "An analysis of variance test for normality (complete samples)",
+        "author": "Shapiro, Samuel Sanford and Wilk, Martin B",
+        "journal": "Biometrika",
+        "volume": "52",
+        "number": "3/4",
+        "pages": "591--611",
+        "year": "1965",
+        "publisher": "JSTOR"
+      }
+    },
+    {
+      "key": "vaswani2017attention",
+      "local": {
+        "type": "inproceedings",
+        "key": "vaswani2017attention",
+        "title": "Attention is all you need",
+        "author": "Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N and Kaiser, {\\L}ukasz and Polosukhin, Illia",
+        "booktitle": "Advances in Neural Information Processing Systems",
+        "volume": "30",
+        "pages": "5998--6008",
+        "year": "2017"
+      },
+      "crossref": {
+        "DOI": "10.1007/978-3-031-84300-6_13",
+        "title": [
+          "Is Attention All You Need?"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0001-5519-842X",
+            "authenticated-orcid": false,
+            "given": "Patrick",
+            "family": "Mineault",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "volume": null,
+        "issue": null,
+        "page": "297-314",
+        "article-number": null,
+        "published": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        },
+        "container-title": [
+          "From Human Attention to Computational Attention"
+        ]
+      },
+      "match_status": "title-search candidate; requires identity review"
+    },
+    {
+      "key": "attwell2010glial",
+      "local": {
+        "type": "article",
+        "key": "attwell2010glial",
+        "title": "Glial and neuronal control of brain blood flow",
+        "author": "Attwell, David and Buchan, Alastair M and Charpak, Serge and Lauritzen, Martin and MacVicar, Brian A and Newman, Eric A",
+        "journal": "Nature",
+        "volume": "468",
+        "number": "7321",
+        "pages": "232--243",
+        "year": "2010",
+        "publisher": "Nature Publishing Group"
+      },
+      "crossref": {
+        "DOI": "10.1038/nature09613",
+        "title": [
+          "Glial and neuronal control of brain blood flow"
+        ],
+        "author": [
+          {
+            "given": "David",
+            "family": "Attwell",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Alastair M.",
+            "family": "Buchan",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Serge",
+            "family": "Charpak",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Martin",
+            "family": "Lauritzen",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Brian A.",
+            "family": "MacVicar",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Eric A.",
+            "family": "Newman",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "volume": "468",
+        "issue": "7321",
+        "page": "232-243",
+        "article-number": null,
+        "published": {
+          "date-parts": [
+            [
+              2010,
+              11,
+              10
+            ]
+          ]
+        },
+        "container-title": [
+          "Nature"
+        ]
+      },
+      "match_status": "title-search candidate; requires identity review"
+    },
+    {
+      "key": "iadecola2004neurovascular",
+      "error": "HTTP Error 429: Too Many Requests",
+      "local": {
+        "type": "article",
+        "key": "iadecola2004neurovascular",
+        "title": "Neurovascular regulation in the normal brain and in {Alzheimer's} disease",
+        "author": "Iadecola, Costantino",
+        "journal": "Nature Reviews Neuroscience",
+        "volume": "5",
+        "number": "5",
+        "pages": "347--360",
+        "year": "2004",
+        "publisher": "Nature Publishing Group"
+      }
+    },
+    {
+      "key": "julien2006enigma",
+      "error": "HTTP Error 429: Too Many Requests",
+      "local": {
+        "type": "article",
+        "key": "julien2006enigma",
+        "title": "The enigma of {Mayer} waves: Facts and models",
+        "author": "Julien, C{\\'e}cile",
+        "journal": "Cardiovascular Research",
+        "volume": "70",
+        "number": "1",
+        "pages": "12--21",
+        "year": "2006",
+        "publisher": "Oxford University Press"
+      }
+    },
+    {
+      "key": "duncan1995measurement",
+      "error": "HTTP Error 429: Too Many Requests",
+      "local": {
+        "type": "article",
+        "key": "duncan1995measurement",
+        "title": "Measurement of optical pathlength factor in the human adult head",
+        "author": "Duncan, A and Meek, JH and Clemence, M and Elwell, CE and Tyszczuk, L and Cope, M and Delpy, DT",
+        "journal": "Physics in Medicine \\& Biology",
+        "volume": "40",
+        "number": "2",
+        "pages": "295--304",
+        "year": "1995",
+        "publisher": "IOP Publishing"
+      }
+    },
+    {
+      "key": "cope1991system",
+      "error": "HTTP Error 429: Too Many Requests",
+      "local": {
+        "type": "phdthesis",
+        "key": "cope1991system",
+        "title": "The development of a near infra-red spectroscopy system and its application to non-invasive monitoring of cerebral oxygenation in the newborn infant",
+        "author": "Cope, Mark",
+        "year": "1991",
+        "school": "University College London"
+      }
+    },
+    {
+      "key": "gevins1997high",
+      "local": {
+        "type": "article",
+        "key": "gevins1997high",
+        "title": "High-resolution {EEG} mapping of cortical activation related to working memory: effects of task difficulty, type of processing, and practice",
+        "author": "Gevins, Alan and Smith, Michael E and McEvoy, Linda and Yu, D",
+        "journal": "Cerebral Cortex",
+        "volume": "7",
+        "number": "4",
+        "pages": "374--385",
+        "year": "1997",
+        "publisher": "Oxford University Press"
+      },
+      "crossref": {
+        "DOI": "10.1093/cercor/7.4.374",
+        "title": [
+          "High-resolution EEG mapping of cortical activation related to working memory: effects of task difficulty, type of processing, and practice"
+        ],
+        "author": [
+          {
+            "given": "A",
+            "family": "Gevins",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "volume": "7",
+        "issue": "4",
+        "page": "374-385",
+        "article-number": null,
+        "published": {
+          "date-parts": [
+            [
+              1997,
+              6,
+              1
+            ]
+          ]
+        },
+        "container-title": [
+          "Cerebral Cortex"
+        ]
+      },
+      "match_status": "title-search candidate; requires identity review"
+    },
+    {
+      "key": "pfurtscheller1999event",
+      "error": "HTTP Error 429: Too Many Requests",
+      "local": {
+        "type": "article",
+        "key": "pfurtscheller1999event",
+        "title": "Event-related {EEG/MEG} synchronization and desynchronization: basic principles",
+        "author": "Pfurtscheller, Gert and Lopes da Silva, Fernando H",
+        "journal": "Clinical Neurophysiology",
+        "volume": "110",
+        "number": "11",
+        "pages": "1842--1857",
+        "year": "1999",
+        "publisher": "Elsevier"
+      }
+    },
+    {
+      "key": "girouard2006neurovascular",
+      "local": {
+        "type": "article",
+        "key": "girouard2006neurovascular",
+        "title": "Neurovascular coupling in the normal brain and in hypertension, stroke, and {Alzheimer} disease",
+        "author": "Girouard, H{\\'e}l{\\`e}ne and Iadecola, Costantino",
+        "journal": "Journal of Applied Physiology",
+        "volume": "100",
+        "number": "1",
+        "pages": "328--335",
+        "year": "2006",
+        "publisher": "American Physiological Society"
+      },
+      "crossref": {
+        "DOI": "10.1152/japplphysiol.00966.2005",
+        "title": [
+          "Neurovascular coupling in the normal brain and in hypertension, stroke, and Alzheimer disease"
+        ],
+        "author": [
+          {
+            "given": "Helene",
+            "family": "Girouard",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Costantino",
+            "family": "Iadecola",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "volume": "100",
+        "issue": "1",
+        "page": "328-335",
+        "article-number": null,
+        "published": {
+          "date-parts": [
+            [
+              2006,
+              1
+            ]
+          ]
+        },
+        "container-title": [
+          "Journal of Applied Physiology"
+        ]
+      },
+      "match_status": "title-search candidate; requires identity review"
+    },
+    {
+      "key": "hong2017future",
+      "local": {
+        "type": "article",
+        "key": "hong2017future",
+        "title": "Hybrid {EEG--fNIRS} for brain--computer interface: a review",
+        "author": "Hong, Keum-Shik and Khan, Muhammad Jawad",
+        "journal": "Frontiers in Neurorobotics",
+        "volume": "11",
+        "pages": "35",
+        "year": "2017",
+        "doi": "10.3389/fnbot.2017.00035",
+        "publisher": "Frontiers"
+      },
+      "crossref": {
+        "DOI": "10.3389/fnbot.2017.00035",
+        "title": [
+          "Hybrid Brain–Computer Interface Techniques for Improved Classification Accuracy and Increased Number of Commands: A Review"
+        ],
+        "author": [
+          {
+            "given": "Keum-Shik",
+            "family": "Hong",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Muhammad Jawad",
+            "family": "Khan",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "volume": "11",
+        "issue": null,
+        "page": null,
+        "article-number": "35",
+        "published": {
+          "date-parts": [
+            [
+              2017,
+              7,
+              24
+            ]
+          ]
+        },
+        "container-title": [
+          "Frontiers in Neurorobotics"
+        ]
+      },
+      "match_status": "DOI lookup"
+    },
+    {
+      "key": "scholkmann2014review",
+      "error": "HTTP Error 429: Too Many Requests",
+      "local": {
+        "type": "article",
+        "key": "scholkmann2014review",
+        "title": "A review on methods to determine the pathlength factor in functional near-infrared spectroscopy",
+        "author": "Scholkmann, Felix and Kleiser, Stefan and Metz, Andreas Jaakko and Zimmermann, Raphael and Mata Pavia, Juan and Wolf, Ursula and Wolf, Martin",
+        "journal": "NeuroImage",
+        "volume": "85",
+        "pages": "6--27",
+        "year": "2014",
+        "publisher": "Elsevier"
+      }
+    },
+    {
+      "key": "buzsaki2012origin",
+      "local": {
+        "type": "article",
+        "key": "buzsaki2012origin",
+        "title": "The origin of extracellular fields and currents---{EEG}, {ECoG}, {LFP} and spikes",
+        "author": "Buzs{\\'a}ki, Gy{\\\"o}rgy and Anastassiou, Costas A and Koch, Christof",
+        "journal": "Nature Reviews Neuroscience",
+        "volume": "13",
+        "number": "6",
+        "pages": "407--420",
+        "year": "2012",
+        "publisher": "Nature Publishing Group"
+      },
+      "crossref": {
+        "DOI": "10.1038/nrn3241",
+        "title": [
+          "The origin of extracellular fields and currents — EEG, ECoG, LFP and spikes"
+        ],
+        "author": [
+          {
+            "given": "György",
+            "family": "Buzsáki",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Costas A.",
+            "family": "Anastassiou",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Christof",
+            "family": "Koch",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "volume": "13",
+        "issue": "6",
+        "page": "407-420",
+        "article-number": null,
+        "published": {
+          "date-parts": [
+            [
+              2012,
+              5,
+              18
+            ]
+          ]
+        },
+        "container-title": [
+          "Nature Reviews Neuroscience"
+        ]
+      },
+      "match_status": "title-search candidate; requires identity review"
+    },
+    {
+      "key": "scholkmann2013general",
+      "local": {
+        "type": "article",
+        "key": "scholkmann2013general",
+        "title": "General equation for the differential pathlength factor of the frontal human head depending on wavelength and age",
+        "author": "Scholkmann, Felix and Wolf, Martin",
+        "journal": "Journal of Biomedical Optics",
+        "volume": "18",
+        "number": "10",
+        "pages": "105004",
+        "year": "2013",
+        "publisher": "Society of Photo-Optical Instrumentation Engineers"
+      },
+      "crossref": {
+        "DOI": "10.1117/1.jbo.18.10.105004",
+        "title": [
+          "General equation for the differential pathlength factor of the frontal human head depending on wavelength and age"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-1748-4852",
+            "authenticated-orcid": false,
+            "given": "Felix",
+            "family": "Scholkmann",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Univ. Hospital Zürich"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Martin",
+            "family": "Wolf",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Univ. Hospital Zürich"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "volume": "18",
+        "issue": "10",
+        "page": "1-6",
+        "article-number": null,
+        "published": {
+          "date-parts": [
+            [
+              2013,
+              10,
+              11
+            ]
+          ]
+        },
+        "container-title": [
+          "Journal of Biomedical Optics"
+        ]
+      },
+      "match_status": "title-search candidate; requires identity review"
+    },
+    {
+      "key": "yin2015review",
+      "error": "HTTP Error 429: Too Many Requests",
+      "local": {
+        "type": "article",
+        "key": "yin2015review",
+        "title": "A dynamically coupled hybrid brain--computer interface based on brain rhythms and near-infrared spectroscopy",
+        "author": "Yin, Erwei and Zeyl, Timothy and Saab, Rayan and Hu, Dewen and Zhou, Zongtan and Chau, Tom",
+        "journal": "NeuroImage",
+        "volume": "110",
+        "pages": "232--243",
+        "year": "2015",
+        "publisher": "Elsevier"
+      }
+    },
+    {
+      "key": "keles2016increasing",
+      "local": {
+        "type": "article",
+        "key": "keles2016increasing",
+        "title": "Increasing the accuracy of functional near-infrared spectroscopy based brain--computer interface using {EEG}",
+        "author": "Keles, Hasan Onur and Radhakrishnan, Hridya and Bangalore, Keshava and Omurtag, Ahmet",
+        "journal": "Journal of Neural Engineering",
+        "volume": "13",
+        "number": "5",
+        "pages": "056004",
+        "year": "2016",
+        "publisher": "IOP Publishing"
+      },
+      "crossref": {
+        "DOI": "10.1177/0967033518787331",
+        "title": [
+          "Evaluation of classification performance of functional near infrared spectroscopy signals during movement execution for developing a brain–computer interface application using optimal channels"
+        ],
+        "author": [
+          {
+            "given": "A",
+            "family": "Janani",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Department of Electronics and Communication Engineering, Anna University, Chennai, India"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "M",
+            "family": "Sasikala",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Electronics and Communication Engineering, Anna University, Chennai, India"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "volume": "26",
+        "issue": "4",
+        "page": "209-221",
+        "article-number": null,
+        "published": {
+          "date-parts": [
+            [
+              2018,
+              7,
+              12
+            ]
+          ]
+        },
+        "container-title": [
+          "Journal of Near Infrared Spectroscopy"
+        ]
+      },
+      "match_status": "title-search candidate; requires identity review"
+    },
+    {
+      "key": "lotte2018review",
+      "local": {
+        "type": "article",
+        "key": "lotte2018review",
+        "title": "A review of classification algorithms for {EEG}-based brain--computer interfaces: a 10 year update",
+        "author": "Lotte, Fabien and Bougrain, Laurent and Cichocki, Andrzej and Clerc, Maureen and Congedo, Marco and Chouvatut, Valerie and Yger, Florian",
+        "journal": "Journal of Neural Engineering",
+        "volume": "15",
+        "number": "2",
+        "pages": "021005",
+        "year": "2018",
+        "publisher": "IOP Publishing"
+      },
+      "crossref": {
+        "DOI": "10.1088/1741-2552/aab2f2",
+        "title": [
+          "A review of classification algorithms for EEG-based brain–computer interfaces: a 10 year update"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-6888-9198",
+            "authenticated-orcid": false,
+            "given": "F",
+            "family": "Lotte",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "LaBRI (CNRS/Univ. Bordeaux /INP)"
+              },
+              {
+                "name": "RIKEN Brain Science Insitute"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "L",
+            "family": "Bougrain",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Univ. Lorraine"
+              },
+              {
+                "name": "Inria Nancy Grand-Est / LORIA"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "A",
+            "family": "Cichocki",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "RIKEN Brain Science Insitute"
+              },
+              {
+                "name": "Skolkowo Institute of Science and Technology"
+              },
+              {
+                "name": "Nicolaus Copernicus University"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "M",
+            "family": "Clerc",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Université Côte d’Azur"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "M",
+            "family": "Congedo",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Univ. Grenoble Alpes"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "A",
+            "family": "Rakotomamonjy",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Univ. Rouen / LITIS"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "F",
+            "family": "Yger",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Univ. Paris-Dauphine"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "volume": "15",
+        "issue": "3",
+        "page": "031005",
+        "article-number": null,
+        "published": {
+          "date-parts": [
+            [
+              2018,
+              4,
+              16
+            ]
+          ]
+        },
+        "container-title": [
+          "Journal of Neural Engineering"
+        ]
+      },
+      "match_status": "title-search candidate; requires identity review"
+    },
+    {
+      "key": "salim2023lightweight",
+      "local": {
+        "type": "article",
+        "key": "salim2023lightweight",
+        "title": "Lightweight convolution transformer for cross-patient seizure detection in multi-channel {EEG} signals",
+        "author": "Salim, Rukhsar and Tiwari, Anil Kumar",
+        "journal": "Computer Methods and Programs in Biomedicine",
+        "volume": "242",
+        "pages": "107856",
+        "year": "2023",
+        "publisher": "Elsevier",
+        "doi": "10.1016/j.cmpb.2023.107856"
+      },
+      "crossref": {
+        "DOI": "10.1016/j.cmpb.2023.107856",
+        "title": [
+          "Lightweight convolution transformer for cross-patient seizure detection in multi-channel EEG signals"
+        ],
+        "author": [
+          {
+            "given": "Salim",
+            "family": "Rukhsar",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Anil Kumar",
+            "family": "Tiwari",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "volume": "242",
+        "issue": null,
+        "page": "107856",
+        "article-number": "107856",
+        "published": {
+          "date-parts": [
+            [
+              2023,
+              12
+            ]
+          ]
+        },
+        "container-title": [
+          "Computer Methods and Programs in Biomedicine"
+        ]
+      },
+      "match_status": "DOI lookup"
+    },
+    {
+      "key": "aydin2020subject",
+      "error": "HTTP Error 429: Too Many Requests",
+      "local": {
+        "type": "article",
+        "key": "aydin2020subject",
+        "title": "Subject-specific feature selection for near infrared spectroscopy based brain-computer interfaces",
+        "author": "Ayd{\\i}n, Eda Akman",
+        "journal": "Computer Methods and Programs in Biomedicine",
+        "volume": "195",
+        "pages": "105535",
+        "year": "2020",
+        "publisher": "Elsevier",
+        "doi": "10.1016/j.cmpb.2020.105535"
+      }
+    },
+    {
+      "key": "perez2024unraveling",
+      "local": {
+        "type": "article",
+        "key": "perez2024unraveling",
+        "title": "Unraveling motor imagery brain patterns using explainable artificial intelligence based on {Shapley} values",
+        "author": "P{\\'e}rez-Velasco, Sergio and Marcos-Mart{\\'i}nez, Diego and G{\\'o}mez, Carlos and Hornero, Roberto",
+        "journal": "Computer Methods and Programs in Biomedicine",
+        "volume": "244",
+        "pages": "108048",
+        "year": "2024",
+        "publisher": "Elsevier",
+        "doi": "10.1016/j.cmpb.2024.108048"
+      },
+      "crossref": {
+        "DOI": "10.1016/j.cmpb.2024.108048",
+        "title": [
+          "Unraveling motor imagery brain patterns using explainable artificial intelligence based on Shapley values"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-2999-3216",
+            "authenticated-orcid": false,
+            "given": "Sergio",
+            "family": "Pérez-Velasco",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Diego",
+            "family": "Marcos-Martínez",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-7688-4258",
+            "authenticated-orcid": false,
+            "given": "Eduardo",
+            "family": "Santamaría-Vázquez",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-3822-1787",
+            "authenticated-orcid": false,
+            "given": "Víctor",
+            "family": "Martínez-Cagigal",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0001-8605-6336",
+            "authenticated-orcid": false,
+            "given": "Selene",
+            "family": "Moreno-Calderón",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0001-9915-2570",
+            "authenticated-orcid": false,
+            "given": "Roberto",
+            "family": "Hornero",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "volume": "246",
+        "issue": null,
+        "page": "108048",
+        "article-number": "108048",
+        "published": {
+          "date-parts": [
+            [
+              2024,
+              4
+            ]
+          ]
+        },
+        "container-title": [
+          "Computer Methods and Programs in Biomedicine"
+        ]
+      },
+      "match_status": "DOI lookup"
+    },
+    {
+      "key": "acharya2025eegconvnext",
+      "local": {
+        "type": "article",
+        "key": "acharya2025eegconvnext",
+        "title": "{EEGConvNeXt}: A novel convolutional neural network model for automated detection of {Alzheimer's} disease and frontotemporal dementia using {EEG} signals",
+        "author": "Acharya, Madhav and Deo, Ravinesh C and Barua, Prabal Datta and Devi, Aruna and Tao, Xiaohui",
+        "journal": "Computer Methods and Programs in Biomedicine",
+        "volume": "262",
+        "pages": "108652",
+        "year": "2025",
+        "publisher": "Elsevier",
+        "doi": "10.1016/j.cmpb.2025.108652"
+      },
+      "crossref": {
+        "DOI": "10.1016/j.cmpb.2025.108652",
+        "title": [
+          "EEGConvNeXt: A novel convolutional neural network model for automated detection of Alzheimer's Disease and Frontotemporal Dementia using EEG signals"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0009-0008-3228-426X",
+            "authenticated-orcid": false,
+            "given": "Madhav",
+            "family": "Acharya",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-2290-6749",
+            "authenticated-orcid": false,
+            "given": "Ravinesh C",
+            "family": "Deo",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Prabal Datta",
+            "family": "Barua",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Aruna",
+            "family": "Devi",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-0020-077X",
+            "authenticated-orcid": false,
+            "given": "Xiaohui",
+            "family": "Tao",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "volume": "262",
+        "issue": null,
+        "page": "108652",
+        "article-number": "108652",
+        "published": {
+          "date-parts": [
+            [
+              2025,
+              4
+            ]
+          ]
+        },
+        "container-title": [
+          "Computer Methods and Programs in Biomedicine"
+        ]
+      },
+      "match_status": "DOI lookup"
+    }
+  ]
+}
