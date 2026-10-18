@@ -76,15 +76,15 @@
 | 序号 | 审计细项 (Audit Item) | 判定结论 | 验证细节与证据 (Details & Evidences) |
 | :--- | :--- | :---: | :--- |
 | 1 | **8.1 TorchScript (JIT Trace) Graph Compilation & Bit-Exactness** | [PASS] | Traced model difference vs PyTorch eager = 5.96e-08 (< 1e-6, zero-warning portable edge deployment ready) |
-| 2 | **8.2 Latency Percentile Distribution Profile (P50, P90, P95, P99)** | [PASS] | Mean=3.42ms, P50=3.45ms, P90=3.72ms, P95=3.85ms, P99=4.06ms, Max=4.29ms |
-| 3 | **8.3 Clinical Closed-Loop Real-Time Gate (P99 < 10.0 ms)** | [PASS] | Measured P99 latency = 4.06 ms (< 10.0 ms, well below 50.0 ms human BCI closed-loop perception threshold) |
-| 4 | **8.4 Single-Stream Real-Time Inference Throughput Capacity** | [PASS] | Inference throughput = 1297.9 trials/second (> 250 trials/s, capable of concurrent multi-patient BCI decoding) |
+| 2 | **8.2 Latency Percentile Distribution Profile (P50, P90, P95, P99)** | [PASS] | Mean=2.74ms, P50=2.52ms, P90=3.13ms, P95=5.19ms, P99=5.65ms, Max=6.00ms |
+| 3 | **8.3 Clinical Closed-Loop Real-Time Gate (P99 < 10.0 ms)** | [PASS] | Measured P99 latency = 5.65 ms (< 10.0 ms, well below 50.0 ms human BCI closed-loop perception threshold) |
+| 4 | **8.4 Single-Stream Real-Time Inference Throughput Capacity** | [PASS] | Inference throughput = 1438.3 trials/second (> 250 trials/s, capable of concurrent multi-patient BCI decoding) |
 
 ## Dimension 9: Gradient Dynamics & Optimization Landscape
 
 | 序号 | 审计细项 (Audit Item) | 判定结论 | 验证细节与证据 (Details & Evidences) |
 | :--- | :--- | :---: | :--- |
-| 1 | **9.1 Layer-wise Gradient Norm Bounds (Vanishing/Exploding Check)** | [PASS] | Min layer grad norm=1.31e-10 (> 1e-12), Max layer grad norm=0.94 (< 50.0), gradients perfectly bounded |
+| 1 | **9.1 Layer-wise Gradient Norm Bounds (Vanishing/Exploding Check)** | [PASS] | Min layer grad norm=1.57e-10 (> 1e-12), Max layer grad norm=0.94 (< 50.0), gradients perfectly bounded |
 | 2 | **9.2 Warmup Cosine Annealing Trajectory & Positivity** | [PASS] | Warmup 0->1e-3 monotonically increases, cosine decay monotonically decreases to min_lr=1.6e-05 (no step breaks) |
 | 3 | **9.3 Weight Matrix Lipschitz Spectral Radius Bounding** | [PASS] | Max spectral radius across all layers = 1.54 (< 50.0, strictly Lipschitz continuous transformation) |
 | 4 | **9.4 Multi-Task Loss Gradient Alignment & Interference Check** | [PASS] | Shared encoder gradient cosine similarity = 0.0105 (> -0.85, orthogonal multi-task synergy without destructive cancellation) |

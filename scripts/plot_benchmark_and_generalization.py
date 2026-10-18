@@ -150,10 +150,10 @@ def generate_benchmark_figure():
                  stats.t.ppf(0.975, 25) * 13.34 / np.sqrt(26),
                  stats.t.ppf(0.975, 28) * 7.33 / np.sqrt(29)]
 
-    acc_sota = [74.20, 72.38, 70.40]
+    acc_sota = [74.20, 70.09, 64.02]
     ci_sota = [stats.t.ppf(0.975, 28) * 9.29 / np.sqrt(29),
-               stats.t.ppf(0.975, 25) * 14.82 / np.sqrt(26),
-               stats.t.ppf(0.975, 28) * 11.54 / np.sqrt(29)]
+               stats.t.ppf(0.975, 25) * 14.05 / np.sqrt(26),
+               stats.t.ppf(0.975, 28) * 10.29 / np.sqrt(29)]
 
     acc_proposed = [79.37, 73.77, 66.32]
     ci_proposed = [stats.t.ppf(0.975, 28) * 7.73 / np.sqrt(29),
