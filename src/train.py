@@ -330,7 +330,8 @@ def train_single_loso_fold(
     if all_subs is None:
         all_subs = list(range(1, 30))
     if device is None:
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        has_gpu = torch.cuda.is_available() and torch.cuda.device_count() > 0
+        device = torch.device("cuda" if has_gpu else "cpu")
 
     # 1. Deterministic seed & subject partition
     set_seed(seed_base + test_sub)

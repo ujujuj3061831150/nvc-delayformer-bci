@@ -401,7 +401,8 @@ def audit_dimension_6_memory_defense() -> Dict:
     print("=" * 80)
     checks = []
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    has_gpu = torch.cuda.is_available() and torch.cuda.device_count() > 0
+    device = torch.device("cuda" if has_gpu else "cpu")
     model = NVCDelayFormer(num_classes=2, eeg_channels=28, fnirs_channels=72, feature_dim=64, num_heads=4).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
 
@@ -593,7 +594,8 @@ def audit_dimension_8_edge_deployment() -> Dict:
     print("=" * 80)
     checks = []
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    has_gpu = torch.cuda.is_available() and torch.cuda.device_count() > 0
+    device = torch.device("cuda" if has_gpu else "cpu")
     model = NVCDelayFormer(num_classes=2, eeg_channels=28, fnirs_channels=72, feature_dim=64, num_heads=4).to(device)
     model.eval()
 

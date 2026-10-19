@@ -48,11 +48,13 @@ def run_verify():
     # 1. Hardware & Framework Check
     print("\n[Check 1/5] Compute Environment & Hardware:")
     print(f"  Python Version:  {sys.version.split()[0]}")
-    print(f"  PyTorch Version: {torch.__version__}")
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    has_gpu = torch.cuda.is_available() and torch.cuda.device_count() > 0
+    device = torch.device("cuda" if has_gpu else "cpu")
     print(f"  Compute Device:  {device}")
-    if torch.cuda.is_available():
+    if has_gpu:
         print(f"  GPU Device:      {torch.cuda.get_device_name(0)}")
+    else:
+        print("  GPU Device:      None (Pure CPU mode)")
 
     # 2. Parameter Count Auditing
     print("\n[Check 2/5] Trainable Parameter Count Integrity:")
@@ -310,7 +312,8 @@ predictions = torch.argmax(logits, dim=-1)
 """)
 
     print("Executing demo forward pass on compute device...")
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    has_gpu = torch.cuda.is_available() and torch.cuda.device_count() > 0
+    device = torch.device("cuda" if has_gpu else "cpu")
     t0 = time.time()
     model = NVCDelayFormer(num_classes=2, eeg_channels=30, fnirs_channels=72).to(device)
     eeg = torch.randn(4, 30, 1000, device=device)
@@ -383,7 +386,8 @@ def run_eval_checkpoint(ckpt_path: str = "checkpoints/best_nvc_delayformer_sub05
         print(f"  [ERROR] Data file not found: {data_file}")
         return
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    has_gpu = torch.cuda.is_available() and torch.cuda.device_count() > 0
+    device = torch.device("cuda" if has_gpu else "cpu")
     ckpt = torch.load(ckpt_file, map_location=device, weights_only=False)
     state = ckpt["model_state"] if isinstance(ckpt, dict) and "model_state" in ckpt else ckpt
 
