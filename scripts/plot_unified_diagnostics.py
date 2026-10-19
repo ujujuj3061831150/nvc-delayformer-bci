@@ -27,9 +27,11 @@ OUT.mkdir(parents=True, exist_ok=True)
 REPORTS_FIG = ROOT / 'reports/figures'
 REPORTS_FIG.mkdir(parents=True, exist_ok=True)
 
-# Add nature-figure scripts directory to path for alignment auditor
-sys.path.insert(0, r'C:\Users\ikunccc\.gemini\config\plugins\nature-skills\skills\nature-figure\scripts')
-from audit_panel_alignment import require_matplotlib_panel_alignment
+# Optional panel alignment auditor for Nature-style checks
+try:
+    from audit_panel_alignment import require_matplotlib_panel_alignment
+except ImportError:
+    require_matplotlib_panel_alignment = None
 
 plt.rcParams.update({
     'font.family': 'sans-serif',
@@ -228,15 +230,16 @@ def generate_unified_diagnostic_figure():
 
     ax4.set_title('(d) Cortical Coupling Topographies', fontsize=8.2, pad=8, fontweight='bold', color='#1A2D42')
 
-    # Run Nature panel-alignment audit gate before export
-    require_matplotlib_panel_alignment(
-        fig,
-        json_out=str(OUT / 'attention_and_delay_diagnostics.alignment.json'),
-        overlay_svg=str(OUT / 'attention_and_delay_diagnostics.alignment.svg'),
-        tolerance_pt=1.5,
-        gutter_tolerance_pt=1.5,
-        strict=False
-    )
+    # Run Nature panel-alignment audit gate before export if available
+    if require_matplotlib_panel_alignment is not None:
+        require_matplotlib_panel_alignment(
+            fig,
+            json_out=str(OUT / 'attention_and_delay_diagnostics.alignment.json'),
+            overlay_svg=str(OUT / 'attention_and_delay_diagnostics.alignment.svg'),
+            tolerance_pt=1.5,
+            gutter_tolerance_pt=1.5,
+            strict=False
+        )
 
     for ext in ('pdf', 'svg', 'png'):
         dest = OUT / f'attention_and_delay_diagnostics.{ext}'

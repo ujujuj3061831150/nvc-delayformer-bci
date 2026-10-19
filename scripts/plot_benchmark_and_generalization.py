@@ -26,9 +26,11 @@ OUT.mkdir(parents=True, exist_ok=True)
 REPORTS_FIG = ROOT / 'reports/figures'
 REPORTS_FIG.mkdir(parents=True, exist_ok=True)
 
-# Add nature-figure scripts directory to path for alignment auditor
-sys.path.insert(0, r'C:\Users\ikunccc\.gemini\config\plugins\nature-skills\skills\nature-figure\scripts')
-from audit_panel_alignment import require_matplotlib_panel_alignment
+# Optional panel alignment auditor for Nature-style checks
+try:
+    from audit_panel_alignment import require_matplotlib_panel_alignment
+except ImportError:
+    require_matplotlib_panel_alignment = None
 
 plt.rcParams.update({
     'font.family': 'sans-serif',
@@ -184,15 +186,16 @@ def generate_benchmark_figure():
     ax3.legend(loc='upper right', fontsize=6.5, ncol=2, columnspacing=0.8, handlelength=1.0, handletextpad=0.3)
     ax3.set_title('(c) Multi-Paradigm Transfer', fontsize=8.2, fontweight='bold', pad=8, color='#1A2D42')
 
-    # Run Nature panel-alignment audit gate before export
-    require_matplotlib_panel_alignment(
-        fig,
-        json_out=str(OUT / 'real_29sub_benchmark_comparison.alignment.json'),
-        overlay_svg=str(OUT / 'real_29sub_benchmark_comparison.alignment.svg'),
-        tolerance_pt=1.5,
-        gutter_tolerance_pt=1.5,
-        strict=False
-    )
+    # Run Nature panel-alignment audit gate before export if available
+    if require_matplotlib_panel_alignment is not None:
+        require_matplotlib_panel_alignment(
+            fig,
+            json_out=str(OUT / 'real_29sub_benchmark_comparison.alignment.json'),
+            overlay_svg=str(OUT / 'real_29sub_benchmark_comparison.alignment.svg'),
+            tolerance_pt=1.5,
+            gutter_tolerance_pt=1.5,
+            strict=False
+        )
 
     for ext_fmt in ('pdf', 'svg', 'png'):
         dest = OUT / f'real_29sub_benchmark_comparison.{ext_fmt}'
