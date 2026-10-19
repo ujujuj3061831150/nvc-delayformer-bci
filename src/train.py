@@ -318,6 +318,7 @@ def train_single_loso_fold(
     proc_dir: Path = Path("data/processed"),
     cache: dict = None,
     use_delay_prior: bool = True,
+    use_ea: bool = True,
     readout_mode: str = "joint",
     direct_weight_mode: str = "kernel",
     cut_gate_latent: bool = False,
@@ -325,7 +326,7 @@ def train_single_loso_fold(
 ) -> dict:
     """
     Standardized, authentic single-fold LOSO trainer adhering strictly to the
-    paper's 29-fold evaluation protocol (Train 23 / Val 5 / Test 1, 12 epochs).
+    paper's 29-fold evaluation protocol (Train 23 / Val 5 / Test 1, with EA and 1e4 fNIRS scaling).
     """
     if all_subs is None:
         all_subs = list(range(1, 30))
@@ -346,7 +347,7 @@ def train_single_loso_fold(
         print(f"  - Val:   {len(val_ids)} subjects ({val_ids})")
         print(f"  - Test:  sub-{test_sub:02d} (60 trials)")
 
-    # 2. Load data
+    # 2. Load data with standardized EA and optical scaling
     if cache is None:
         cache = {}
         for sid in [test_sub] + pool:
@@ -354,9 +355,14 @@ def train_single_loso_fold(
             if not p.exists():
                 raise FileNotFoundError(f"Missing data file: {p}")
             d = torch.load(p, weights_only=True)
+            eeg_data = d["eeg"]
+            if use_ea:
+                from src.data.preprocessing import offline_euclidean_alignment
+                eeg_data = torch.from_numpy(offline_euclidean_alignment(eeg_data.cpu().numpy())).float()
+            fnirs_data = d["fnirs"] * 1e4
             cache[sid] = (
-                d["eeg"].to(device),
-                d["fnirs"].to(device),
+                eeg_data.to(device),
+                fnirs_data.to(device),
                 d["labels"].to(device)
             )
 

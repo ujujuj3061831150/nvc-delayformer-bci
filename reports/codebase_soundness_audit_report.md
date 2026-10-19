@@ -58,7 +58,7 @@
 | 序号 | 审计细项 (Audit Item) | 判定结论 | 验证细节与证据 (Details & Evidences) |
 | :--- | :--- | :---: | :--- |
 | 1 | **6.1 Multi-Step Forward/Backward Graph Accumulation & VRAM Leakage Check** | [PASS] | VRAM net growth after 5 full iterations and cleanup = 0.00 MB (< 5.0 MB, zero computational graph leakage) |
-| 2 | **6.2 Peak VRAM Consumption (Batch Size 32 Forward+Backward)** | [PASS] | Peak VRAM during training = 120.0 MB (< 1,500 MB, safely deployable on 4GB/6GB/8GB laptop GPUs) |
+| 2 | **6.2 Peak VRAM Consumption (Batch Size 32 Forward+Backward)** | [PASS] | Peak VRAM during training = 187.7 MB (< 1,500 MB, safely deployable on 4GB/6GB/8GB laptop GPUs) |
 | 3 | **6.3 Multi-Batch Size Scaling Stability (BS=16, 32, 64)** | [PASS] | All batch sizes [16, 32, 64] executed with accurate tensor output shapes without OOM or dimensionality errors |
 | 4 | **6.4 Metric Accumulation Tensors Host-Memory (CPU) Isolation** | [PASS] | BCI metric evaluation correctly operates on detached CPU tensors, preventing GPU memory pinning |
 
@@ -66,36 +66,36 @@
 
 | 序号 | 审计细项 (Audit Item) | 判定结论 | 验证细节与证据 (Details & Evidences) |
 | :--- | :--- | :---: | :--- |
-| 1 | **7.1 Missing Scalp EEG Electrodes (3 Channels Zeroed) Fault Tolerance** | [PASS] | Output remains finite, mean prediction shift = 0.0032 (< 0.35, graceful degradation without collapse) |
-| 2 | **7.2 Missing Prefrontal fNIRS Optodes (4 Channels Zeroed) Fault Tolerance** | [PASS] | Output remains finite, mean prediction shift = 0.0010 (< 0.35, graceful degradation without collapse) |
+| 1 | **7.1 Missing Scalp EEG Electrodes (3 Channels Zeroed) Fault Tolerance** | [PASS] | Output remains finite, mean prediction shift = 0.0755 (< 0.35, graceful degradation without collapse) |
+| 2 | **7.2 Missing Prefrontal fNIRS Optodes (4 Channels Zeroed) Fault Tolerance** | [PASS] | Output remains finite, mean prediction shift = 0.0004 (< 0.35, graceful degradation without collapse) |
 | 3 | **7.3 Edge-Case Single-Trial Real-Time Inference (Batch Size = 1)** | [PASS] | Batch Size 1 successfully yields exact output shape [1, 2] with finite values (eval BatchNorm intact) |
-| 4 | **7.4 Temporal Synchronization Trigger Jitter (±100ms Latency Shift)** | [PASS] | Output stable under 100ms timing shift, prediction shift = 0.0005 (< 0.30, Gaussian prior absorbs timing jitter) |
+| 4 | **7.4 Temporal Synchronization Trigger Jitter (±100ms Latency Shift)** | [PASS] | Output stable under 100ms timing shift, prediction shift = 0.0006 (< 0.30, Gaussian prior absorbs timing jitter) |
 
 ## Dimension 8: Clinical Edge Deployment & P99 Latency Profile
 
 | 序号 | 审计细项 (Audit Item) | 判定结论 | 验证细节与证据 (Details & Evidences) |
 | :--- | :--- | :---: | :--- |
-| 1 | **8.1 TorchScript (JIT Trace) Graph Compilation & Bit-Exactness** | [PASS] | Traced model difference vs PyTorch eager = 0.00e+00 (< 1e-6, zero-warning portable edge deployment ready) |
-| 2 | **8.2 Latency Percentile Distribution Profile (P50, P90, P95, P99)** | [PASS] | Mean=2.98ms, P50=2.74ms, P90=3.75ms, P95=3.80ms, P99=3.97ms, Max=4.30ms |
-| 3 | **8.3 Clinical Closed-Loop Real-Time Gate (P99 < 10.0 ms)** | [PASS] | Measured P99 latency = 3.97 ms (< 10.0 ms, well below 50.0 ms human BCI closed-loop perception threshold) |
-| 4 | **8.4 Single-Stream Real-Time Inference Throughput Capacity** | [PASS] | Inference throughput = 678.9 trials/second (> 250 trials/s, capable of concurrent multi-patient BCI decoding) |
+| 1 | **8.1 TorchScript (JIT Trace) Graph Compilation & Bit-Exactness** | [PASS] | Traced model difference vs PyTorch eager = 5.96e-08 (< 1e-6, zero-warning portable edge deployment ready) |
+| 2 | **8.2 Latency Percentile Distribution Profile (P50, P90, P95, P99)** | [PASS] | Mean=2.82ms, P50=2.35ms, P90=3.72ms, P95=4.89ms, P99=5.21ms, Max=5.63ms |
+| 3 | **8.3 Clinical Closed-Loop Real-Time Gate (P99 < 10.0 ms)** | [PASS] | Measured P99 latency = 5.21 ms (< 10.0 ms, well below 50.0 ms human BCI closed-loop perception threshold) |
+| 4 | **8.4 Single-Stream Real-Time Inference Throughput Capacity** | [PASS] | Inference throughput = 1606.7 trials/second (> 250 trials/s, capable of concurrent multi-patient BCI decoding) |
 
 ## Dimension 9: Gradient Dynamics & Optimization Landscape
 
 | 序号 | 审计细项 (Audit Item) | 判定结论 | 验证细节与证据 (Details & Evidences) |
 | :--- | :--- | :---: | :--- |
-| 1 | **9.1 Layer-wise Gradient Norm Bounds (Vanishing/Exploding Check)** | [PASS] | Min layer grad norm=1.12e-10 (> 1e-12), Max layer grad norm=1.14 (< 50.0), gradients perfectly bounded |
+| 1 | **9.1 Layer-wise Gradient Norm Bounds (Vanishing/Exploding Check)** | [PASS] | Min layer grad norm=1.31e-10 (> 1e-12), Max layer grad norm=0.94 (< 50.0), gradients perfectly bounded |
 | 2 | **9.2 Warmup Cosine Annealing Trajectory & Positivity** | [PASS] | Warmup 0->1e-3 monotonically increases, cosine decay monotonically decreases to min_lr=1.6e-05 (no step breaks) |
-| 3 | **9.3 Weight Matrix Lipschitz Spectral Radius Bounding** | [PASS] | Max spectral radius across all layers = 1.70 (< 50.0, strictly Lipschitz continuous transformation) |
-| 4 | **9.4 Multi-Task Loss Gradient Alignment & Interference Check** | [PASS] | Shared encoder gradient cosine similarity = -0.0043 (> -0.85, orthogonal multi-task synergy without destructive cancellation) |
+| 3 | **9.3 Weight Matrix Lipschitz Spectral Radius Bounding** | [PASS] | Max spectral radius across all layers = 1.54 (< 50.0, strictly Lipschitz continuous transformation) |
+| 4 | **9.4 Multi-Task Loss Gradient Alignment & Interference Check** | [PASS] | Shared encoder gradient cosine similarity = 0.0105 (> -0.85, orthogonal multi-task synergy without destructive cancellation) |
 
 ## Dimension 10: Latent Rank Collapse & Multimodal Synergy Ratio
 
 | 序号 | 审计细项 (Audit Item) | 判定结论 | 验证细节与证据 (Details & Evidences) |
 | :--- | :--- | :---: | :--- |
-| 1 | **10.1 Latent Representation SVD Effective Rank (Dimensional Collapse Check)** | [PASS] | Effective Rank erank(Z) = 12.53 (> 5.0, robust high-dimensional representation, zero 1D dimensional collapse) |
-| 2 | **10.2 Latent Space Fisher Class Separability (Between/Within Variance)** | [PASS] | Fisher Separability Ratio = 2.4333 (> 0.05, latent manifold naturally preserves inter-class discriminability) |
-| 3 | **10.3 Bimodal Gradient Attribution Balance (Modality Dominance Check)** | [PASS] | Gradient Attribution Ratio ||grad_eeg|| / ||grad_fnirs|| = 1.3097 (both modalities actively convey signal) |
+| 1 | **10.1 Latent Representation SVD Effective Rank (Dimensional Collapse Check)** | [PASS] | Effective Rank erank(Z) = 12.58 (> 5.0, robust high-dimensional representation, zero 1D dimensional collapse) |
+| 2 | **10.2 Latent Space Fisher Class Separability (Between/Within Variance)** | [PASS] | Fisher Separability Ratio = 2.0838 (> 0.05, latent manifold naturally preserves inter-class discriminability) |
+| 3 | **10.3 Bimodal Gradient Attribution Balance (Modality Dominance Check)** | [PASS] | Gradient Attribution Ratio ||grad_eeg|| / ||grad_fnirs|| = 1.2659 (both modalities actively convey signal) |
 | 4 | **10.4 Cross-Attention Spatial-Temporal Entropy (Degeneracy Check)** | [PASS] | Attention Entropy H(A) = 4.22 (> 1.0, rich non-degenerate attention spread across temporal receptive field) |
 
 ## Dimension 11: Data Schema & Cross-Platform Serialization Security
