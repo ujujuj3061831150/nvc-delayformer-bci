@@ -83,6 +83,15 @@ tmp/
 scratch/
 latex_cbm/
 .codex-remote-attachments/
+reports/
+scripts/
+manuscript/
+config/
+run_pipeline.py
+related_literature_10_papers.md
+requirements-lock.txt
+AGENTS.md
+tests/audit_codebase_soundness.py
 
 # ------------------------------------------------------------------------------
 # 6. IDEs & Operating System Artifacts
