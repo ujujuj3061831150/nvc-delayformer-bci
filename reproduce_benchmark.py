@@ -329,18 +329,18 @@ predictions = torch.argmax(logits, dim=-1)
     print("=" * 86)
 
 
-def run_train_fold(sub_id: int):
+def run_train_fold(sub_id: int, epochs: int = 25, batch_size: int = 64, lr: float = 1.5e-3):
     """
     Train a single held-out LOSO fold using the authentic, audited training protocol:
-    seed=42+sub_id, cyclic 5-subject validation split, batch=256, warmup+cosine scheduler,
-    gradient clipping, auxiliary loss, and validation loss tie-breaker.
+    seed=42+sub_id, cyclic 5-subject validation split, warmup+cosine scheduler,
+    gradient clipping, and validation loss tie-breaker.
     """
     print("=" * 86)
     print(f"  AUTHENTIC 29-FOLD LOSO TRAINING: HELD-OUT SUBJECT {sub_id:02d}")
     print("=" * 86)
 
     from src.train import train_single_loso_fold
-    res = train_single_loso_fold(test_sub=sub_id, seed_base=42, verbose=True)
+    res = train_single_loso_fold(test_sub=sub_id, seed_base=42, epochs=epochs, batch_size=batch_size, lr=lr, verbose=True)
 
     # Load ground-truth benchmark metrics for reference
     expected_s42 = "N/A"
@@ -421,16 +421,17 @@ def run_eval_checkpoint(ckpt_path: str = "checkpoints/best_nvc_delayformer_sub05
     print("=" * 86)
 
 
-def run_train_all():
+def run_train_all(epochs: int = 25, batch_size: int = 64, lr: float = 1.5e-3):
     """Run full 29-fold LOSO training across the entire TU Berlin cohort."""
     print("=" * 86)
     print("  LAUNCHING FULL 29-FOLD LEAVE-ONE-SUBJECT-OUT (LOSO) TRAINING")
+    print(f"  Configuration: Epochs = {epochs}, Batch Size = {batch_size}, Learning Rate = {lr}")
     print("=" * 86)
     from src.train import train_single_loso_fold
     accs, f1s = [], []
     t_start = time.time()
     for sub in range(1, 30):
-        res = train_single_loso_fold(test_sub=sub, seed_base=42, verbose=False)
+        res = train_single_loso_fold(test_sub=sub, seed_base=42, epochs=epochs, batch_size=batch_size, lr=lr, verbose=False)
         accs.append(res["test_acc"])
         f1s.append(res["macro_f1"])
         print(f"  Fold {sub:02d}/29: Test Acc = {res['test_acc']:.2f}%, F1 = {res['macro_f1']:.2f}% ({res['elapsed_sec']:.1f}s)")
@@ -651,6 +652,9 @@ def main():
     parser.add_argument("--demo", action="store_true", help="Run standalone plug-and-play demo on synthetic data")
     parser.add_argument("--train-fold", type=int, default=None, help="Train a specific held-out LOSO subject fold (1-29)")
     parser.add_argument("--train-all", action="store_true", help="Train all 29 held-out LOSO subject folds sequentially (Table I)")
+    parser.add_argument("--epochs", type=int, default=25, help="Number of training epochs per fold (default: 25)")
+    parser.add_argument("--batch-size", type=int, default=64, help="Batch size for training (default: 64)")
+    parser.add_argument("--lr", type=float, default=1.5e-3, help="Learning rate (default: 1.5e-3)")
     parser.add_argument("--train-ablation", action="store_true", help="Retrain from scratch all Table II 2x2 Factorial & Ablation variants")
     parser.add_argument("--eval-perturbations", action="store_true", help="Live measurement of physical input perturbations (Table III)")
     parser.add_argument("--profile-hardware", action="store_true", help="Live measurement of parameters, MACs, and inference latency (Table V)")
@@ -670,9 +674,9 @@ def main():
     elif args.eval_checkpoint is not None:
         run_eval_checkpoint(args.eval_checkpoint, args.eval_sub)
     elif args.train_fold is not None:
-        run_train_fold(args.train_fold)
+        run_train_fold(args.train_fold, epochs=args.epochs, batch_size=args.batch_size, lr=args.lr)
     elif args.train_all:
-        run_train_all()
+        run_train_all(epochs=args.epochs, batch_size=args.batch_size, lr=args.lr)
     elif args.train_ablation:
         run_train_ablation(args.eval_sub)
     elif args.eval_perturbations:

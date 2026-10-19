@@ -313,6 +313,10 @@ def run_training_experiment(
 def train_single_loso_fold(
     test_sub: int,
     seed_base: int = 42,
+    epochs: int = 25,
+    batch_size: int = 64,
+    lr: float = 1.5e-3,
+    weight_decay: float = 0.01,
     all_subs: List[int] = None,
     device: torch.device = None,
     proc_dir: Path = Path("data/processed"),
@@ -391,9 +395,9 @@ def train_single_loso_fold(
         cut_gate_latent=cut_gate_latent,
     ).to(device)
 
-    opt = AdamW(model.parameters(), lr=3e-3, weight_decay=0.05)
-    sched = get_warmup_cosine_scheduler(opt, warmup_epochs=2, total_epochs=12)
-    bs = 256
+    opt = AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
+    sched = get_warmup_cosine_scheduler(opt, warmup_epochs=2, total_epochs=epochs)
+    bs = batch_size
     n_tr = tr_e.size(0)
 
     best_val_acc = -1.0
@@ -401,10 +405,10 @@ def train_single_loso_fold(
     best_state = None
     best_epoch = 0
 
-    # 4. 12 Epochs training loop with validation checkpointing
+    # 4. Training loop with validation checkpointing
     t0 = time.time()
     criterion = nn.CrossEntropyLoss()
-    for epoch in range(1, 13):
+    for epoch in range(1, epochs + 1):
         model.train()
         perm = torch.randperm(n_tr, device=device)
         epoch_loss = 0.0
@@ -412,27 +416,12 @@ def train_single_loso_fold(
         for idx in range(0, n_tr, bs):
             b = perm[idx:idx+bs]
             opt.zero_grad()
-            logits, _, recon_pred, (deep_logits, shallow_logits) = model(
+            logits, _ = model(
                 tr_e[b], tr_f[b],
                 use_delay_prior=use_delay_prior,
                 use_causal_mask=use_causal_mask,
-                return_recon=True,
-                return_branch_logits=True,
             )
-
-            loss_cls, _, _, _ = NVCDelayFormer.compute_auxiliary_loss(
-                logits, deep_logits, shallow_logits, tr_l[b], aux_weight=0.2, criterion=criterion
-            )
-
-            if readout_mode != "latent_only":
-                w_diff = model.direct_readout.weight[1] - model.direct_readout.weight[0]
-                reg_w = 0.08 * (w_diff ** 2).sum()
-            else:
-                reg_w = 0.0
-
-            target_hbo = model.compute_buxton_hemodynamics(tr_f[b])[:, :36, :]
-            loss = loss_cls + reg_w + 1.0 * nn.functional.mse_loss(recon_pred, target_hbo)
-
+            loss = criterion(logits, tr_l[b])
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
             opt.step()
@@ -460,7 +449,7 @@ def train_single_loso_fold(
 
         if verbose:
             avg_tr_loss = epoch_loss / max(1, n_batches)
-            print(f"  Epoch {epoch:2d}/12: Train Loss = {avg_tr_loss:.4f} | Val Acc = {v_acc:5.1f}% (Best: {best_val_acc:5.1f}%)")
+            print(f"  Epoch {epoch:2d}/{epochs:2d}: Train Loss = {avg_tr_loss:.4f} | Val Acc = {v_acc:5.1f}% (Best: {best_val_acc:5.1f}%)")
 
     # 5. Evaluate on held-out test subject
     model.load_state_dict({k: v.to(device) for k, v in best_state.items()})
