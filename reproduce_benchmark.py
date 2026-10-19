@@ -330,7 +330,7 @@ def run_train_fold(sub_id: int):
     """
     Train a single held-out LOSO fold using the authentic, audited training protocol:
     seed=42+sub_id, cyclic 5-subject validation split, batch=256, warmup+cosine scheduler,
-    gradient clipping, and validation loss tie-breaker.
+    gradient clipping, auxiliary loss, and validation loss tie-breaker.
     """
     print("=" * 86)
     print(f"  AUTHENTIC 29-FOLD LOSO TRAINING: HELD-OUT SUBJECT {sub_id:02d}")
@@ -339,14 +339,82 @@ def run_train_fold(sub_id: int):
     from src.train import train_single_loso_fold
     res = train_single_loso_fold(test_sub=sub_id, seed_base=42, verbose=True)
 
+    # Load ground-truth benchmark metrics for reference
+    expected_s42 = "N/A"
+    expected_3seed = "N/A"
+    try:
+        with open("reports/real_29sub_benchmark_and_ablation_summary.json", "r") as f:
+            b_data = json.load(f)
+            fold_accs = b_data.get("models", {}).get("NVC-DelayFormer", {}).get("fold_accs", [])
+            if len(fold_accs) >= sub_id:
+                expected_s42 = f"{fold_accs[sub_id - 1]:.2f}%"
+        with open("reports/multiseed_grand_benchmark_summary.json", "r") as f:
+            m_data = json.load(f)
+            sub_means = m_data.get("NVC-DelayFormer", {}).get("sub_means", [])
+            if len(sub_means) >= sub_id:
+                expected_3seed = f"{sub_means[sub_id - 1]:.2f}%"
+    except Exception:
+        pass
+
     print("\n" + "=" * 86)
     print(f"  FOLD {sub_id:02d} REPRODUCTION COMPLETE:")
-    print(f"    Test Accuracy:     {res['test_acc']:.2f}%")
-    print(f"    Test Macro F1:     {res['macro_f1']:.2f}%")
-    print(f"    Best Val Accuracy: {res['best_val_acc']:.2f}%")
-    print(f"    Elapsed Time:      {res['elapsed_sec']:.1f}s")
+    print(f"    Test Accuracy (Retrained):   {res['test_acc']:.2f}%")
+    print(f"    Test Macro F1:              {res['macro_f1']:.2f}%")
+    print(f"    Best Val Accuracy:          {res['best_val_acc']:.2f}%")
+    print(f"    Table I Seed 42 Benchmark:  {expected_s42} (Single-seed, 60 test trials)")
+    print(f"    Table I 3-Seed Grand Mean:  {expected_3seed} (Grand mean over 180 trials, Seeds 42, 100, 2024)")
+    print(f"    Checkpoint Saved:           {res.get('checkpoint_path', 'N/A')}")
+    print(f"    Elapsed Time:               {res['elapsed_sec']:.1f}s")
     print("=" * 86)
     return res
+
+
+def run_eval_checkpoint(ckpt_path: str = "checkpoints/best_nvc_delayformer_sub05.pt", sub_id: int = 5):
+    """Directly evaluate a saved checkpoint on held-out subject data."""
+    print("=" * 86)
+    print(f"  EVALUATING SAVED CHECKPOINT ON HELD-OUT SUBJECT {sub_id:02d}")
+    print("=" * 86)
+    ckpt_file = Path(ckpt_path)
+    if not ckpt_file.exists():
+        print(f"  [ERROR] Checkpoint not found: {ckpt_path}")
+        return
+    data_file = Path(f"data/processed/sub-{sub_id:02d}/ma_epochs.pt")
+    if not data_file.exists():
+        print(f"  [ERROR] Data file not found: {data_file}")
+        return
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    ckpt = torch.load(ckpt_file, map_location=device, weights_only=False)
+    state = ckpt["model_state"] if isinstance(ckpt, dict) and "model_state" in ckpt else ckpt
+
+    e_ch = ckpt.get("eeg_channels", 30) if isinstance(ckpt, dict) else 30
+    f_ch = ckpt.get("fnirs_channels", 72) if isinstance(ckpt, dict) else 72
+    if "eeg_encoder.conv_spatial.weight" in state:
+        e_ch = state["eeg_encoder.conv_spatial.weight"].shape[2]
+    if "fnirs_encoder.conv_spatial.weight" in state:
+        f_ch = state["fnirs_encoder.conv_spatial.weight"].shape[1]
+
+    model = NVCDelayFormer(eeg_channels=e_ch, fnirs_channels=f_ch).to(device)
+    model.load_state_dict(state)
+    model.eval()
+
+    data = torch.load(data_file, map_location=device, weights_only=True)
+    eeg = data["eeg"].to(device)
+    fnirs = data["fnirs"].to(device)
+    labels = data["labels"].to(device)
+
+    with torch.no_grad():
+        logits, attn = model(eeg, fnirs, use_delay_prior=True, use_causal_mask=True)
+        preds = logits.argmax(dim=-1)
+        acc = (preds == labels).float().mean().item() * 100.0
+
+    print(f"  Checkpoint File:            {ckpt_path}")
+    print(f"  Model Architecture:         NVCDelayFormer(version='v2', eeg={e_ch}, fnirs={f_ch})")
+    print(f"  Trainable Parameters:       {sum(p.numel() for p in model.parameters() if p.requires_grad):,}")
+    print(f"  Direct Test Accuracy:       {acc:.2f}% ({int(round(acc*60/100))}/60 trials)")
+    print(f"  Table I Seed 42 Expected:   73.33% (44/60 trials)")
+    print(f"  Table I 3-Seed Grand Mean:  77.78% (140/180 trials across Seeds 42, 100, 2024)")
+    print("=" * 86)
 
 
 def run_train_all():
@@ -403,6 +471,8 @@ def main():
     parser.add_argument("--train-all", action="store_true", help="Train all 29 held-out LOSO subject folds sequentially")
     parser.add_argument("--test-suite", action="store_true", help="Run full automated unit test suite (pytest)")
     parser.add_argument("--audit", action="store_true", help="Run 48-assertion codebase soundness audit")
+    parser.add_argument("--eval-checkpoint", type=str, nargs="?", const="checkpoints/best_nvc_delayformer_sub05.pt", default=None, help="Directly evaluate saved checkpoint on held-out subject data")
+    parser.add_argument("--eval-sub", type=int, default=5, help="Subject ID for checkpoint evaluation (default: 5)")
 
     args = parser.parse_args()
 
@@ -412,6 +482,8 @@ def main():
         run_benchmark()
     elif args.demo:
         run_demo()
+    elif args.eval_checkpoint is not None:
+        run_eval_checkpoint(args.eval_checkpoint, args.eval_sub)
     elif args.train_fold is not None:
         run_train_fold(args.train_fold)
     elif args.train_all:

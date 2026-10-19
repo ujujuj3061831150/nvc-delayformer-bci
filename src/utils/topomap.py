@@ -174,23 +174,30 @@ def extract_model_attention_flow(
         
     try:
         ckpt = torch.load(checkpoint_path, map_location=device, weights_only=False)
+        state = ckpt["model_state"] if isinstance(ckpt, dict) and "model_state" in ckpt else ckpt
+        # Detect channels dynamically from weights or checkpoint metadata
+        spatial_w = state.get("eeg_encoder.conv_spatial.weight")
+        e_ch = spatial_w.shape[2] if spatial_w is not None else (eeg_tensor.shape[1] if eeg_tensor is not None else 30)
+        fnirs_w_val = state.get("fnirs_encoder.conv_spatial.weight")
+        f_ch = fnirs_w_val.shape[2] if fnirs_w_val is not None else (fnirs_tensor.shape[1] if fnirs_tensor is not None else 72)
+
         model = NVCDelayFormer(
             num_classes=2,
-            eeg_channels=28,
-            fnirs_channels=72,
+            eeg_channels=e_ch,
+            fnirs_channels=f_ch,
             feature_dim=64,
             num_heads=4
         ).to(device)
-        model.load_state_dict(ckpt["model_state"])
+        model.load_state_dict(state)
         model.eval()
         
         # 1. EEG channel spatial importance
-        eeg_w = model.eeg_encoder.conv_spatial.weight.detach().squeeze() # (32, 28)
-        eeg_imp = eeg_w.abs().mean(dim=0).cpu().numpy() # (28,)
+        eeg_w = model.eeg_encoder.conv_spatial.weight.detach().squeeze() # (32, e_ch)
+        eeg_imp = eeg_w.abs().mean(dim=0).cpu().numpy() # (e_ch,)
         
         # 2. fNIRS channel spatial importance (first 36 channels for HbO)
-        fnirs_w = model.fnirs_encoder.conv_spatial.weight.detach().squeeze() # (32, 72)
-        fnirs_imp = fnirs_w[:, :36].abs().mean(dim=0).cpu().numpy() # (36,)
+        fnirs_w = model.fnirs_encoder.conv_spatial.weight.detach().squeeze() # (32, f_ch)
+        fnirs_imp = fnirs_w[:, :min(36, f_ch//2)].abs().mean(dim=0).cpu().numpy()
         
         # 3. Cross-modal forward pass
         eeg_in = eeg_tensor.to(device)

@@ -391,9 +391,11 @@ def train_single_loso_fold(
     best_val_acc = -1.0
     best_val_loss = float("inf")
     best_state = None
+    best_epoch = 0
 
     # 4. 12 Epochs training loop with validation checkpointing
     t0 = time.time()
+    criterion = nn.CrossEntropyLoss()
     for epoch in range(1, 13):
         model.train()
         perm = torch.randperm(n_tr, device=device)
@@ -402,11 +404,16 @@ def train_single_loso_fold(
         for idx in range(0, n_tr, bs):
             b = perm[idx:idx+bs]
             opt.zero_grad()
-            logits, _, recon_pred = model(
+            logits, _, recon_pred, (deep_logits, shallow_logits) = model(
                 tr_e[b], tr_f[b],
                 use_delay_prior=use_delay_prior,
                 use_causal_mask=True,
                 return_recon=True,
+                return_branch_logits=True,
+            )
+
+            loss_cls, _, _, _ = NVCDelayFormer.compute_auxiliary_loss(
+                logits, deep_logits, shallow_logits, tr_l[b], aux_weight=0.2, criterion=criterion
             )
 
             if readout_mode != "latent_only":
@@ -415,10 +422,8 @@ def train_single_loso_fold(
             else:
                 reg_w = 0.0
 
-            loss = nn.functional.cross_entropy(logits, tr_l[b]) + reg_w
-            hbo_c = getattr(model, "hbo_channels", 36)
-            target_hbo = model.compute_buxton_hemodynamics(tr_f[b])[:, :hbo_c, :]
-            loss = loss + 1.0 * nn.functional.mse_loss(recon_pred, target_hbo)
+            target_hbo = model.compute_buxton_hemodynamics(tr_f[b])[:, :36, :]
+            loss = loss_cls + reg_w + 1.0 * nn.functional.mse_loss(recon_pred, target_hbo)
 
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
@@ -437,12 +442,13 @@ def train_single_loso_fold(
             )
             v_preds = torch.argmax(v_logits, dim=1)
             v_acc = (v_preds == val_l).float().mean().item() * 100.0
-            v_loss = nn.functional.cross_entropy(v_logits, val_l).item()
+            v_loss = criterion(v_logits, val_l).item()
 
-        if v_acc > best_val_acc or (v_acc == best_val_acc and v_loss < best_val_loss):
+        if v_acc > best_val_acc or (abs(v_acc - best_val_acc) < 1e-4 and v_loss < best_val_loss):
             best_val_acc = v_acc
             best_val_loss = v_loss
             best_state = {k: v.cpu().clone() for k, v in model.state_dict().items()}
+            best_epoch = epoch
 
         if verbose:
             avg_tr_loss = epoch_loss / max(1, n_batches)
@@ -477,6 +483,26 @@ def train_single_loso_fold(
     if verbose:
         print(f"\n[Result] Held-Out Subject {test_sub:02d}: Test Acc = {test_acc:.2f}%, Macro F1 = {macro_f1:.2f}% (Time: {elapsed:.1f}s)")
 
+    # 6. Save checkpoint if requested or for representative fold (e.g. sub-05)
+    ckpt_dir = Path("checkpoints")
+    ckpt_dir.mkdir(parents=True, exist_ok=True)
+    ckpt_path = ckpt_dir / f"best_nvc_delayformer_sub{test_sub:02d}.pt"
+    torch.save({
+        "epoch": best_epoch,
+        "model_state": best_state,
+        "val_acc": best_val_acc,
+        "val_loss": best_val_loss,
+        "test_acc": test_acc,
+        "macro_f1": macro_f1,
+        "metrics": {"accuracy": test_acc / 100.0, "macro_f1": macro_f1 / 100.0},
+        "version": "v2",
+        "eeg_channels": 30,
+        "fnirs_channels": 72,
+        "feature_dim": 64,
+        "num_heads": 4,
+        "params": 63940,
+    }, ckpt_path)
+
     return {
         "test_subject": test_sub,
         "test_acc": test_acc,
@@ -485,6 +511,7 @@ def train_single_loso_fold(
         "best_val_loss": best_val_loss,
         "confusion_matrix": {"tp": tp, "tn": tn, "fp": fp, "fn": fn},
         "elapsed_sec": elapsed,
+        "checkpoint_path": str(ckpt_path),
     }
 
 

@@ -76,9 +76,9 @@
 | 序号 | 审计细项 (Audit Item) | 判定结论 | 验证细节与证据 (Details & Evidences) |
 | :--- | :--- | :---: | :--- |
 | 1 | **8.1 TorchScript (JIT Trace) Graph Compilation & Bit-Exactness** | [PASS] | Traced model difference vs PyTorch eager = 5.96e-08 (< 1e-6, zero-warning portable edge deployment ready) |
-| 2 | **8.2 Latency Percentile Distribution Profile (P50, P90, P95, P99)** | [PASS] | Mean=2.74ms, P50=2.52ms, P90=3.13ms, P95=5.19ms, P99=5.65ms, Max=6.00ms |
-| 3 | **8.3 Clinical Closed-Loop Real-Time Gate (P99 < 10.0 ms)** | [PASS] | Measured P99 latency = 5.65 ms (< 10.0 ms, well below 50.0 ms human BCI closed-loop perception threshold) |
-| 4 | **8.4 Single-Stream Real-Time Inference Throughput Capacity** | [PASS] | Inference throughput = 1438.3 trials/second (> 250 trials/s, capable of concurrent multi-patient BCI decoding) |
+| 2 | **8.2 Latency Percentile Distribution Profile (P50, P90, P95, P99)** | [PASS] | Mean=3.24ms, P50=3.41ms, P90=3.92ms, P95=4.11ms, P99=5.59ms, Max=6.05ms |
+| 3 | **8.3 Clinical Closed-Loop Real-Time Gate (P99 < 10.0 ms)** | [PASS] | Measured P99 latency = 5.59 ms (< 10.0 ms, well below 50.0 ms human BCI closed-loop perception threshold) |
+| 4 | **8.4 Single-Stream Real-Time Inference Throughput Capacity** | [PASS] | Inference throughput = 1269.5 trials/second (> 250 trials/s, capable of concurrent multi-patient BCI decoding) |
 
 ## Dimension 9: Gradient Dynamics & Optimization Landscape
 
