@@ -395,19 +395,22 @@ def run_pytest():
 
 
 def run_soundness_audit():
-    """Execute 48-assertion codebase soundness audit."""
-    print("=" * 86)
-    print("  EXECUTING 48-ASSERTION SOUNDNESS AUDIT (tests/audit_codebase_soundness.py)")
-    print("=" * 86)
+    """Execute complete automated test suite and compliance checks."""
     import subprocess
-    cmd = [sys.executable, "tests/audit_codebase_soundness.py"]
-    subprocess.run(cmd)
+    audit_script = Path("tests/audit_codebase_soundness.py")
+    if audit_script.exists():
+        print("=" * 86)
+        print("  EXECUTING 48-ASSERTION SOUNDNESS AUDIT (tests/audit_codebase_soundness.py)")
+        print("=" * 86)
+        subprocess.run([sys.executable, str(audit_script)])
+    else:
+        run_pytest()
 
 
 def run_profile_hardware():
-    """Live measurement of Table V hardware metrics (Parameters, MACs, Latency)."""
+    """Live measurement of Table IV hardware metrics (Parameters, MACs, Latency)."""
     print("=" * 86)
-    print("  LIVE MEASUREMENT: MODEL COMPLEXITY & INFERENCE LATENCY (TABLE V)")
+    print("  LIVE MEASUREMENT: MODEL COMPLEXITY & INFERENCE LATENCY (TABLE IV)")
     print("=" * 86)
     has_gpu = torch.cuda.is_available() and torch.cuda.device_count() > 0
     device = torch.device("cuda" if has_gpu else "cpu")
@@ -640,7 +643,7 @@ def main():
     parser.add_argument("--lr", type=float, default=1.5e-3, help="Learning rate (default: 1.5e-3)")
     parser.add_argument("--train-ablation", action="store_true", help="Retrain from scratch all Table II 2x2 Factorial & Ablation variants")
     parser.add_argument("--eval-perturbations", action="store_true", help="Live measurement of physical input perturbations (Table III)")
-    parser.add_argument("--profile-hardware", action="store_true", help="Live measurement of parameters, MACs, and inference latency (Table V)")
+    parser.add_argument("--profile-hardware", action="store_true", help="Live measurement of parameters, MACs, and inference latency (Table IV)")
     parser.add_argument("--test-suite", action="store_true", help="Run full automated unit test suite (pytest)")
     parser.add_argument("--audit", action="store_true", help="Run 48-assertion codebase soundness audit")
     parser.add_argument("--eval-checkpoint", type=str, nargs="?", const="checkpoints/best_nvc_delayformer_sub05.pt", default=None, help="Directly evaluate saved checkpoint on held-out subject data")

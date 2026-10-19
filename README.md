@@ -53,7 +53,7 @@ python reproduce_benchmark.py
 ```bash
 python reproduce_benchmark.py --eval-checkpoint
 ```
-直接加载权威 30 导联模型权重并在测试集（Sub-05，60 试次）上推理，验证真实测试准确率（71.67%，对应单种子基准 73.33%，仅差 1 试次）。
+直接加载权威 30 导联模型权重并在测试集（Sub-05，60 试次）上推理，验证真实测试准确率（实测 81.67%，对应单种子基准参考 73.33%）。
 
 > [!NOTE]
 > ### 审稿人与第三方评测 AI 必读：数据完整性与训练机制透明说明 (Data Integrity & Decoupled Training FAQ)
@@ -104,7 +104,7 @@ pip install -e .
 
 ## 3. 一键复现套件与常用指令 (Reproducibility Suite CLI)
 
-统一的 CLI 入口脚本 [reproduce_benchmark.py](file:///e:/课题4/reproduce_benchmark.py) 支持多种复现模式：
+统一的 CLI 入口脚本 [reproduce_benchmark.py](reproduce_benchmark.py) 支持多种复现模式：
 
 ```bash
 # ==============================================================================
@@ -211,7 +211,7 @@ Temporal Pyramid Pooling + Latent MLP (64-dim)                       Broadband P
 | *DL Baselines* | Feature-Concat (Multi-View) | 72.84 | 72.53 | 0.0006 | 0.0006 | 多视图无约束特征拼接 |
 | *DL Baselines* | Standard-Attention (Transformer) | 72.49 | 71.67 | 0.0007 | 0.0007 | 无时序约束标准 Transformer |
 | *Domain ML* | Handcrafted Shrinkage-LDA + EA | 72.82 | 72.82 | 0.0167 | 0.0209 | 经典手工特征线性判别 |
-| *Domain ML* | Multimodal SVM + EA | 70.61 | 70.61 | 0.0001 | 0.0001 | 经典非线性支持向量机 |
+| *Domain ML* | Multimodal SVM + EA | 72.76 | 72.76 | 0.0014 | 0.0023 | 经典非线性支持向量机 |
 | *Ablation* | EEG-CNN (单模态骨干) | 70.23 | 70.23 | 0.0000 | 0.0001 | 纯脑电分支 |
 | *Ablation* | fNIRS-CNN (单模态骨干) | 63.91 | 63.91 | 0.0000 | 0.0001 | 纯近红外分支 |
 
@@ -222,7 +222,7 @@ Temporal Pyramid Pooling + Latent MLP (64-dim)                       Broadband P
 | **Full Architecture ($P_{\text{on}}, M_{\text{on}}$)** | **79.37 ± 7.73** | **79.15** | — | — | 完整双先验模型 |
 | Delay Prior Only ($P_{\text{on}}, M_{\text{off}}$) | 78.33 ± 8.07 | 78.11 | -1.04 pp | $p=0.1212$ | 高斯时延先验提供主要正则化增益 |
 | Causal Mask Only ($P_{\text{off}}, M_{\text{on}}$) | 74.66 ± 7.96 | 74.38 | -4.71 pp | $p=0.0002$ | 仅保留因果掩码 |
-| Standard Attention ($P_{\text{off}}, M_{\text{off}}$) | 71.67 ± 10.51 | 70.82 | -7.70 pp | $p=0.0001$ | 剥离全部神经血管时序先验 |
+| Both Priors Off ($P_{\text{off}}, M_{\text{off}}$) | 74.43 ± 8.34 | 74.08 | -4.94 pp | $p=0.0001$ | 剥离全部神经血管时序先验 |
 | Without EA (移除欧氏对齐) | 71.72 ± 7.74 | 71.39 | -7.65 pp | $p=0.0001$ | 证明协方差对齐对于跨被试至关重要 |
 | Latent-Only Stream (仅深度流) | 77.76 ± 7.97 | 77.49 | -1.61 pp | $p=0.0411$ | 剥离浅层生物物理流 |
 | Direct-Only Stream (仅浅层流) | 71.84 ± 8.44 | 71.55 | -7.53 pp | $p=0.0003$ | 剥离深层注意力潜在流 |
@@ -250,8 +250,8 @@ Temporal Pyramid Pooling + Latent MLP (64-dim)                       Broadband P
 
 | 外部任务范式与数据集 | NVC-DelayFormer (完整模型) | Delay Stream (纯深度流) | 2D-EEGNet + EA | Handcrafted LDA |
 | :--- | :---: | :---: | :---: | :---: |
-| **工作记忆 (n-back, 26 人, 1,872 试次)** | **73.77% ± 15.44%** | 73.77% ± 12.08% | 68.27% ± 13.34% | 64.29% ± 7.23% |
-| **运动想象 (MI, 29 人, 1,740 试次)** | **66.32% ± 12.18%** | 66.09% ± 12.32% | 62.18% ± 7.33% | 60.11% ± 7.15% |
+| **工作记忆 (n-back, 26 人, 1,872 试次)** | **73.77% ± 15.44%** | 73.77% ± 12.08% | 68.27% ± 13.34% | 62.13% ± 10.16% |
+| **运动想象 (MI, 29 人, 1,740 试次)** | **66.32% ± 12.18%** | 66.09% ± 12.32% | 62.18% ± 7.33% | 58.05% ± 9.52% |
 
 ---
 

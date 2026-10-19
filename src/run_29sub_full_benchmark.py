@@ -508,6 +508,7 @@ def run_full_29sub_suite():
     json_29_path = Path("reports/real_29sub_benchmark_and_ablation_summary.json")
     json_26_path = Path("reports/real_26sub_benchmark_and_ablation_summary.json")
     locked_pred_path = Path("reports/real_29sub_locked_predictions.json")
+    json_29_path.parent.mkdir(parents=True, exist_ok=True)
 
     with open(json_29_path, "w", encoding="utf-8") as f:
         json.dump(summary_data, f, indent=2)
