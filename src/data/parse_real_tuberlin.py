@@ -1,7 +1,7 @@
 """
 Standardized Real TU Berlin BBCI Dataset Parser & Preprocessor.
 Parses downloaded continuous raw MAT files into synchronized epochs:
-- EEG: 28 channels @ 100 Hz, 10s duration (1000 time steps), bandpass 0.5-45 Hz + CAR.
+- EEG: 30 scalp channels @ 100 Hz, 10s duration (1000 time steps), bandpass 0.5-45 Hz + CAR.
 - fNIRS: 72 channels (36 HbO + 36 HbR) @ 10.4 Hz, 12s duration (124 time steps), MBLL converted.
 - Labels: 0 (Rest), 1 (Mental Arithmetic / Subtraction).
 """

@@ -47,7 +47,7 @@ def preprocess_subject_mental_arithmetic(
     mat = sio.loadmat(raw_file_path)
     
     # 1. Unpack Raw Arrays
-    eeg_raw = mat["eeg_data"]         # (28, T_eeg)
+    eeg_raw = mat["eeg_data"]         # (30, T_eeg) scalp channels
     eeg_fs = float(mat["eeg_fs"][0, 0])
     
     fnirs_760 = mat["fnirs_760"]       # (36, T_fnirs)
