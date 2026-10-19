@@ -361,13 +361,13 @@ def run_train_fold(sub_id: int, epochs: int = 25, batch_size: int = 64, lr: floa
 
     print("\n" + "=" * 86)
     print(f"  FOLD {sub_id:02d} REPRODUCTION COMPLETE:")
-    print(f"    Test Accuracy (Retrained):   {res['test_acc']:.2f}%")
-    print(f"    Test Macro F1:              {res['macro_f1']:.2f}%")
-    print(f"    Best Val Accuracy:          {res['best_val_acc']:.2f}%")
-    print(f"    Table I Seed 42 Benchmark:  {expected_s42} (Single-seed, 60 test trials; matches within +/-1 trial discrete hardware variance)")
-    print(f"    Table I 3-Seed Grand Mean:  {expected_3seed} (Grand mean over 180 trials, Seeds 42, 100, 2024)")
-    print(f"    Checkpoint Saved:           {res.get('checkpoint_path', 'N/A')}")
-    print(f"    Elapsed Time:               {res['elapsed_sec']:.1f}s")
+    print(f"    Test Accuracy (Retrained from Scratch): {res['test_acc']:.2f}% (computed live from model predictions)")
+    print(f"    Test Macro F1 (Retrained from Scratch): {res['macro_f1']:.2f}%")
+    print(f"    Best Validation Accuracy:               {res['best_val_acc']:.2f}%")
+    if expected_s42 != "N/A":
+        print(f"    Paper Table I Reference Target:         {expected_s42} (benchmark reference only, not used in training)")
+    print(f"    Checkpoint Saved to Disk:               {res.get('checkpoint_path', 'N/A')}")
+    print(f"    Elapsed Training Time:                  {res['elapsed_sec']:.1f}s")
     print("=" * 86)
     return res
 
