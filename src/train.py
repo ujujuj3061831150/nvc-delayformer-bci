@@ -326,6 +326,7 @@ def train_single_loso_fold(
     use_ea: bool = True,
     readout_mode: str = "joint",
     direct_weight_mode: str = "kernel",
+    cut_gate_latent: bool = False,
     verbose: bool = True,
     save_checkpoint: bool = False,
     ckpt_output_path: Optional[str] = None,
