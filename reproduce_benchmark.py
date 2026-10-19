@@ -585,6 +585,9 @@ def run_eval_perturbations(sub_id: int = 5, ckpt_path: str = "checkpoints/best_n
         else:
             delta = acc - base_acc
             delta_str = f"{delta:+.2f} pp"
+        print(f"{name:<38} {acc:<18.2f} {delta_str:<18}")
+    print("=" * 86)
+
 
 def run_train_ablation(sub_id: int = 5):
     """From-scratch retraining of all Table II Factorial and Ablation variants on held-out subject fold."""
