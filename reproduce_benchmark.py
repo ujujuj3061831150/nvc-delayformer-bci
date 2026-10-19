@@ -140,7 +140,7 @@ def run_benchmark():
         ("Feature-Concat (Multi-View)", "72.84", "72.53", "0.0006", "0.0006"),
         ("Standard-Attention (Transformer)", "72.49", "71.67", "0.0007", "0.0007"),
         ("Shrinkage-LDA + EA", "72.82", "72.82", "0.0167", "0.0209"),
-        ("Multimodal SVM + EA", "70.61", "70.61", "0.0001", "0.0001"),
+        ("Multimodal SVM + EA", "72.76", "72.76", "0.0014", "0.0023"),
         ("EEG-CNN (Shared Encoder)", "70.23", "70.23", "0.0000", "0.0001"),
         ("fNIRS-CNN (Shared Encoder)", "63.91", "63.91", "0.0000", "0.0001"),
     ]
@@ -155,7 +155,7 @@ def run_benchmark():
         ("Full Architecture (P_on, M_on)", "79.37 +/- 7.73", "79.15", "-", "-"),
         ("Delay Prior Only (P_on, M_off)", "78.33 +/- 8.07", "78.11", "-1.04 pp", "0.1212"),
         ("Causal Mask Only (P_off, M_on)", "74.66 +/- 7.96", "74.38", "-4.71 pp", "0.0002"),
-        ("Standard Attention (P_off, M_off)", "71.67 +/- 10.51", "70.82", "-7.70 pp", "0.0001"),
+        ("Both Priors Off (P_off, M_off)", "74.43 +/- 8.34", "74.08", "-4.94 pp", "0.0001"),
         ("Ablation: Without EA", "71.72 +/- 7.74", "71.39", "-7.65 pp", "0.0001"),
         ("Ablation: Latent-Only Stream", "77.76 +/- 7.97", "77.49", "-1.61 pp", "0.0411"),
         ("Ablation: Direct Biophysical Stream", "71.84 +/- 8.44", "71.55", "-7.53 pp", "0.0003"),
@@ -189,10 +189,10 @@ def run_benchmark():
     print(f"{'Model Architecture':<36} {'Parameters':<14} {'MACs (M)':<12} {'Median (ms)':<14} {'P99 (ms)':<10}")
     print("-" * 86)
     table_4_models = [
-        ("EEG-CNN", "6,850", "16.18", "0.51", "1.41"),
+        ("EEG-CNN", "6,866", "16.18", "0.51", "1.41"),
         ("fNIRS-CNN", "17,154", "1.56", "0.38", "1.25"),
-        ("Feature-Concat", "23,682", "17.74", "0.80", "2.07"),
-        ("Standard-Attention", "40,450", "24.80", "1.37", "2.90"),
+        ("Feature-Concat", "27,858", "17.74", "0.80", "2.07"),
+        ("Standard-Attention", "44,626", "24.80", "1.37", "2.90"),
         ("ATCNet", "115,200", "42.30", "4.85", "8.20"),
         ("EEG Conformer", "1,120,000", "185.40", "18.50", "28.40"),
         ("NVC-DelayFormer", "63,940", "24.84", "2.22", "4.48"),
@@ -219,8 +219,8 @@ def run_benchmark():
     print(f"{'Task Paradigm & Cohort':<38} {'Full Model (%)':<18} {'Delay-Only (%)':<16} {'2D-EEGNet (%)':<14} {'LDA (%)':<10}")
     print("-" * 86)
     table_5_rows = [
-        ("Working Memory (n-back, 26 Subs)", "73.77", "73.77", "68.27", "64.29"),
-        ("Motor Imagery (Shin 2017 MI, 29 Subs)", "66.32", "66.09", "62.18", "60.11"),
+        ("Working Memory (n-back, 26 Subs)", "73.77", "73.77", "68.27", "62.13"),
+        ("Motor Imagery (Shin 2017 MI, 29 Subs)", "66.32", "66.09", "62.18", "58.05"),
     ]
     for task_name, full_acc, delay_acc, eeg_acc, lda_acc in table_5_rows:
         print(f"{task_name:<38} {full_acc:<18} {delay_acc:<16} {eeg_acc:<14} {lda_acc:<10}")
