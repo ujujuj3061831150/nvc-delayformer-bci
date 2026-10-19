@@ -38,17 +38,23 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-### 第二步：一键运行极速核验套件
+### 第二步：一键运行极速核验套件（约 10 秒）
 ```bash
 python reproduce_benchmark.py
 ```
 
 终端将全自动执行并输出：
-1. **环境与算力检测**：PyTorch 版本、CUDA GPU 设备检测。
+1. **环境与算力检测**：PyTorch 版本、CUDA GPU 设备检测（支持无 GPU 纯 CPU 自动回退）。
 2. **模型参数严格审计**：自动统计 `NVC-DelayFormer` 可训练参数量，确认精确为 **63,940**，单试次计算量为 **24.84 M MACs**。
 3. **因果与张量形状断言**：验证多窗口（10.0s, 7.5s, 5.0s, 3.0s）张量前向契约，断言因果掩码消除未来信息泄露（未来注意力权重严格 $< 10^{-4}$）。
 4. **论文全表数据对齐（Tables I – V）**：终端打印与手稿 `manuscript/main.tex` **100% 逐字吻合** 的完整实验表（含主基准 78.22% 均值 / 79.37% 单种子、SOTA 模型对比、2×2 析因消融、输入扰动测试、算力复杂度及外部工作记忆/运动想象泛化指标）。
 5. **即插即用 Demo 验证**：在终端实时执行 4 批次多模态数据的端到端前向推理并输出预测。
+
+### 第三步：直接验证预置模型（约 1 秒）
+```bash
+python reproduce_benchmark.py --eval-checkpoint
+```
+直接加载权威 30 导联模型权重并在测试集（Sub-05，60 试次）上推理，验证真实测试准确率（71.67%，对应单种子基准 73.33%，仅差 1 试次）。
 
 ---
 
@@ -62,7 +68,7 @@ python reproduce_benchmark.py
 ### 安装步骤
 ```bash
 # 1. 克隆代码仓库
-git clone https://github.com/your-username/nvc-delayformer-bci.git
+git clone https://github.com/ujujuj3061831150/nvc-delayformer-bci.git
 cd nvc-delayformer-bci
 
 # 2. 安装 Python 科学计算与脑机接口依赖
@@ -82,27 +88,30 @@ pip install -e .
 # 1. 默认模式：自动运行系统验证 + 输出 Tables I-V 全部表格 + 实时 Demo (~10秒)
 python reproduce_benchmark.py
 
-# 2. 纯基准表格输出：直接在终端格式化输出论文 Table I 至 Table V 的所有指标与 p/q 值
+# 2. 直接评测预置 Checkpoint：在真实 Sub-05 脑电-血氧测试集上推理验证 (~1秒)
+python reproduce_benchmark.py --eval-checkpoint
+
+# 3. 纯基准表格输出：直接在终端格式化输出论文 Table I 至 Table V 的所有指标与 p/q 值
 python reproduce_benchmark.py --benchmark
 
-# 3. 架构与因果契约核验：快速测试多窗口前向契约与因果掩码约束
+# 4. 架构与因果契约核验：快速测试多窗口前向契约与因果掩码约束
 python reproduce_benchmark.py --verify
 
-# 4. 最小即插即用示例：在合成双模态数据上演示 5 行代码调用模型
+# 5. 最小即插即用示例：在合成双模态数据上演示 5 行代码调用模型
 python reproduce_benchmark.py --demo
 
-# 5. 单被试真实重训（例如第 5 位被试）：严格留一法（LOSO）训练 12 epoch（GPU 上仅需约 9 秒）
+# 6. 单被试真实重训（例如第 5 位被试）：严格留一法（LOSO）训练 12 epoch（GPU 上仅需约 9 秒）
 python reproduce_benchmark.py --train-fold 5
 
-# 6. 全量 29 折留一法训练：自动依次重训全队列 29 位被试并输出汇总准确率与 F1
+# 7. 全量 29 折留一法训练：自动依次重训全队列 29 位被试并输出汇总准确率与 F1
 python reproduce_benchmark.py --train-all
 
-# 7. 执行全局单元测试（21 项完整测试全绿通过）
+# 8. 执行全局单元测试（21 项完整测试全绿通过）
 python reproduce_benchmark.py --test-suite
 # 或直接运行：
 pytest tests/ -v
 
-# 8. 执行 48 项全维度生物医学与代码合理性白盒断言审计
+# 9. 执行 48 项全维度生物医学与代码合理性白盒断言审计
 python reproduce_benchmark.py --audit
 # 或直接运行：
 python tests/audit_codebase_soundness.py
