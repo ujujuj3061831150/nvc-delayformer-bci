@@ -326,8 +326,9 @@ def train_single_loso_fold(
     use_ea: bool = True,
     readout_mode: str = "joint",
     direct_weight_mode: str = "kernel",
-    cut_gate_latent: bool = False,
     verbose: bool = True,
+    save_checkpoint: bool = False,
+    ckpt_output_path: Optional[str] = None,
 ) -> dict:
     """
     Standardized, authentic single-fold LOSO trainer adhering strictly to the
@@ -480,25 +481,27 @@ def train_single_loso_fold(
     if verbose:
         print(f"\n[Result] Held-Out Subject {test_sub:02d}: Test Acc = {test_acc:.2f}%, Macro F1 = {macro_f1:.2f}% (Time: {elapsed:.1f}s)")
 
-    # 6. Save checkpoint if requested or for representative fold (e.g. sub-05)
-    ckpt_dir = Path("checkpoints")
-    ckpt_dir.mkdir(parents=True, exist_ok=True)
-    ckpt_path = ckpt_dir / f"best_nvc_delayformer_sub{test_sub:02d}.pt"
-    torch.save({
-        "epoch": best_epoch,
-        "model_state": best_state,
-        "val_acc": best_val_acc,
-        "val_loss": best_val_loss,
-        "test_acc": test_acc,
-        "macro_f1": macro_f1,
-        "metrics": {"accuracy": test_acc / 100.0, "macro_f1": macro_f1 / 100.0},
-        "version": "v2",
-        "eeg_channels": 30,
-        "fnirs_channels": 72,
-        "feature_dim": 64,
-        "num_heads": 4,
-        "params": 63940,
-    }, ckpt_path)
+    # 6. Save checkpoint if explicitly requested
+    saved_ckpt_path = None
+    if save_checkpoint:
+        ckpt_path = Path(ckpt_output_path) if ckpt_output_path else Path("checkpoints") / f"best_nvc_delayformer_sub{test_sub:02d}.pt"
+        ckpt_path.parent.mkdir(parents=True, exist_ok=True)
+        torch.save({
+            "epoch": best_epoch,
+            "model_state": best_state,
+            "val_acc": best_val_acc,
+            "val_loss": best_val_loss,
+            "test_acc": test_acc,
+            "macro_f1": macro_f1,
+            "metrics": {"accuracy": test_acc / 100.0, "macro_f1": macro_f1 / 100.0},
+            "version": "v2",
+            "eeg_channels": 30,
+            "fnirs_channels": 72,
+            "feature_dim": 64,
+            "num_heads": 4,
+            "params": 63940,
+        }, ckpt_path)
+        saved_ckpt_path = str(ckpt_path)
 
     return {
         "test_subject": test_sub,
@@ -508,7 +511,7 @@ def train_single_loso_fold(
         "best_val_loss": best_val_loss,
         "confusion_matrix": {"tp": tp, "tn": tn, "fp": fp, "fn": fn},
         "elapsed_sec": elapsed,
-        "checkpoint_path": str(ckpt_path),
+        "checkpoint_path": saved_ckpt_path,
     }
 
 

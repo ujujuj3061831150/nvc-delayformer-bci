@@ -281,7 +281,10 @@ def run_train_fold(sub_id: int, epochs: int = 25, batch_size: int = 64, lr: floa
     print("=" * 86)
 
     from src.train import train_single_loso_fold
-    res = train_single_loso_fold(test_sub=sub_id, seed_base=42, epochs=epochs, batch_size=batch_size, lr=lr, verbose=True)
+    res = train_single_loso_fold(
+        test_sub=sub_id, seed_base=42, epochs=epochs, batch_size=batch_size, lr=lr, verbose=True,
+        save_checkpoint=True, ckpt_output_path=f"checkpoints/retrained_sub{sub_id:02d}.pt"
+    )
 
     # Benchmark reference values from Table I (Seed 42)
     paper_s42_benchmarks = {
@@ -301,7 +304,8 @@ def run_train_fold(sub_id: int, epochs: int = 25, batch_size: int = 64, lr: floa
     print(f"    Best Validation Accuracy:               {res['best_val_acc']:.2f}%")
     if expected_s42 != "N/A":
         print(f"    Paper Table I Reference Target:         {expected_s42} (benchmark reference only, not used in training)")
-    print(f"    Checkpoint Saved to Disk:               {res.get('checkpoint_path', 'N/A')}")
+    if res.get('checkpoint_path'):
+        print(f"    Retrained Checkpoint Saved to Disk:     {res['checkpoint_path']}")
     print(f"    Elapsed Training Time:                  {res['elapsed_sec']:.1f}s")
     print("=" * 86)
     return res
