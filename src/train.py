@@ -24,11 +24,6 @@ from src.utils.seed import set_seed
 from src.data.dataset import get_loso_dataloaders
 from src.models.nvc_net import NVCDelayFormer
 from src.utils.metrics import compute_bci_metrics, compute_confusion_matrix
-from src.utils.visualization import (
-    plot_training_curves,
-    plot_delay_attention_heatmap,
-    plot_confusion_matrix_figure,
-)
 
 
 def get_warmup_cosine_scheduler(
@@ -284,6 +279,11 @@ def run_training_experiment(
     # 6. Generate Academic Figures
     figures_dir = Path("reports/figures")
     figures_dir.mkdir(parents=True, exist_ok=True)
+    from src.utils.visualization import (
+        plot_training_curves,
+        plot_delay_attention_heatmap,
+        plot_confusion_matrix_figure,
+    )
     
     # Plot 1: Convergence
     plot_training_curves(history, figures_dir / f"training_curves_sub{test_subject_id:02d}.png")
@@ -389,7 +389,7 @@ def train_single_loso_fold(
         feature_dim=64,
         num_heads=4,
         nvc_delay_mean_sec=5.0,
-        learnable_delay=False,
+        learnable_delay=True,
         readout_mode=readout_mode,
         direct_weight_mode=direct_weight_mode,
         cut_gate_latent=cut_gate_latent,

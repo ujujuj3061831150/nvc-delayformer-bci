@@ -114,7 +114,15 @@ def run_verify():
 def run_benchmark():
     """Display locked empirical benchmark tables corresponding to Tables I-V in manuscript."""
     print("=" * 86)
-    print("  EMPIRICAL BENCHMARK SUMMARY (AUDITED MANUSCRIPT TABLES I - V)")
+    print("  MANUSCRIPT REFERENCE BENCHMARK SUMMARY (TABLES I - V)")
+    print("  Notice: These tables present the locked reference targets published in the manuscript")
+    print("  for direct side-by-side comparison against live from-scratch retraining.")
+    print("  To run live retraining or live evaluations, use:")
+    print("    --train-fold 5        (live retrain single fold from scratch)")
+    print("    --train-ablation      (live retrain all 7 Table II ablation variants)")
+    print("    --eval-perturbations  (live evaluate physical input perturbations)")
+    print("    --profile-hardware    (live measure parameters, MACs, and GPU/CPU latency)")
+    print("    --train-all           (live retrain all 29 LOSO folds across cohort)")
     print("=" * 86)
 
     # 1. Main Benchmark Table (Table I)
@@ -181,10 +189,10 @@ def run_benchmark():
     print(f"{'Model Architecture':<36} {'Parameters':<14} {'MACs (M)':<12} {'Median (ms)':<14} {'P99 (ms)':<10}")
     print("-" * 86)
     table_4_models = [
-        ("EEG-CNN", "6,866", "16.18", "0.51", "1.41"),
+        ("EEG-CNN", "6,850", "16.18", "0.51", "1.41"),
         ("fNIRS-CNN", "17,154", "1.56", "0.38", "1.25"),
-        ("Feature-Concat", "27,858", "17.74", "0.80", "2.07"),
-        ("Standard-Attention", "44,626", "24.80", "1.37", "2.90"),
+        ("Feature-Concat", "23,682", "17.74", "0.80", "2.07"),
+        ("Standard-Attention", "40,450", "24.80", "1.37", "2.90"),
         ("ATCNet", "115,200", "42.30", "4.85", "8.20"),
         ("EEG Conformer", "1,120,000", "185.40", "18.50", "28.40"),
         ("NVC-DelayFormer", "63,940", "24.84", "2.22", "4.48"),
@@ -329,9 +337,10 @@ def run_eval_checkpoint(ckpt_path: str = "checkpoints/best_nvc_delayformer_sub05
     model.load_state_dict(state)
     model.eval()
 
+    from src.data.preprocessing import offline_euclidean_alignment
     data = torch.load(data_file, map_location=device, weights_only=True)
-    eeg = data["eeg"].to(device)
-    fnirs = data["fnirs"].to(device)
+    eeg = torch.from_numpy(offline_euclidean_alignment(data["eeg"].cpu().numpy())).float().to(device)
+    fnirs = (data["fnirs"] * 1e4).to(device)
     labels = data["labels"].to(device)
 
     with torch.no_grad():
@@ -539,11 +548,11 @@ def run_eval_perturbations(sub_id: int = 5, ckpt_path: str = "checkpoints/best_n
             torch.manual_seed(42)
             fnirs = fnirs[torch.randperm(N)]
         elif p_type == "low_pass":
-            kernel = torch.ones(1, 1, 5) / 5.0
-            B, C, T = eeg.shape
-            eeg_flat = eeg.view(B * C, 1, T)
-            eeg_smooth = torch.nn.functional.conv1d(eeg_flat, kernel, padding=2)
-            eeg = eeg_smooth.view(B, C, T)
+            # Causal 1st-order IIR low-pass filter: x_tilde_t = 0.85 * x_tilde_{t-1} + 0.15 * x_t (-3dB cutoff ~2.8 Hz)
+            eeg_smooth = eeg.clone()
+            for t in range(1, eeg.size(-1)):
+                eeg_smooth[..., t] = 0.85 * eeg_smooth[..., t - 1] + 0.15 * eeg[..., t]
+            eeg = eeg_smooth
 
         with torch.no_grad():
             preds = model(eeg, fnirs)[0].argmax(dim=-1)
