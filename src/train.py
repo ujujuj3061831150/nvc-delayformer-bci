@@ -318,6 +318,7 @@ def train_single_loso_fold(
     proc_dir: Path = Path("data/processed"),
     cache: dict = None,
     use_delay_prior: bool = True,
+    use_causal_mask: bool = True,
     use_ea: bool = True,
     readout_mode: str = "joint",
     direct_weight_mode: str = "kernel",
@@ -414,7 +415,7 @@ def train_single_loso_fold(
             logits, _, recon_pred, (deep_logits, shallow_logits) = model(
                 tr_e[b], tr_f[b],
                 use_delay_prior=use_delay_prior,
-                use_causal_mask=True,
+                use_causal_mask=use_causal_mask,
                 return_recon=True,
                 return_branch_logits=True,
             )
@@ -445,7 +446,7 @@ def train_single_loso_fold(
             v_logits, _ = model(
                 val_e, val_f,
                 use_delay_prior=use_delay_prior,
-                use_causal_mask=True,
+                use_causal_mask=use_causal_mask,
             )
             v_preds = torch.argmax(v_logits, dim=1)
             v_acc = (v_preds == val_l).float().mean().item() * 100.0
@@ -468,7 +469,7 @@ def train_single_loso_fold(
         te_logits, _ = model(
             te_e, te_f,
             use_delay_prior=use_delay_prior,
-            use_causal_mask=True,
+            use_causal_mask=use_causal_mask,
         )
         preds = torch.argmax(te_logits, dim=1).cpu().numpy()
         targets = te_l.cpu().numpy()
