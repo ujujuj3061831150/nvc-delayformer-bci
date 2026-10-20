@@ -83,7 +83,11 @@ tmp/
 scratch/
 latex_cbm/
 .codex-remote-attachments/
-reports/
+reports/*.pdf
+reports/*.md
+reports/*.txt
+reports/archive/
+reports/figures/
 scripts/
 manuscript/
 config/
