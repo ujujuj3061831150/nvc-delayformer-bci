@@ -144,7 +144,7 @@ def preprocess_subject_mental_arithmetic(
             valid_labels.append(lbl)
             
     # Convert to Tensors
-    eeg_tensor = torch.from_numpy(np.stack(eeg_epochs, axis=0)).float()       # (N, 28, 1000)
+    eeg_tensor = torch.from_numpy(np.stack(eeg_epochs, axis=0)).float()       # (N, 30, 1000)
     fnirs_tensor = torch.from_numpy(np.stack(fnirs_epochs, axis=0)).float()   # (N, 72, 125)
     labels_tensor = torch.from_numpy(np.array(valid_labels)).long()           # (N,)
     
@@ -158,7 +158,7 @@ def preprocess_subject_mental_arithmetic(
         "eeg_fs": actual_eeg_fs,
         "fnirs_fs": fnirs_fs,
         "metadata": {
-            "eeg_channels": 28,
+            "eeg_channels": 30,
             "fnirs_channels": 72,
             "num_trials": len(valid_labels),
             "classes": ["Mental_Arithmetic", "Rest"]

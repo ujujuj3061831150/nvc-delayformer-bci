@@ -485,7 +485,7 @@ def train_single_loso_fold(
     # 6. Save checkpoint if explicitly requested
     saved_ckpt_path = None
     if save_checkpoint:
-        ckpt_path = Path(ckpt_output_path) if ckpt_output_path else Path("checkpoints") / f"best_nvc_delayformer_sub{test_sub:02d}.pt"
+        ckpt_path = Path(ckpt_output_path) if ckpt_output_path else Path("checkpoints/runs") / f"retrained_nvc_delayformer_sub{test_sub:02d}.pt"
         ckpt_path.parent.mkdir(parents=True, exist_ok=True)
         torch.save({
             "epoch": best_epoch,
