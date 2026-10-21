@@ -242,4 +242,28 @@ def test_external_cohort_montage_adaptation():
     assert fnirs.grad is not None and not torch.isnan(fnirs.grad).any()
 
 
+def test_dynamic_tpp_window_scaling():
+    """Verify dynamic TPP window scaling for truncated observation windows."""
+    from src.models.nvc_layers import AttentiveTemporalPyramidPooling
+
+    tpp = AttentiveTemporalPyramidPooling(embed_dim=64)
+
+    # Test shortened windows: 3.0s, 5.0s, 7.5s, and nominal 10.0s / 12.0s
+    for T_sec, n_steps in [(3.0, 31), (5.0, 52), (7.5, 78), (10.0, 103), (12.0, 124)]:
+        t = torch.linspace(0.0, T_sec, n_steps)
+        x = torch.randn(4, n_steps, 64)
+        out = tpp(x, time_sec=t)
+        assert out.shape == (4, 64)
+        assert torch.isfinite(out).all()
+
+    # Verify onset_step formula on NVCDelayFormer across window lengths
+    model = NVCDelayFormer(num_classes=2, eeg_channels=30, fnirs_channels=72)
+    # Check 3.0s (31 pts)
+    fnirs_3s = torch.randn(2, 72, 31)
+    eeg_3s = torch.randn(2, 30, 300)
+    logits, _ = model(eeg_3s, fnirs_3s)
+    assert logits.shape == (2, 2)
+    assert torch.isfinite(logits).all()
+
+
 

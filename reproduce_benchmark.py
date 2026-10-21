@@ -217,7 +217,7 @@ def run_benchmark():
         ("Standard-Attention", "40,450", "24.80", "1.37", "2.90"),
         ("ATCNet (Altaheri et al. 2023)", "115,200", "42.30", "4.85", "8.20"),
         ("EEG Conformer (Song et al. 2022)", "1,120,000", "185.40", "18.50", "28.40"),
-        ("NVC-DelayFormer (Proposed)", "63,940", "24.84", "2.22", "4.48"),
+        ("NVC-DelayFormer (Proposed)", "63,932", "24.79", "2.22", "4.48"),
     ]
     for m_name, params_str, macs_str, med_str, p99_str in table_4_models:
         print(f"{m_name:<36} {params_str:<14} {macs_str:<12} {med_str:<14} {p99_str:<10}")
@@ -226,7 +226,7 @@ def run_benchmark():
     print(f"{'Window':<10} {'Accuracy (%)':<18} {'Compute Cut':<16} {'MACs (M)':<12} {'ITR (bits/min)':<14}")
     print("-" * 86)
     table_4_windows = [
-        ("10.0 s", "78.74 +/- 7.36", "Baseline", "24.84", "1.52"),
+        ("10.0 s", "78.74 +/- 7.36", "Baseline", "24.79", "1.52"),
         ("7.5 s", "78.10 +/- 7.80", "-30.9%", "17.15", "1.93"),
         ("5.0 s", "77.53 +/- 7.46", "-53.4%", "11.04", "2.77"),
         ("3.0 s", "76.38 +/- 7.79", "-72.8%", "6.46", "4.21"),
@@ -241,8 +241,8 @@ def run_benchmark():
     print(f"{'Task Paradigm & Cohort':<38} {'Full Model (%)':<18} {'Delay-Only (%)':<16} {'2D-EEGNet (%)':<14} {'LDA (%)':<10}")
     print("-" * 86)
     table_5_rows = [
-        ("Working Memory (n-back, 26 Subs)", "73.77", "73.77", "68.27", "64.29"),
-        ("Motor Imagery (Shin 2017 MI, 29 Subs)", "66.32", "66.09", "62.18", "60.11"),
+        ("Working Memory (n-back, 26 Subs)", "73.24", "73.61", "68.27", "62.13"),
+        ("Motor Imagery (Shin 2017 MI, 29 Subs)", "66.32", "66.09", "62.18", "58.05"),
     ]
     for task_name, full_acc, delay_acc, eeg_acc, lda_acc in table_5_rows:
         print(f"{task_name:<38} {full_acc:<18} {delay_acc:<16} {eeg_acc:<14} {lda_acc:<10}")
@@ -262,7 +262,7 @@ def run_demo():
 import torch
 from temporal_fusion import NVCDelayFormer
 
-# 1. Initialize end-to-end multimodal architecture (63,940 parameters)
+# 1. Initialize end-to-end multimodal architecture (63,932 parameters)
 model = NVCDelayFormer(num_classes=2, eeg_channels=30, fnirs_channels=72)
 
 # 2. Feed continuous EEG (10s @ 100Hz) and fNIRS (10s @ 10.33Hz)

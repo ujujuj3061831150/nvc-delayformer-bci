@@ -253,9 +253,9 @@ class MultiHeadPhysiologyCrossAttention(PhysiologyDelayCrossAttention):
 class AttentiveTemporalPyramidPooling(nn.Module):
     """
     Attentive Temporal Pyramid Pooling (TPP) for 3 physiological phases:
-    1. Early transient response: [0.0, 3.0] s
-    2. Sustained hemodynamic response: (3.0, 7.0] s
-    3. Late platform / recovery: (7.0, 10.0] s
+    1. Early transient response: [0.0, 3.0] s (or [0, 0.3*T_win] for shortened windows)
+    2. Sustained hemodynamic response: (3.0, 7.0] s (or (0.3*T_win, 0.7*T_win])
+    3. Late platform / recovery: (7.0, 10.0] s (or (0.7*T_win, T_win])
     Prevents circular shift invariance and captures temporal phase coupling.
     """
     def __init__(self, embed_dim: int = 64):
@@ -267,11 +267,23 @@ class AttentiveTemporalPyramidPooling(nn.Module):
         B, T, D = x.shape
         if time_sec is None:
             t = torch.linspace(0.0, 10.0, T, device=x.device)
+            t_max = 10.0
         else:
             t = time_sec
-        m_early = (t <= 3.0)
-        m_sust = (t > 3.0) & (t <= 7.0)
-        m_late = (t > 7.0)
+            t_max = float(t[-1].item()) if t.numel() > 0 else 10.0
+
+        if t_max < 9.5:
+            # Scaled dynamically for shortened windows T_win < 10.0 s
+            b1 = 0.3 * t_max
+            b2 = 0.7 * t_max
+        else:
+            # Standard physiological phases for nominal 10.0s / 12.0s observation
+            b1 = 3.0
+            b2 = 7.0
+
+        m_early = (t <= b1)
+        m_sust = (t > b1) & (t <= b2)
+        m_late = (t > b2)
 
         z1 = x[:, m_early].mean(dim=1) if m_early.any() else x.mean(dim=1)
         z2 = x[:, m_sust].mean(dim=1) if m_sust.any() else x.mean(dim=1)

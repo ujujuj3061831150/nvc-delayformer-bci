@@ -255,11 +255,23 @@ class AttentiveTemporalPyramidPooling(nn.Module):
         B, T, D = x.shape
         if time_sec is None:
             t = torch.linspace(0.0, 10.0, T, device=x.device)
+            t_max = 10.0
         else:
             t = time_sec
-        m_early = (t <= 3.0)
-        m_sust = (t > 3.0) & (t <= 7.0)
-        m_late = (t > 7.0)
+            t_max = float(t[-1].item()) if t.numel() > 0 else 10.0
+
+        if t_max < 9.5:
+            # Scaled dynamically for shortened windows T_win < 10.0 s
+            b1 = 0.3 * t_max
+            b2 = 0.7 * t_max
+        else:
+            # Standard physiological phases for nominal 10.0s / 12.0s observation
+            b1 = 3.0
+            b2 = 7.0
+
+        m_early = (t <= b1)
+        m_sust = (t > b1) & (t <= b2)
+        m_late = (t > b2)
 
         z1 = x[:, m_early].mean(dim=1) if m_early.any() else x.mean(dim=1)
         z2 = x[:, m_sust].mean(dim=1) if m_sust.any() else x.mean(dim=1)
@@ -490,6 +502,7 @@ class NVCDelayFormer(nn.Module):
         direct_weight_mode: Optional[str] = None,
         cut_gate_latent: Optional[bool] = None,
         return_branch_logits: bool = False,
+        return_gate: bool = False,
         **kwargs: Any
     ) -> Any:
         eff_mode = self.readout_mode if readout_mode is None else readout_mode
@@ -527,7 +540,10 @@ class NVCDelayFormer(nn.Module):
 
             t_idx = torch.linspace(-1.0, 1.0, fnirs.shape[-1], device=fnirs.device)
             fnirs_slope = (fnirs * t_idx).mean(dim=-1) / (t_idx.pow(2).mean() + 1e-6)
-            onset_step = max(1, int(3.5 * (fnirs.shape[-1] / (10.0 if fnirs.shape[-1] <= 104 else 12.0))))
+            t_win = fnirs.shape[-1] / self.fnirs_fs
+            onset_sec = min(3.5, 0.5 * t_win)
+            onset_step = min(int(round(onset_sec * self.fnirs_fs)), fnirs.shape[-1] - 1)
+            onset_step = max(1, onset_step)
             fnirs_delayed_mean = fnirs[..., onset_step:].mean(dim=-1)
             shallow_fnirs = torch.cat([fnirs_delayed_mean, fnirs_slope], dim=-1)
 
@@ -555,7 +571,10 @@ class NVCDelayFormer(nn.Module):
 
             t_idx = torch.linspace(-1.0, 1.0, fnirs.shape[-1], device=fnirs.device)
             fnirs_slope = (fnirs * t_idx).mean(dim=-1) / (t_idx.pow(2).mean() + 1e-6)
-            onset_step = max(1, int(3.5 * (fnirs.shape[-1] / (10.0 if fnirs.shape[-1] <= 104 else 12.0))))
+            t_win = fnirs.shape[-1] / self.fnirs_fs
+            onset_sec = min(3.5, 0.5 * t_win)
+            onset_step = min(int(round(onset_sec * self.fnirs_fs)), fnirs.shape[-1] - 1)
+            onset_step = max(1, onset_step)
             fnirs_delayed_mean = fnirs[..., onset_step:].mean(dim=-1)
             shallow_fnirs = fnirs_delayed_mean + 0.5 * fnirs_slope
 
@@ -589,6 +608,8 @@ class NVCDelayFormer(nn.Module):
             return final_logits, attn_weights, recon_pred
         if return_branch_logits:
             return final_logits, attn_weights, (deep_logits, shallow_logits)
+        if return_gate:
+            return final_logits, attn_weights, gate
 
         return final_logits, attn_weights
 
