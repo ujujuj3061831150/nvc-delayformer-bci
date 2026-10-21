@@ -1,7 +1,7 @@
 {
   "archive_date": "2026-10-21",
   "software_version": "1.0.0",
-  "base_git_commit": "59dddb36f1f3b42cf5a34d31ed333787be11fe36",
+  "base_git_commit": "81f3cf6d5c3378b1aec3b7a89c732557b34d099b",
   "working_tree_has_changes": true,
   "source": "Current working-tree bytes; not only committed files",
   "doi": null,
@@ -13,9 +13,6 @@
     "manuscript/figures/attention_and_delay_diagnostics.pdf",
     "manuscript/figures/attention_and_delay_diagnostics.png",
     "manuscript/figures/attention_and_delay_diagnostics.svg",
-    "manuscript/figures/nvc_delayformer_computation.pdf",
-    "manuscript/figures/nvc_delayformer_computation.png",
-    "manuscript/figures/nvc_delayformer_computation.svg",
     "manuscript/main.bbl",
     "manuscript/main.pdf",
     "manuscript/main.tex",
