@@ -1,0 +1,20 @@
+{
+  "python": "3.11.9",
+  "packages": {
+    "torch": "2.11.0+cu128",
+    "numpy": "2.2.6",
+    "scipy": "1.14.1",
+    "scikit-learn": "1.9.1",
+    "matplotlib": "3.11.0",
+    "pytest": "9.1.1",
+    "PyYAML": "6.0.3"
+  },
+  "pytest_returncode": 0,
+  "pytest_summary": "21 passed, 1 deselected in 3.72s",
+  "demo_returncode": 0,
+  "source_workspace_full_suite": "22 passed in 4.47s",
+  "archive_excluded_test": "test_loso_three_split_isolation requires separately acquired data",
+  "python_sources_parsed": true,
+  "credential_pattern_scan": "passed",
+  "all_loso_experiments_retrained": false
+}

@@ -1,0 +1,44 @@
+{
+  "EEG-CNN": {
+    "params": 6850,
+    "macs": 16.18,
+    "median_ms": 0.51,
+    "p99_ms": 1.41
+  },
+  "fNIRS-CNN": {
+    "params": 17154,
+    "macs": 1.56,
+    "median_ms": 0.38,
+    "p99_ms": 1.25
+  },
+  "Feature-Concat": {
+    "params": 23682,
+    "macs": 17.74,
+    "median_ms": 0.8,
+    "p99_ms": 2.07
+  },
+  "Standard-Attention": {
+    "params": 40450,
+    "macs": 24.8,
+    "median_ms": 1.37,
+    "p99_ms": 2.9
+  },
+  "ATCNet": {
+    "params": 115200,
+    "macs": 42.3,
+    "median_ms": 4.85,
+    "p99_ms": 8.2
+  },
+  "EEG Conformer": {
+    "params": 1120000,
+    "macs": 185.4,
+    "median_ms": 18.5,
+    "p99_ms": 28.4
+  },
+  "NVC-DelayFormer": {
+    "params": 63932,
+    "macs": 24.79,
+    "median_ms": 2.22,
+    "p99_ms": 4.48
+  }
+}

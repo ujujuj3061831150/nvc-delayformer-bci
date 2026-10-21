@@ -285,16 +285,16 @@ def audit_dimension_4_manuscript() -> Dict:
 
     # Authoritative models in Table I: (Grand Mean, Primary Seed 42, Params)
     # Checks consistency with authoritative locked benchmark in main.tex / README.md
-    nvc_matched = ("78.22" in doc_text) and ("79.37" in doc_text) and ("63,940" in doc_text)
+    nvc_matched = ("78.22" in doc_text) and ("79.37" in doc_text) and ("63,932" in doc_text) and ("63,940" not in doc_text)
     eegnet_matched = ("72.89" in doc_text)
     concat_matched = ("72.84" in doc_text)
     attn_matched = ("72.49" in doc_text)
     table1_all_matched = nvc_matched and eegnet_matched and concat_matched and attn_matched
 
     checks.append({
-        "item": "4.1 Table I Benchmark Consistency (Authoritative 63,940 params & 78.22% vs Manuscript/README)",
+        "item": "4.1 Table I Benchmark Consistency (Authoritative 63,932 params & 78.22% vs Manuscript/README)",
         "passed": table1_all_matched,
-        "detail": "NVC-DelayFormer (63,940 params, 78.22% grand mean, 79.37% seed 42) and all multimodal controls match Table I"
+        "detail": "NVC-DelayFormer (63,932 params, 78.22% grand mean, 79.37% seed 42) and all multimodal controls match Table I"
     })
     print(f"[{'PASS' if table1_all_matched else 'FAIL'}] {checks[-1]['item']}: {checks[-1]['detail']}")
 
@@ -313,11 +313,11 @@ def audit_dimension_4_manuscript() -> Dict:
     })
     print(f"[{'PASS' if table2_all_matched else 'FAIL'}] {checks[-1]['item']}: {checks[-1]['detail']}")
 
-    latency_matched = ("2.22" in doc_text) and ("24.84" in doc_text)
+    latency_matched = ("2.22" in doc_text) and ("24.79" in doc_text) and ("24.84" not in doc_text)
     checks.append({
         "item": "4.3 GPU Inference Latency & MACs Self-Consistency Across Sections",
         "passed": latency_matched,
-        "detail": "Median inference latency 2.22 ms and 24.84 M MACs cited consistently across Abstract, Table IV, and Section V"
+        "detail": "Median inference latency 2.22 ms and 24.79 M MACs cited consistently across Abstract, Table IV, and Section V"
     })
     print(f"[{'PASS' if latency_matched else 'FAIL'}] {checks[-1]['item']}: {checks[-1]['detail']}")
 

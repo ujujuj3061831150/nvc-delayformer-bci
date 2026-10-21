@@ -1,0 +1,172 @@
+{
+  "hardware_info": {
+    "os": "Windows-10-10.0.26100-SP0",
+    "processor": "Intel64 Family 6 Model 191 Stepping 2, GenuineIntel",
+    "python_version": "3.11.9",
+    "torch_version": "2.11.0+cu128",
+    "gpu_name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "cpu_count": "LAPTOP-J8AT0ILK"
+  },
+  "protocol": {
+    "batch_size": 1,
+    "eeg_shape": [
+      1,
+      30,
+      1000
+    ],
+    "fnirs_shape": [
+      1,
+      72,
+      124
+    ],
+    "warmup_runs": 1000,
+    "timed_runs": 5000
+  },
+  "models": {
+    "EEGNet": {
+      "num_params": 6850,
+      "macs": 16176064,
+      "m_macs": 16.18,
+      "flops": 32352128,
+      "m_flops": 32.35,
+      "cpu_latency": {
+        "mean_ms": 1.909,
+        "std_ms": 4.311,
+        "median_ms": 1.717,
+        "p95_ms": 2.58,
+        "p99_ms": 4.293,
+        "min_ms": 1.064,
+        "max_ms": 176.956,
+        "warmup_runs": 1000,
+        "timed_runs": 5000
+      },
+      "gpu_latency": {
+        "mean_ms": 0.815,
+        "std_ms": 0.575,
+        "median_ms": 0.729,
+        "p95_ms": 1.501,
+        "p99_ms": 2.004,
+        "min_ms": 0.426,
+        "max_ms": 20.199,
+        "warmup_runs": 1000,
+        "timed_runs": 5000
+      }
+    },
+    "fNIRS-CNN": {
+      "num_params": 17154,
+      "macs": 1559680,
+      "m_macs": 1.56,
+      "flops": 3119360,
+      "m_flops": 3.12,
+      "cpu_latency": {
+        "mean_ms": 0.476,
+        "std_ms": 2.214,
+        "median_ms": 0.362,
+        "p95_ms": 0.765,
+        "p99_ms": 1.09,
+        "min_ms": 0.2,
+        "max_ms": 147.588,
+        "warmup_runs": 1000,
+        "timed_runs": 5000
+      },
+      "gpu_latency": {
+        "mean_ms": 0.658,
+        "std_ms": 0.359,
+        "median_ms": 0.589,
+        "p95_ms": 1.234,
+        "p99_ms": 1.684,
+        "min_ms": 0.323,
+        "max_ms": 7.344,
+        "warmup_runs": 1000,
+        "timed_runs": 5000
+      }
+    },
+    "Feature-Concat": {
+      "num_params": 23682,
+      "macs": 17735616,
+      "m_macs": 17.74,
+      "flops": 35471232,
+      "m_flops": 35.47,
+      "cpu_latency": {
+        "mean_ms": 2.072,
+        "std_ms": 3.61,
+        "median_ms": 1.877,
+        "p95_ms": 2.761,
+        "p99_ms": 3.897,
+        "min_ms": 1.239,
+        "max_ms": 166.002,
+        "warmup_runs": 1000,
+        "timed_runs": 5000
+      },
+      "gpu_latency": {
+        "mean_ms": 0.938,
+        "std_ms": 0.617,
+        "median_ms": 0.785,
+        "p95_ms": 1.481,
+        "p99_ms": 2.575,
+        "min_ms": 0.624,
+        "max_ms": 24.058,
+        "warmup_runs": 1000,
+        "timed_runs": 5000
+      }
+    },
+    "Standard-Attention": {
+      "num_params": 40450,
+      "macs": 24767424,
+      "m_macs": 24.77,
+      "flops": 49534848,
+      "m_flops": 49.53,
+      "cpu_latency": {
+        "mean_ms": 2.579,
+        "std_ms": 4.268,
+        "median_ms": 2.384,
+        "p95_ms": 3.455,
+        "p99_ms": 4.677,
+        "min_ms": 1.508,
+        "max_ms": 189.791,
+        "warmup_runs": 1000,
+        "timed_runs": 5000
+      },
+      "gpu_latency": {
+        "mean_ms": 1.197,
+        "std_ms": 0.753,
+        "median_ms": 1.07,
+        "p95_ms": 1.797,
+        "p99_ms": 2.476,
+        "min_ms": 0.965,
+        "max_ms": 24.908,
+        "warmup_runs": 1000,
+        "timed_runs": 5000
+      }
+    },
+    "NVC-DelayFormer": {
+      "num_params": 63932,
+      "macs": 24787904,
+      "m_macs": 24.79,
+      "flops": 49575808,
+      "m_flops": 49.58,
+      "cpu_latency": {
+        "mean_ms": 4.438,
+        "std_ms": 6.26,
+        "median_ms": 3.73,
+        "p95_ms": 5.952,
+        "p99_ms": 7.071,
+        "min_ms": 2.824,
+        "max_ms": 201.2,
+        "warmup_runs": 1000,
+        "timed_runs": 5000
+      },
+      "gpu_latency": {
+        "mean_ms": 5.699,
+        "std_ms": 3.318,
+        "median_ms": 4.935,
+        "p95_ms": 8.838,
+        "p99_ms": 13.413,
+        "min_ms": 3.853,
+        "max_ms": 92.635,
+        "warmup_runs": 1000,
+        "timed_runs": 5000
+      }
+    }
+  }
+}

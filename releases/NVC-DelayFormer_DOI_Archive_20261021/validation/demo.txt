@@ -1,0 +1,24 @@
+======================================================================================
+  PLUG-AND-PLAY DEMO: TEMPORAL FUSION ON MULTIMODAL EEG-fNIRS DATA
+======================================================================================
+
+# Minimal Usage Code Snippet:
+import torch
+from temporal_fusion import NVCDelayFormer
+
+# 1. Initialize end-to-end multimodal architecture (63,932 parameters)
+model = NVCDelayFormer(num_classes=2, eeg_channels=30, fnirs_channels=72)
+
+# 2. Feed continuous EEG (10s @ 100Hz) and fNIRS (10s @ 10.33Hz)
+eeg = torch.randn(4, 30, 1000)
+fnirs = torch.randn(4, 72, 103)
+
+# 3. Forward classification decision
+logits, attn_weights = model(eeg, fnirs)
+predictions = torch.argmax(logits, dim=-1)
+
+Executing demo forward pass on compute device...
+Execution Successful! Output Logits Shape: [4, 2]
+Decoded Class Predictions: [1 0 1 1]
+Total Instantiation + Forward Latency: 492.26 ms
+======================================================================================

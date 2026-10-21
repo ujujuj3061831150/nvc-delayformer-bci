@@ -268,7 +268,7 @@ class NVCDelayFormer(nn.Module):
         nvc_delay_std_sec: float = 1.5,
         eeg_sample_rate_effective: float = 25.0,
         fnirs_sample_rate: float = 124.0 / 12.0,
-        learnable_delay: bool = True,
+        learnable_delay: bool = False,
         dropout: float = 0.25,
         readout_mode: str = "joint",
         direct_weight_mode: str = "kernel",

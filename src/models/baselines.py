@@ -270,7 +270,7 @@ class FGANetClassifier(nn.Module):
 class EFMLNetClassifier(nn.Module):
     """
     EFMLNet: End-to-End Mutual Information Learning-Based Fusion Network for Hybrid EEG-fNIRS.
-    Reference: Sun et al. (IEEE Trans. Neural Syst. Rehabil. Eng., 2023).
+    Reference: Qiu et al. (IEEE Trans. Instrum. Meas., 2025).
     Core Mechanism:
     - Multi-branch convolutional feature extractors for EEG and fNIRS.
     - Parallel cross-modal mutual representation learning module maximizing shared correlation.

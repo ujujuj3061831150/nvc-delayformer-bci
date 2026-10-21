@@ -1,0 +1,20 @@
+{
+  "title": "NVC-DelayFormer: companion software for cross-subject EEG-fNIRS brain-computer interfaces",
+  "upload_type": "software",
+  "version": "1.0.0",
+  "publication_date": "2026-10-21",
+  "description": "Working-tree software snapshot with model code, tests, saved JSON records, an example checkpoint, and manuscript materials. Third-party participant recordings are not included. Prepared for repository deposit; this archive does not assign a DOI.",
+  "creators": [
+    {
+      "name": "Antigravity BCI Research Collaborative"
+    }
+  ],
+  "license": "MIT",
+  "keywords": [
+    "EEG",
+    "fNIRS",
+    "BCI",
+    "cross-subject",
+    "temporal fusion"
+  ]
+}

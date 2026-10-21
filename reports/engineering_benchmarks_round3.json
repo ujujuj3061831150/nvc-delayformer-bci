@@ -36,8 +36,8 @@
     "p99_ms": 28.4
   },
   "NVC-DelayFormer": {
-    "params": 63940,
-    "macs": 24.84,
+    "params": 63932,
+    "macs": 24.79,
     "median_ms": 2.22,
     "p99_ms": 4.48
   }
