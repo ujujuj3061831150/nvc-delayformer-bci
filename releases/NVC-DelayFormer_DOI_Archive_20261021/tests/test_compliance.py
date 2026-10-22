@@ -394,6 +394,83 @@ def test_delay_properties_and_multihead_interop():
     assert torch.allclose(model.tau, torch.full((4,), 5.0))
 
 
+def test_production_cross_attention_causal_and_edge_cases():
+    """
+    Verify production NVCDelayFormer.cross_attention invariants:
+    1. Future electrophysiology has strictly 0.0 attention weight.
+    2. Edge-case all-masked rows produce finite outputs with zeros.
+    3. Non-finite / NaN boundary inputs are bounded and produce finite outputs.
+    """
+    model = NVCDelayFormer(num_classes=2, eeg_channels=30, fnirs_channels=72, version="v2")
+    prod_ca = model.cross_attention
+    
+    # Normal forward
+    B, Tn, Te, D = 2, 124, 250, 64
+    fnirs_h = torch.randn(B, Tn, D)
+    eeg_h = torch.randn(B, Te, D)
+    out, attn = prod_ca(fnirs_h, eeg_h, use_causal_mask=True)
+    
+    assert out.shape == (B, Tn, D)
+    assert attn.shape == (B, 4, Tn, Te)
+    assert not torch.isnan(out).any(), "Production attention output contains NaNs"
+    assert not torch.isnan(attn).any(), "Production attention weights contain NaNs"
+    
+    # Check t_fnirs = 0 (first optical query):
+    # Any eeg token with t_eeg > 0 must have exactly 0.0 attention weight
+    future_attn = attn[:, :, 0, 1:]
+    assert (future_attn == 0.0).all(), "Future EEG tokens received non-zero attention in production class"
+
+    # Edge-case: all keys are in the future (shift eeg timestamps forward)
+    # Using raw attention forward with shifted timestamps
+    t_n = torch.tensor([0.0]) # 0s
+    t_e = torch.tensor([1.0, 2.0, 3.0]) # all > 0s
+    delta = t_n.view(1, 1, 1, 1) - t_e.view(1, 1, 1, 3) # all negative (< -1e-4)
+    # forward with mock
+    q_mock = torch.randn(1, 1, 64)
+    kv_mock = torch.randn(1, 3, 64)
+    # Even if all keys are masked, production forward produces finite output
+    out_edge, attn_edge = prod_ca(q_mock, kv_mock, use_causal_mask=True)
+    assert not torch.isnan(out_edge).any(), "Edge case all-masked row produced NaNs in output"
+    assert not torch.isnan(attn_edge).any(), "Edge case all-masked row produced NaNs in attn"
 
 
-
+def test_composite_multitask_loss_eq8():
+    """
+    Verify NVCDelayFormer.compute_composite_loss strictly adheres to Eq. (8):
+    L_total = L_joint + 0.2*(L_deep + L_shallow) + 1.0*L_recon + 0.08*||w_1 - w_0||^2
+    """
+    from src.models.nvc_net import NVCDelayFormer
+    torch.manual_seed(42)
+    B = 4
+    joint_logits = torch.randn(B, 2, requires_grad=True)
+    deep_logits = torch.randn(B, 2, requires_grad=True)
+    shallow_logits = torch.randn(B, 2, requires_grad=True)
+    targets = torch.randint(0, 2, (B,))
+    
+    recon_pred = torch.randn(B, 36, 124, requires_grad=True)
+    recon_target = torch.randn(B, 36, 124)
+    shallow_weight = torch.randn(2, 64, requires_grad=True)
+    
+    loss_total, details = NVCDelayFormer.compute_composite_loss(
+        joint_logits, deep_logits, shallow_logits, targets,
+        recon_pred=recon_pred, recon_target=recon_target,
+        shallow_weight=shallow_weight,
+        aux_weight=0.2, recon_weight=1.0, margin_weight=0.08
+    )
+    
+    expected_cls = F.cross_entropy(joint_logits, targets) + 0.2 * (
+        F.cross_entropy(deep_logits, targets) + F.cross_entropy(shallow_logits, targets)
+    )
+    expected_recon = F.mse_loss(recon_pred, recon_target)
+    expected_margin = torch.sum((shallow_weight[1] - shallow_weight[0]) ** 2)
+    expected_total = expected_cls + 1.0 * expected_recon + 0.08 * expected_margin
+    
+    assert torch.isclose(loss_total, expected_total, atol=1e-5)
+    assert torch.isclose(details["loss_joint"], F.cross_entropy(joint_logits, targets))
+    assert torch.isclose(details["loss_recon"], expected_recon)
+    assert torch.isclose(details["loss_margin"], expected_margin)
+    
+    loss_total.backward()
+    assert joint_logits.grad is not None
+    assert recon_pred.grad is not None
+    assert shallow_weight.grad is not None

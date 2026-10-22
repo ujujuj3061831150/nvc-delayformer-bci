@@ -292,7 +292,7 @@ predictions = torch.argmax(logits, dim=-1)
     print("=" * 86)
 
 
-def run_train_fold(sub_id: int, epochs: int = 25, batch_size: int = 64, lr: float = 1.5e-3):
+def run_train_fold(sub_id: int, epochs: int = 12, batch_size: int = 256, lr: float = 3e-3, weight_decay: float = 0.05):
     """
     Train a single held-out LOSO fold using the authentic, audited training protocol:
     seed=42+sub_id, cyclic 5-subject validation split, warmup+cosine scheduler,
@@ -383,7 +383,7 @@ def run_eval_checkpoint(ckpt_path: str = "checkpoints/best_nvc_delayformer_sub05
     print("=" * 86)
 
 
-def run_train_all(epochs: int = 25, batch_size: int = 64, lr: float = 1.5e-3):
+def run_train_all(epochs: int = 12, batch_size: int = 256, lr: float = 3e-3, weight_decay: float = 0.05):
     """Run full 29-fold LOSO training across the entire TU Berlin cohort."""
     print("=" * 86)
     print("  LAUNCHING FULL 29-FOLD LEAVE-ONE-SUBJECT-OUT (LOSO) TRAINING")
@@ -672,9 +672,10 @@ def main():
     parser.add_argument("--demo", action="store_true", help="Run standalone plug-and-play demo on synthetic data")
     parser.add_argument("--train-fold", type=int, default=None, help="Train a specific held-out LOSO fold from scratch (pure PyTorch tensor training, no metrics read from json)")
     parser.add_argument("--train-all", action="store_true", help="Train all 29 held-out LOSO folds sequentially from scratch (pure PyTorch tensor training, no metrics read from json)")
-    parser.add_argument("--epochs", type=int, default=25, help="Number of training epochs per fold (default: 25)")
-    parser.add_argument("--batch-size", type=int, default=64, help="Batch size for training (default: 64)")
-    parser.add_argument("--lr", type=float, default=1.5e-3, help="Learning rate (default: 1.5e-3)")
+    parser.add_argument("--epochs", type=int, default=12, help="Number of training epochs per fold (default: 12, matching Section IV-B)")
+    parser.add_argument("--batch-size", type=int, default=256, help="Batch size for training (default: 256, matching Section IV-B)")
+    parser.add_argument("--lr", type=float, default=3e-3, help="Learning rate (default: 3e-3, matching Section IV-B)")
+    parser.add_argument("--weight-decay", type=float, default=0.05, help="Weight decay for AdamW (default: 0.05, matching Section IV-B)")
     parser.add_argument("--train-ablation", action="store_true", help="Retrain from scratch all Table II 2x2 Factorial & Ablation variants")
     parser.add_argument("--eval-perturbations", action="store_true", help="Live measurement of physical input perturbations (Table III)")
     parser.add_argument("--profile-hardware", action="store_true", help="Live measurement of parameters, MACs, and inference latency (Table IV)")

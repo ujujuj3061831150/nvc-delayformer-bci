@@ -226,10 +226,13 @@ class PhysiologyDelayCrossAttention(nn.Module):
 
         if use_causal_mask:
             causal_mask = (delta_ij < -1e-4)
-            scores = scores.masked_fill(causal_mask, -1e9)
+            scores = scores.masked_fill(causal_mask, float("-inf"))
 
+        scores = torch.nan_to_num(scores, nan=-1e4)
         attn_weights = F.softmax(scores, dim=-1)
         attn_weights = torch.nan_to_num(attn_weights, nan=0.0)
+        if use_causal_mask:
+            attn_weights = attn_weights.masked_fill(causal_mask, 0.0)
         attn_weights_drop = self.dropout(attn_weights)
 
         out = torch.matmul(attn_weights_drop, v)
@@ -544,5 +547,47 @@ class NVCDelayFormer(nn.Module):
         loss_shallow = loss_fn(shallow_logits, targets)
         loss_total = loss_joint + aux_weight * (loss_deep + loss_shallow)
         return loss_total, loss_joint, loss_deep, loss_shallow
+
+    @staticmethod
+    def compute_composite_loss(
+        joint_logits: torch.Tensor,
+        deep_logits: torch.Tensor,
+        shallow_logits: torch.Tensor,
+        targets: torch.Tensor,
+        recon_pred: Optional[torch.Tensor] = None,
+        recon_target: Optional[torch.Tensor] = None,
+        shallow_weight: Optional[torch.Tensor] = None,
+        aux_weight: float = 0.2,
+        recon_weight: float = 1.0,
+        margin_weight: float = 0.08,
+        criterion: Optional[nn.Module] = None
+    ) -> Tuple[torch.Tensor, dict]:
+        """
+        Computes composite multi-task loss conforming strictly to Eq. (8):
+        L_total = L_joint + 0.2 * (L_deep + L_shallow) + 1.0 * L_recon + 0.08 * ||w_shallow,1 - w_shallow,0||_2^2
+        """
+        loss_fn = criterion if criterion is not None else F.cross_entropy
+        loss_joint = loss_fn(joint_logits, targets)
+        loss_deep = loss_fn(deep_logits, targets)
+        loss_shallow = loss_fn(shallow_logits, targets)
+        loss_cls = loss_joint + aux_weight * (loss_deep + loss_shallow)
+
+        loss_recon = torch.tensor(0.0, device=joint_logits.device)
+        if recon_pred is not None and recon_target is not None:
+            loss_recon = F.mse_loss(recon_pred, recon_target)
+
+        loss_margin = torch.tensor(0.0, device=joint_logits.device)
+        if shallow_weight is not None and shallow_weight.shape[0] >= 2:
+            loss_margin = torch.sum((shallow_weight[1] - shallow_weight[0]) ** 2)
+
+        loss_total = loss_cls + recon_weight * loss_recon + margin_weight * loss_margin
+        return loss_total, {
+            "loss_joint": loss_joint,
+            "loss_deep": loss_deep,
+            "loss_shallow": loss_shallow,
+            "loss_recon": loss_recon,
+            "loss_margin": loss_margin
+        }
+
 
 

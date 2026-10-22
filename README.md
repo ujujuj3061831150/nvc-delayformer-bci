@@ -3,9 +3,9 @@
 [![Python 3.11](https://img.shields.io/badge/Python-3.9%2B%20%7C%203.11.9-blue.svg)](https://www.python.org/)
 [![PyTorch 2.0+](https://img.shields.io/badge/PyTorch-2.0%2B-EE4C2C.svg)](https://pytorch.org/)
 [![Target Journal](https://img.shields.io/badge/Target%20Journal-IEEE%20TBME-00629B.svg)](https://tbme.embs.org/)
-[![Unit Tests](https://img.shields.io/badge/pytest-21%2F21%20PASSED-brightgreen.svg)](tests/)
+[![Unit Tests](https://img.shields.io/badge/pytest-24%2F24%20PASSED-brightgreen.svg)](tests/)
 [![Primary Dataset](https://img.shields.io/badge/Dataset-TU%20Berlin%20(29%20Subjects)-purple.svg)](https://doi.org/10.1109/TNSRE.2016.2628057)
-[![Parameters](https://img.shields.io/badge/Parameters-63%2C940-orange.svg)](reproduce_benchmark.py)
+[![Parameters](https://img.shields.io/badge/Parameters-63%2C932-orange.svg)](reproduce_benchmark.py)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 An open-source, mathematically grounded, and hardware-efficient PyTorch implementation of **NVC-DelayFormer**, an end-to-end multimodal deep learning architecture designed for cross-subject brain-computer interfaces (BCIs) combining electroencephalography (EEG) and functional near-infrared spectroscopy (fNIRS).
@@ -184,14 +184,25 @@ Temporal Pyramid Pooling + Latent MLP (64-dim)                       Broadband P
 1. **生理时延跨模态多头注意力 (Physiology-Guided Cross-Attention)**：
    - 注入非对称高斯时延先验偏置 $P_{ij}^{(h)} = -\frac{(\delta_{ij} - \tau_h)^2}{2\sigma_h^2}$，先验覆盖典型神经血管响应潜伏期 $\tau_h \in [3.5, 6.5]\text{ s}$。
    - 施加严格物理因果掩码 $M_{ij} = -\infty$（当 $\delta_{ij} = t_i^{\text{fNIRS}} - t_j^{\text{EEG}} < 0$），在数学上彻底切断未来电生理信息逆流。
-2. **双流解耦读出与辅助分类监督 (Dual-Stream Decoupling & Auxiliary Loss)**：
+2. **双流解耦读出与复合多任务监督 (Dual-Stream Decoupling & Multi-Task Loss)**：
    - 深层潜在流（跨模态注意力）与浅层生物物理流（EEG 全频段对数功率 + fNIRS 全窗光学均值）解耦并行。
-   - 训练阶段引入辅助监督损失 $\mathcal{L}_{\text{total}} = \mathcal{L}_{\text{joint}} + 0.2(\mathcal{L}_{\text{deep}} + \mathcal{L}_{\text{shallow}})$，解决跨任务迁移中的门控失调与负迁移。
+   - 训练阶段引入复合多任务损失（论文公式 Eq. 8）：
+     $$\mathcal{L}_{\text{total}} = \mathcal{L}_{\text{joint}} + 0.2(\mathcal{L}_{\text{deep}} + \mathcal{L}_{\text{shallow}}) + 1.0 \cdot \mathcal{L}_{\text{recon}} + 0.08\|\mathbf{w}_{\text{shallow},1} - \mathbf{w}_{\text{shallow},0}\|_2^2$$
+     其中损失函数权重精确配置为：主分类 $\lambda_{\text{joint}}=1.0$，深浅分支辅助 $\lambda_{\text{aux}}=0.2$，HbO 波形重建 $\lambda_{\text{recon}}=1.0$，浅层读出权重边界收缩惩罚 $\lambda_{\text{margin}}=0.08$。训练期辅助重构头（$1\times 1$ 卷积，2,340 参数）在推理时直接剥离，不占用部署参数；边界正则化有效压制浅层快捷方式，保障双流门控动态平衡。
 3. **因果递归欧氏对齐 (Causal Recursive Euclidean Alignment, CrEA)**：
    - 针对目标被试在线数据流，通过 $R_k = \frac{k-1}{k} R_{k-1} + \frac{1}{k} C_k$ 递归自适应估计协方差，实现**零未来数据泄漏、无需离线校准**的即时在线跨被试解码。
 4. **极致轻量化与边缘部署属性**：
    - 仅 **63,932 参数**（仅为 EEG Conformer 的 $1/17.5$，仅为 ATCNet 的 $1/1.8$）。
    - 单试次推理 MACs 为 **24.79 M**，NVIDIA RTX 4060 GPU 单批次中位数推理耗时仅 **2.22 ms**（P99 耗时 **4.48 ms**），满足毫秒级闭环人机交互门限。
+
+### 统一训练超参数与优化器设置 (Training Hyperparameters & Configuration)
+论文第 3–4 页（Section III-F 与 IV-B）汇报的主基准训练配置完全对齐：
+- **优化器 (Optimizer)**: `AdamW`
+- **批大小 (Batch Size)**: `256`
+- **训练轮数 (Epochs)**: `12`（含 2 轮线性热身 Linear Warmup + 余弦退火 Cosine Annealing 至最小学习率 $1\times 10^{-5}$）
+- **初始学习率 (Learning Rate)**: `3e-3` ($3\times 10^{-3}$)
+- **权重衰减 (Weight Decay)**: `0.05`
+- **损失函数权重 (Loss Weights)**: `0.2` (分支分类辅助 $\mathcal{L}_{\text{deep}}+\mathcal{L}_{\text{shallow}}$), `1.0` (波形重建 $\mathcal{L}_{\text{recon}}$), `0.08` (浅层读出差分正则化 $\|\mathbf{w}_1-\mathbf{w}_0\|_2^2$)
 
 ---
 
@@ -260,7 +271,7 @@ Temporal Pyramid Pooling + Latent MLP (64-dim)                       Broadband P
 为保证研究成果的最高可复现性与代码稳健性，本项目维护了覆盖核心算法与协议的自动化测试套件：
 
 ### 自动化功能与合规性单元测试 (`pytest tests/`)
-包含 **21 个全自动单元测试**，覆盖：
+包含 **24 个全自动单元测试**，覆盖：
 - 随机种子与多平台确定性复现测试（`test_seed_determinism`）
 - MBLL 比尔-朗伯定律消光系数与光密度数值稳定性（`test_mbll_numerical_integrity`）
 - 因果时延注意力掩码防泄露数学断言（`test_causal_delay_attention_invariants`）
