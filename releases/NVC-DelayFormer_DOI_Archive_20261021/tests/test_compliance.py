@@ -429,9 +429,10 @@ def test_production_cross_attention_causal_and_edge_cases():
     q_mock = torch.randn(1, 1, 64)
     kv_mock = torch.randn(1, 3, 64)
     # Even if all keys are masked, production forward produces finite output
-    out_edge, attn_edge = prod_ca(q_mock, kv_mock, use_causal_mask=True)
+    out_edge, attn_edge = prod_ca(q_mock, kv_mock, use_causal_mask=True, t_fnirs=t_n, t_eeg=t_e)
     assert not torch.isnan(out_edge).any(), "Edge case all-masked row produced NaNs in output"
     assert not torch.isnan(attn_edge).any(), "Edge case all-masked row produced NaNs in attn"
+    assert (attn_edge == 0.0).all(), "Edge case all-masked row should have all zero attention weights"
 
 
 def test_composite_multitask_loss_eq8():

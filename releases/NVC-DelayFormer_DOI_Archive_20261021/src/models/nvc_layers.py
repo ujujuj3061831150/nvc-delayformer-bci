@@ -223,6 +223,9 @@ class PhysiologyDelayCrossAttention(nn.Module):
         scores = torch.nan_to_num(scores, nan=-1e4)
         attn_weights = F.softmax(scores, dim=-1)
         attn_weights = torch.nan_to_num(attn_weights, nan=0.0)
+        if use_causal_mask:
+            mask_4d = causal_mask if self.multi_head_delays else causal_mask.unsqueeze(0).unsqueeze(0)
+            attn_weights = attn_weights.masked_fill(mask_4d, 0.0)
         
         context = torch.matmul(attn_weights, V)
         context = context.transpose(1, 2).contiguous().view(batch_size, t_nirs, self.embed_dim)
