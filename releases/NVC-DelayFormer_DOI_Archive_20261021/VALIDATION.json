@@ -10,9 +10,9 @@
     "PyYAML": "6.0.3"
   },
   "pytest_returncode": 0,
-  "pytest_summary": "24 passed, 1 deselected in 4.22s",
+  "pytest_summary": "24 passed, 1 deselected in 4.09s",
   "demo_returncode": 0,
-  "source_workspace_full_suite": "25 passed in 4.54s",
+  "source_workspace_full_suite": "25 passed in 3.76s",
   "archive_excluded_test": "test_loso_three_split_isolation requires separately acquired data",
   "python_sources_parsed": true,
   "credential_pattern_scan": "passed",

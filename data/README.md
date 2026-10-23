@@ -9,11 +9,11 @@ This directory contains preprocessed multimodal EEG–fNIRS benchmark datasets a
 
 The primary benchmark evaluated across all 29 subjects in this repository is derived from the open-access simultaneous EEG–fNIRS dataset collected by Technische Universität Berlin:
 
-- **Original Authors**: Jaeyoung Shin, Arne von Lührmann, Benjamin Blankertz, Klaus-Robert Müller, and Sven Hwang.
+- **Original Authors**: Jaeyoung Shin, Alexander von Lühmann, Benjamin Blankertz, Do-Won Kim, Jichai Jeong, Han-Jeong Hwang, and Klaus-Robert Müller.
 - **Reference**:  
-  J. Shin, A. von Lührmann, B. Blankertz, K.-R. Müller, and S. Hwang,  
-  *"Open Access Dataset for Simultaneous EEG and NIRS during Muscle Contraction and Mental Arithmetic,"*  
-  **IEEE Transactions on Neural Systems and Rehabilitation Engineering**, vol. 25, no. 5, pp. 610–620, May 2017.  
+  J. Shin, A. von Lühmann, B. Blankertz, D.-W. Kim, J. Jeong, H.-J. Hwang, and K.-R. Müller,  
+  *"Open Access Dataset for EEG+NIRS Single-Trial Classification,"*  
+  **IEEE Transactions on Neural Systems and Rehabilitation Engineering**, vol. 25, no. 10, pp. 1735–1745, Oct. 2017.  
   DOI: [10.1109/TNSRE.2016.2628057](https://doi.org/10.1109/TNSRE.2016.2628057)
 - **Official Data Portal**: [https://doc.ml.tu-berlin.de/hBCI/](https://doc.ml.tu-berlin.de/hBCI/)
 - **Ethical Approval**: Approved by the Ethics Committee of the Institute of Psychology and Ergonomics, Technische Universität Berlin (Protocol SH_01_20150330).
@@ -27,7 +27,7 @@ The repository includes preprocessed epochs for all 29 participants (`sub-01` th
 | Key | Tensor Shape | Sampling Rate | Description |
 | :--- | :--- | :--- | :--- |
 | `eeg` | `[60, 30, 1000]` (Float32) | 100 Hz | 30 scalp electrodes (10–5 montage), 10.0 s epochs ($t \in [0, 10]\,\text{s}$). Bandpass filtered at 0.5–40 Hz (zero-phase 4th-order Butterworth) and re-referenced via Common Average Reference (CAR). |
-| `fnirs` | `[60, 72, 124]` (Float32) | 10.33 Hz | 36 optical channels $\times$ 2 chromophores (36 $\Delta[\text{HbO}]$ + 36 $\Delta[\text{HbR}]$), 12.0 s epochs ($t \in [0, 12]\,\text{s}$). Converted from raw optical density via Modified Beer-Lambert Law (MBLL, differential pathlength factor $\text{DPF} = 6.0$), bandpass filtered at 0.01–0.2 Hz. |
+| `fnirs` | `[60, 72, 124]` (Float32) | 10.33 Hz | 36 optical channels $\times$ 2 chromophores (36 $\Delta[\text{HbO}]$ + 36 $\Delta[\text{HbR}]$), 12.0 s epochs ($t \in [0, 12]\,\text{s}$). Converted from raw optical density via Modified Beer-Lambert Law (MBLL, differential pathlength factor $\text{DPF} = 6.51\,(760\,\text{nm})\,/\,5.86\,(850\,\text{nm})$), bandpass filtered at 0.01–0.10 Hz. |
 | `labels` | `[60]` (Long) | — | Binary ground-truth labels: `0` = Baseline / Rest, `1` = Mental Arithmetic. |
 
 ### Note on File Size Uniformity
@@ -39,11 +39,11 @@ Because all 29 files contain identical uncompressed 32-bit floating-point tensor
 
 To evaluate cross-paradigm generalizability (reported in Table V of the manuscript), two additional cohorts are analyzed:
 1. **Motor Imagery (Shin 2017 MI)**: Same 29 participants, 60 trials/participant (left-hand vs. right-hand motor imagery), collected under identical hardware settings (DOI: [10.1109/TNSRE.2016.2628057](https://doi.org/10.1109/TNSRE.2016.2628057)).
-2. **Working Memory / $n$-back (Shin et al. 2018)**: 26 participants, 72 block-derived 10.0 s epochs per participant (0-back vs. 2-back / 3-back working memory load), DOI: [10.1038/sdata.2018.3](https://doi.org/10.1038/sdata.2018.3).
+2. **Working Memory / $n$-back (Shin et al. 2018)**: 26 participants, 72 block-derived 10.0 s epochs per participant (0-back vs. 2-back working memory load), DOI: [10.1038/sdata.2018.3](https://doi.org/10.1038/sdata.2018.3).
 
 ---
 
 ## 4. Licensing and Distribution Terms
 
 - **Source Code, Architecture, and Reproduction Scripts**: Licensed under the **MIT License** (see [LICENSE](../LICENSE)).
-- **Preprocessed Benchmark Datasets**: Provided for non-commercial academic research and verification of the published findings in accordance with the open-access terms of the original TU Berlin benchmark release ([https://doc.ml.tu-berlin.de/hBCI/](https://doc.ml.tu-berlin.de/hBCI/)). Users must cite Shin et al. (2017) in any derivative scientific work utilizing these data.
+- **Preprocessed Benchmark Datasets**: Provided strictly for academic verification and computational reproducibility. The underlying raw and processed benchmark data are governed by the **GNU General Public License (GNU GPL)** as published by the Free Software Foundation and stipulated by the original TU Berlin data distribution portal ([https://doc.ml.tu-berlin.de/hBCI/](https://doc.ml.tu-berlin.de/hBCI/)). Any redistribution or downstream scientific use must comply with GNU GPL terms and cite the original publication (Shin et al., 2017).

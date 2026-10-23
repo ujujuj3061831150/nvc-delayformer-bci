@@ -69,7 +69,7 @@ python reproduce_benchmark.py --eval-checkpoint
 >      python reproduce_benchmark.py --verify-data
 >      ```
 > 2. **复现模式与基准记录透明性说明 (Dual Reproduction Modes)**：
->    - **默认极速审计模式（Default Audit Mode）**：运行 `python reproduce_benchmark.py` 默认读取 `reports/` 目录下锁定的权威逐折评估记录 JSON，并在终端即时执行配对 Wilcoxon 符号秩检验与 Benjamini-Hochberg (BH) FDR 多重比较校正，在 10 秒内完整复算手稿 Tables I–V 的所有统计量；
+>    - **默认极速审计模式（Default Audit Mode）**：默认入口（`python reproduce_benchmark.py`）读取并展示归档实验统计结果，复算部分统计检验，并执行模型运行与物理先验检查；
 >    - **从头重训模式（From-Scratch Retraining Mode）**：当显式传入 `--train-fold`、`--train-all` 或 `--train-ablation` 时，核心流水线（`src/train.py` / `reproduce_benchmark.py`）使用随机参数初始化从零开始训练，反向传播并在内存中的留出折测试集张量上通过 `argmax` 现场计算预测，零内部历史依赖；
 >    - **在线流式评测独立入口（Streaming Evaluation）**：完整的 29 折独立留一法在线因果递归对齐（CrEA）流式评测由 `scripts/run_full_loso_crea_streaming.py` 执行，逐折输出至 `reports/crea_streaming_evaluation_results.json`；历史单检查点（Sub-05）探索脚本已隔离重定向至 `reports/crea_streaming_diagnostic_sub05_results.json`，确保正式基准记录不被覆盖。
 > 3. **为什么重训耗时极短？（毫秒级算力解释）**：
@@ -341,7 +341,7 @@ nvc-delayformer-bci/
 ### 8.2 基准数据许可与使用边界 (Data Licensing & Academic Terms)
 本项目 `data/processed/` 下附带的预处理基准特征衍生自柏林工业大学（TU Berlin）公开多模态心算脑机接口数据集（Shin et al., 2017, IEEE TNSRE, DOI: [10.1109/TNSRE.2016.2628057](https://doi.org/10.1109/TNSRE.2016.2628057)），详见 [data/README.md](data/README.md)。
 - 预处理特征数据仅用于同行评议、科研复现与学术基准对比之目的提供；
-- 原始数据版权归柏林工业大学机器学习/神经技术研究团队所有，任何衍生使用须严格遵守 TU Berlin 原版数据门户许可（[https://doc.ml.tu-berlin.de/hBCI/](https://doc.ml.tu-berlin.de/hBCI/)），并引用 Shin et al. (2017) 原始文献。
+- 原始数据版权归柏林工业大学机器学习/神经技术研究团队所有，原版数据分发遵循 GNU 通用公共许可证（GNU General Public License, 详见 [TU Berlin 官方数据门户](https://doc.ml.tu-berlin.de/hBCI/)）；使用或再分发须遵守 GNU GPL 许可条款，并引用 Shin et al. (2017) 原始文献。
 
 ### 8.3 论文引用 (Citation)
 
