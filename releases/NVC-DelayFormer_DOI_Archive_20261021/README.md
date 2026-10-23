@@ -41,15 +41,13 @@ CUDA availability and GPU timing depend on the receiving machine.
 acquired/preprocessed data. Consult `DATA_AVAILABILITY.md` before those commands.
 Small unit tests or synthetic demonstrations do not revalidate every manuscript result.
 The excluded LOSO-loader test requires participant tensor files. After preparing data,
-run `python -m pytest tests -q` to include it. During packaging, all 25 tests passed in
-the source workspace with data; the archive-only check runs the other 24 tests.
+run `python -m pytest tests -q` to include it. See `VALIDATION.json` for the current source-workspace and archive-only test results.
 
 ## DOI deposit
 
 Upload the ZIP to your chosen research repository as a software/research-artifact deposit.
 Use the included metadata as a starting point and confirm creator names, affiliations, license scope,
-and the desired release version in the repository form. The creator name here is the collective name
-already recorded in the project. Do not invent a publication DOI or mark the manuscript as accepted.
+and the desired release version in the repository form. The creators are Hongjie Chen and Fang Duan, as recorded in the project citation metadata. Do not invent a publication DOI or mark the manuscript as accepted.
 When the repository assigns a DOI, add that DOI to its citation record and future releases.
 
 ## License and integrity
