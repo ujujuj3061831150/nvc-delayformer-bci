@@ -426,11 +426,8 @@ def train_single_loso_fold(
                 return_recon=True,
                 return_branch_logits=True,
             )
-            # Standardize HbO targets across time to balance loss scales
-            target_hbo = tr_f[b][:, :hbo_c, :]
-            target_hbo_mean = target_hbo.mean(dim=-1, keepdim=True)
-            target_hbo_std = target_hbo.std(dim=-1, keepdim=True) + 1e-6
-            target_hbo_norm = (target_hbo - target_hbo_mean) / target_hbo_std
+            # Buxton hemodynamics HbO target matching primary benchmark
+            target_hbo = model.compute_buxton_hemodynamics(tr_f[b])[:, :hbo_c, :]
 
             # Composite multi-task loss conforming strictly to Eq. (8)
             loss, _ = NVCDelayFormer.compute_composite_loss(
@@ -439,7 +436,7 @@ def train_single_loso_fold(
                 shallow_logits=shallow_logits,
                 targets=tr_l[b],
                 recon_pred=recon_pred,
-                recon_target=target_hbo_norm,
+                recon_target=target_hbo,
                 shallow_weight=model.direct_readout.weight,
                 aux_weight=0.2,
                 recon_weight=1.0,
@@ -453,34 +450,17 @@ def train_single_loso_fold(
             n_batches += 1
         sched.step()
 
-        # Validation evaluation
+        # Validation evaluation & model selection matching primary benchmark
         model.eval()
         with torch.no_grad():
-            v_logits, _, v_recon, (v_deep, v_shallow) = model(
+            v_logits, _ = model(
                 val_e, val_f,
                 use_delay_prior=use_delay_prior,
                 use_causal_mask=use_causal_mask,
-                return_recon=True,
-                return_branch_logits=True,
             )
             v_preds = torch.argmax(v_logits, dim=-1)
             v_acc = (v_preds == val_l).float().mean().item() * 100.0
-            v_target_hbo = val_f[:, :hbo_c, :]
-            v_target_norm = (v_target_hbo - v_target_hbo.mean(dim=-1, keepdim=True)) / (v_target_hbo.std(dim=-1, keepdim=True) + 1e-6)
-            v_loss_t, _ = NVCDelayFormer.compute_composite_loss(
-                joint_logits=v_logits,
-                deep_logits=v_deep,
-                shallow_logits=v_shallow,
-                targets=val_l,
-                recon_pred=v_recon,
-                recon_target=v_target_norm,
-                shallow_weight=model.direct_readout.weight,
-                aux_weight=0.2,
-                recon_weight=1.0,
-                margin_weight=0.08,
-                criterion=criterion,
-            )
-            v_loss = v_loss_t.item()
+            v_loss = criterion(v_logits, val_l).item()
 
         if v_acc > best_val_acc or (abs(v_acc - best_val_acc) < 1e-4 and v_loss < best_val_loss):
             best_val_acc = v_acc

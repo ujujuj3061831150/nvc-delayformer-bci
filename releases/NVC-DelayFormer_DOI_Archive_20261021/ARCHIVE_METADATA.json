@@ -1,7 +1,7 @@
 {
   "archive_date": "2026-10-21",
   "software_version": "1.0.0",
-  "base_git_commit": "080ac24cedd62caddd319fe5a6e7624dd1352dc1",
+  "base_git_commit": "11e393aadccc542aa7249586dc43ccbb5898367b",
   "working_tree_has_changes": true,
   "source": "Current working-tree bytes; not only committed files",
   "doi": null,
@@ -68,6 +68,7 @@
     "scripts/plot_unified_diagnostics.py",
     "scripts/polish_figures.py",
     "scripts/polish_manuscript.py",
+    "scripts/run_full_loso_crea_streaming.py",
     "scripts/run_real_negative_controls_and_sub05_curves.py",
     "scripts/run_rigorous_negative_controls.py",
     "scripts/run_sota_benchmarks.py",
