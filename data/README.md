@@ -26,7 +26,7 @@ The repository includes preprocessed epochs for all 29 participants (`sub-01` th
 
 | Key | Tensor Shape | Sampling Rate | Description |
 | :--- | :--- | :--- | :--- |
-| `eeg` | `[60, 30, 1000]` (Float32) | 100 Hz | 30 scalp electrodes (10–5 montage), 10.0 s epochs ($t \in [0, 10]\,\text{s}$). Bandpass filtered at 0.5–40 Hz (zero-phase 4th-order Butterworth) and re-referenced via Common Average Reference (CAR). |
+| `eeg` | `[60, 30, 1000]` (Float32) | 100 Hz | 30 scalp electrodes (10–5 montage), 10.0 s epochs ($t \in [0, 10]\,\text{s}$). Bandpass filtered at 0.5–45 Hz (zero-phase 4th-order Butterworth) and re-referenced via Common Average Reference (CAR). |
 | `fnirs` | `[60, 72, 124]` (Float32) | 10.33 Hz | 36 optical channels $\times$ 2 chromophores (36 $\Delta[\text{HbO}]$ + 36 $\Delta[\text{HbR}]$), 12.0 s epochs ($t \in [0, 12]\,\text{s}$). Converted from raw optical density via Modified Beer-Lambert Law (MBLL, differential pathlength factor $\text{DPF} = 6.51\,(760\,\text{nm})\,/\,5.86\,(850\,\text{nm})$), bandpass filtered at 0.01–0.10 Hz. |
 | `labels` | `[60]` (Long) | — | Binary ground-truth labels: `0` = Baseline / Rest, `1` = Mental Arithmetic. |
 

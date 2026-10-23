@@ -49,7 +49,7 @@ We present \textbf{NVC-DelayFormer}, an end-to-end biophysically constrained arc
   \item \textbf{Biophysically Constrained Cross-Attention:} Multi-head attention is regularized by continuous Gaussian hemodynamic delay kernels ($\tau_h \in [3.5, 6.5]$\,s) and strict token timestamp causal masking ($t_{\mathrm{nirs}} \ge t_{\mathrm{eeg}}$), eliminating acausal optimization shortcuts.
   \item \textbf{Entropy-Guided Dual-Stream Gating:} An adaptive bottleneck dynamically balances deep cross-modal tokens against shallow biophysical spectral summaries conditioned on predictive distribution entropy, safeguarded by auxiliary waveform reconstruction.
   \item \textbf{Causal Online Adaptation \& Multi-Task Generalization:} We introduce Causal Recursive Euclidean Alignment (CrEA), eliminating session lookahead and stabilizing reference covariances within 5--8 trials under empirical Bayes shrinkage (retaining 94.9\% of offline performance in trial-causal streaming evaluation). Across 29 participants on the TU Berlin benchmark under LOSO cross-validation, NVC-DelayFormer achieves a 3-seed grand mean accuracy of \textbf{78.22\% $\pm$ 1.00\%} (primary seed: \textbf{79.37\% $\pm$ 7.73\%}), significantly outperforming standard 2D-EEGNet ($p = 1.10\times 10^{-4}$), covariance-aligned Shrinkage-LDA ($p = 0.0167$), and unconstrained cross-attention ($p = 7.18\times 10^{-4}$). External validations across 3,612 held-out trials demonstrate robust generalizability on $n$-back working memory (73.24\%) and motor imagery (66.32\%).
-  \item \textbf{Bedside-Ready Edge Profile:} The architecture operates with only \textbf{63,932 parameters} and \textbf{24.79\,M MACs}, executing in \textbf{2.22\,ms} on a laptop GPU (P99: 4.48\,ms, >400\,Hz throughput), ready for real-time bedside closed-loop deployment.
+  \item \textbf{Computational Efficiency:} The architecture uses \textbf{63,932 parameters} and \textbf{24.79\,M MACs}, with a batch-one forward latency of \textbf{2.22\,ms} on an NVIDIA RTX 4060 Laptop GPU (P99: 4.48\,ms).
 \end{enumerate}
 
 \smallskip
@@ -60,7 +60,7 @@ We present \textbf{NVC-DelayFormer}, an end-to-end biophysically constrained arc
   \item \textbf{Authorship Approval:} All authors have read and approved the final manuscript and agree with its submission to IEEE TBME.
   \item \textbf{Ethical Approval:} All human participant analyses used de-identified open-access data approved by the Ethics Committee of the Institute of Psychology and Ergonomics, Technische Universit{\"a}t Berlin (protocol SH\_01\_20150330), in accordance with the Declaration of Helsinki.
   \item \textbf{Conflict of Interest \& Funding:} The authors declare no competing interests, and no external grant funding directly supported this specific research.
-  \item \textbf{Page Budget Guarantee:} The manuscript is formatted in standard IEEE Transactions style and strictly spans \textbf{8 pages} with \textbf{\$0 overlength charges}.
+  \item \textbf{Manuscript Length:} The submitted manuscript comprises eight pages in IEEE Transactions format.
   \item \textbf{Reproducibility:} Complete source code and test suites are openly accessible at \href{https://github.com/ujujuj3061831150/nvc-delayformer-bci}{GitHub Repository (ujujuj3061831150/nvc-delayformer-bci)}.
 \end{itemize}
 

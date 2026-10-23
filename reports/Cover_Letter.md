@@ -29,7 +29,7 @@ We present **NVC-DelayFormer**, an end-to-end biophysically constrained architec
 1. **Biophysically Constrained Cross-Attention:** Multi-head attention is regularized by continuous Gaussian hemodynamic delay kernels ($\tau_h \in [3.5, 6.5]$\,s) and strict token timestamp causal masking ($t_{\mathrm{nirs}} \ge t_{\mathrm{eeg}}$), eliminating acausal optimization shortcuts.
 2. **Entropy-Guided Dual-Stream Gating:** An adaptive bottleneck dynamically balances deep cross-modal tokens against shallow biophysical spectral summaries conditioned on predictive distribution entropy, safeguarded by auxiliary waveform reconstruction.
 3. **Causal Online Adaptation & Multi-Task Generalization:** We introduce Causal Recursive Euclidean Alignment (CrEA), eliminating session lookahead and stabilizing reference covariances within 5–8 trials under empirical Bayes shrinkage (retaining 94.9% of offline performance in trial-causal streaming evaluation). Across 29 participants on the TU Berlin benchmark under LOSO cross-validation, NVC-DelayFormer achieves a 3-seed grand mean accuracy of **78.22% ± 1.00%** (primary seed: **79.37% ± 7.73%**), significantly outperforming standard 2D-EEGNet ($p = 1.10\times 10^{-4}$), covariance-aligned Shrinkage-LDA ($p = 0.0167$), and unconstrained cross-attention ($p = 7.18\times 10^{-4}$). External validations across 3,612 held-out trials demonstrate robust generalizability on $n$-back working memory (73.24%) and motor imagery (66.32%).
-4. **Bedside-Ready Edge Profile:** The architecture operates with only **63,932 parameters** and **24.79 M MACs**, executing in **2.22 ms** on a laptop GPU (P99: 4.48 ms, >400 Hz throughput), ready for real-time bedside closed-loop deployment.
+4. **Computational Efficiency:** The architecture uses **63,932 parameters** and **24.79 M MACs**, with a batch-one forward latency of **2.22 ms** on an NVIDIA RTX 4060 Laptop GPU (P99: 4.48 ms).
 
 ### Mandatory Declarations & Compliance
 - **Originality & Conference Status:** This manuscript represents original work that has not been published previously and is not under consideration elsewhere. It is entirely new and is not an extension of any conference proceeding.
@@ -37,7 +37,7 @@ We present **NVC-DelayFormer**, an end-to-end biophysically constrained architec
 - **Authorship Approval:** All authors have read and approved the final manuscript and agree with its submission to IEEE TBME.
 - **Ethical Approval:** All human participant analyses used de-identified open-access data approved by the Ethics Committee of the Institute of Psychology and Ergonomics, Technische Universität Berlin (protocol SH_01_20150330), in accordance with the Declaration of Helsinki.
 - **Conflict of Interest & Funding:** The authors declare no competing financial or non-financial interests, and no external grant funding directly supported this specific research.
-- **Page Budget Guarantee:** The manuscript is formatted in standard IEEE Transactions style and strictly spans **8 pages** with **$0 overlength charges**.
+- **Manuscript Length:** The submitted manuscript comprises eight pages in IEEE Transactions format.
 - **Reproducibility:** Complete source code and test suites are openly accessible at https://github.com/ujujuj3061831150/nvc-delayformer-bci.
 
 Thank you very much for your time and consideration of our work.
