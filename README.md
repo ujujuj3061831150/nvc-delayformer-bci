@@ -1,9 +1,9 @@
-# Biophysically Grounded Neurovascular Latency Modeling and Causal Cross-Attention for Subject-Independent EEG-fNIRS Brain-Computer Interfaces
+# Physiology-Guided Temporal Fusion for Cross-Subject EEG–fNIRS Brain–Computer Interfaces
 
 [![Python 3.11](https://img.shields.io/badge/Python-3.9%2B%20%7C%203.11.9-blue.svg)](https://www.python.org/)
 [![PyTorch 2.0+](https://img.shields.io/badge/PyTorch-2.0%2B-EE4C2C.svg)](https://pytorch.org/)
 [![Target Journal](https://img.shields.io/badge/Target%20Journal-IEEE%20TBME-00629B.svg)](https://tbme.embs.org/)
-[![Unit Tests](https://img.shields.io/badge/pytest-24%2F24%20PASSED-brightgreen.svg)](tests/)
+[![Unit Tests](https://img.shields.io/badge/pytest-25%2F25%20PASSED-brightgreen.svg)](tests/)
 [![Primary Dataset](https://img.shields.io/badge/Dataset-TU%20Berlin%20(29%20Subjects)-purple.svg)](https://doi.org/10.1109/TNSRE.2016.2628057)
 [![Parameters](https://img.shields.io/badge/Parameters-63%2C932-orange.svg)](reproduce_benchmark.py)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -11,7 +11,7 @@
 An open-source, mathematically grounded, and hardware-efficient PyTorch implementation of **NVC-DelayFormer**, an end-to-end multimodal deep learning architecture designed for cross-subject brain-computer interfaces (BCIs) combining electroencephalography (EEG) and functional near-infrared spectroscopy (fNIRS).
 
 Accompanying the manuscript:  
-**"Biophysically Grounded Neurovascular Latency Modeling and Causal Cross-Attention for Subject-Independent EEG-fNIRS Brain-Computer Interfaces"** (Target: *IEEE Transactions on Biomedical Engineering*).
+**"Physiology-Guided Temporal Fusion for Cross-Subject EEG–fNIRS Brain–Computer Interfaces"** (Target: *IEEE Transactions on Biomedical Engineering*).
 
 ---
 
@@ -64,13 +64,14 @@ python reproduce_benchmark.py --eval-checkpoint
 >      * 近红外（fNIRS）：72 通道，12.0 秒 @ 10.33 Hz，每个 trial 严格为 124 个采样点；
 >      * 标签：60 个二分类整数标签。
 >    - **PyTorch 张量序列化机制**：当使用 `torch.save` 序列化未压缩的定长 Float32 矩阵时，物理字节大小严格等于 `元素个数 × 4 字节 + 头部元数据`。因此任意尺寸相同的定长矩阵文件，在磁盘上的物理字节数必然数学相等（正如 29 张同分辨率的未压缩 BMP 图片字节数完全相同）。
->    - **一键验证数据独立性**：在终端运行以下一行指令，即可在 2 秒内现场验证 29 位受试者的脑电标准差分布在 6.41 到 25.48 之间，两两之间存在显著生理异质性（最大绝对差异 > 1352 $\mu\text{V}$），100% 均为独立真实的真实人体神经信号：
+>    - **一键验证数据独立性与生理异质性**：在终端运行以下一行指令，即可在 2 秒内现场验证 29 位受试者的脑电标准差分布在 6.41 到 25.48 之间，被试间呈现显著的个体生理方差（跨通道最大绝对差异 > 1352 $\mu\text{V}$），完全符合真实人体多模态生理信号的统计特征，数据源自柏林工业大学（TU Berlin）公开基准（Shin et al., 2017，详见 [data/README.md](data/README.md)）：
 >      ```bash
 >      python reproduce_benchmark.py --verify-data
 >      ```
-> 2. **精简架构，纯从头训练，零外部 JSON 依赖**：
->    - 核心训练器 `src/train.py` 与复现入口 `reproduce_benchmark.py` 全文**零外部 JSON 依赖**。每次执行 `--train-fold`、`--train-all` 或 `--train-ablation` 时，模型均从零开始随机初始化参数，并在测试集张量上通过 PyTorch 前向传播与 `argmax` 现场计算真实测试集准确率；
->    - 本代码仓库已彻底剔除所有内部历史 JSON 文件与辅助文档，只保留纯粹的复现必须源码、测试集与模型包，结构清晰、纯粹、防篡改。
+> 2. **复现模式与基准记录透明性说明 (Dual Reproduction Modes)**：
+>    - **默认极速审计模式（Default Audit Mode）**：运行 `python reproduce_benchmark.py` 默认读取 `reports/` 目录下锁定的权威逐折评估记录 JSON，并在终端即时执行配对 Wilcoxon 符号秩检验与 Benjamini-Hochberg (BH) FDR 多重比较校正，在 10 秒内完整复算手稿 Tables I–V 的所有统计量；
+>    - **从头重训模式（From-Scratch Retraining Mode）**：当显式传入 `--train-fold`、`--train-all` 或 `--train-ablation` 时，核心流水线（`src/train.py` / `reproduce_benchmark.py`）使用随机参数初始化从零开始训练，反向传播并在内存中的留出折测试集张量上通过 `argmax` 现场计算预测，零内部历史依赖；
+>    - **在线流式评测独立入口（Streaming Evaluation）**：完整的 29 折独立留一法在线因果递归对齐（CrEA）流式评测由 `scripts/run_full_loso_crea_streaming.py` 执行，逐折输出至 `reports/crea_streaming_evaluation_results.json`；历史单检查点（Sub-05）探索脚本已隔离重定向至 `reports/crea_streaming_diagnostic_sub05_results.json`，确保正式基准记录不被覆盖。
 > 3. **为什么重训耗时极短？（毫秒级算力解释）**：
 >    - 模型仅有 63,932 参数（约 0.25 MB），单试次仅 24.79 M MACs；
 >    - 留一法下 23 位训练被试仅 1,380 个试次。在 GPU 上单折重训仅需 9~20 秒，全量 29 折仅需约 8~10 分钟。
@@ -149,6 +150,9 @@ python reproduce_benchmark.py --eval-perturbations
 python -u reproduce_benchmark.py --train-all
 # 若在纯 CPU 环境下受会话时长限制，可加上快速参数：
 # python -u reproduce_benchmark.py --train-all --epochs 12 --batch-size 256
+
+# 12. 严格独立 29 折留一法（LOSO）因果在线流式（CrEA）评测全流程重现：
+python scripts/run_full_loso_crea_streaming.py
 ```
 
 ---
@@ -271,7 +275,7 @@ Temporal Pyramid Pooling + Latent MLP (64-dim)                       Broadband P
 为保证研究成果的最高可复现性与代码稳健性，本项目维护了覆盖核心算法与协议的自动化测试套件：
 
 ### 自动化功能与合规性单元测试 (`pytest tests/`)
-包含 **24 个全自动单元测试**，覆盖：
+包含 **25 个全自动单元测试**，覆盖：
 - 随机种子与多平台确定性复现测试（`test_seed_determinism`）
 - MBLL 比尔-朗伯定律消光系数与光密度数值稳定性（`test_mbll_numerical_integrity`）
 - 因果时延注意力掩码防泄露数学断言（`test_causal_delay_attention_invariants`）
@@ -282,7 +286,7 @@ Temporal Pyramid Pooling + Latent MLP (64-dim)                       Broadband P
 
 ```bash
 pytest tests/ -v
-# 输出：============================= 21 passed in 6.75s ==============================
+# 输出：============================= 25 passed in 3.82s ==============================
 ```
 
 ---
@@ -292,6 +296,7 @@ pytest tests/ -v
 ```text
 nvc-delayformer-bci/
 ├── data/
+│   ├── README.md                    # 数据集来源、预处理与学术许可说明文档
 │   └── processed/                   # TU Berlin 29 位真实受试者预处理神经特征 (sub-01 ~ sub-29)
 │       ├── sub-01/ma_epochs.pt      # 60 试次 x 30 导 EEG x 72 导 fNIRS (定长未压缩 float32)
 │       ├── ...
@@ -305,16 +310,20 @@ nvc-delayformer-bci/
 │   ├── buxton_dynamics.py           # Buxton Balloon 入流状态方程与血流重建模块
 │   ├── joint_readout.py             # 双流解耦与不确定性感知门控融合
 │   └── model.py                     # 端到端 NVC-DelayFormer 架构实现
+├── scripts/                         # 独立评估与可视化脚本
+│   ├── run_full_loso_crea_streaming.py # 官方 29 折独立 LOSO 在线因果递归对齐流式评测脚本
+│   ├── evaluate_real_crea_streaming.py # 历史 Sub-05 单模型协方差收敛诊断脚本
+│   └── generate_unified_fig2.py     # 论文多面板实测诊断图表绘制脚本
 ├── src/
 │   ├── models/                      # 神经网络架构 (nvc_net.py, nvc_layers.py, baselines.py)
 │   ├── data/                        # 数据加载、预处理与 MBLL 光学转换流水线
 │   ├── utils/                       # 随机种子、评估指标、拓扑绘图工具
-│   ├── train.py                     # 严谨留一法 (LOSO) 跨被试从头训练核心流水线 (零外部 JSON 依赖)
+│   ├── train.py                     # 严谨留一法 (LOSO) 跨被试从头训练核心流水线
 │   └── benchmark_engineering_metrics.py # GPU 显存、MACs 与推理耗时基准评测
-├── tests/                           # 自动化单元测试套件 (21/21 全自动通过)
-│   ├── test_compliance.py           # 核心协议合规性与数据隔离测试 (10 项测试)
+├── tests/                           # 自动化单元测试套件 (25/25 全自动通过)
+│   ├── test_compliance.py           # 核心协议合规性与数据隔离测试 (13 项测试)
 │   ├── test_crea_convergence.py     # 因果在线递归对齐 (CrEA) 数值测试 (3 项测试)
-│   └── test_temporal_fusion.py      # temporal_fusion 独立包接口测试 (8 项测试)
+│   └── test_temporal_fusion.py      # temporal_fusion 独立包接口测试 (9 项测试)
 ├── reproduce_benchmark.py           # 导师与审稿人极速一键复现主入口 CLI
 ├── requirements.txt                 # 标准 Python 环境依赖清单
 ├── setup.py / pyproject.toml        # 标准 Python 包安装定义
@@ -326,7 +335,15 @@ nvc-delayformer-bci/
 
 ## 8. 许可证与引用 (License & Citation)
 
-本项目采用 **MIT 许可证** 开源，详情见 [LICENSE](LICENSE) 文件。
+### 8.1 软件代码许可证 (Code License)
+本项目核心神经网络架构、时延注意力算子、训练评估流水线与测试套件均基于 **MIT 许可证** 开源，详情参见 [LICENSE](LICENSE)。
+
+### 8.2 基准数据许可与使用边界 (Data Licensing & Academic Terms)
+本项目 `data/processed/` 下附带的预处理基准特征衍生自柏林工业大学（TU Berlin）公开多模态心算脑机接口数据集（Shin et al., 2017, IEEE TNSRE, DOI: [10.1109/TNSRE.2016.2628057](https://doi.org/10.1109/TNSRE.2016.2628057)），详见 [data/README.md](data/README.md)。
+- 预处理特征数据仅用于同行评议、科研复现与学术基准对比之目的提供；
+- 原始数据版权归柏林工业大学机器学习/神经技术研究团队所有，任何衍生使用须严格遵守 TU Berlin 原版数据门户许可（[https://doc.ml.tu-berlin.de/hBCI/](https://doc.ml.tu-berlin.de/hBCI/)），并引用 Shin et al. (2017) 原始文献。
+
+### 8.3 论文引用 (Citation)
 
 如果本项目或论文中的模型、时延跨模态注意力机制或复现代码对您的研究有所启发或帮助，欢迎引用本手稿：
 

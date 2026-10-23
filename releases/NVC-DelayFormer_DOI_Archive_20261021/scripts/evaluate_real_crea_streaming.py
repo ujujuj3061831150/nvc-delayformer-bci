@@ -1,3 +1,19 @@
+"""
+Legacy Diagnostic Script: Single-Checkpoint (Sub-05) Streaming Evaluation.
+
+NOTE: This script is preserved for diagnostic and historical comparison purposes.
+It evaluates all 29 subjects against a single pre-trained checkpoint
+(checkpoints/best_nvc_delayformer_sub05.pt) to observe CrEA covariance convergence.
+
+For the official, strictly independent 29-fold Leave-One-Subject-Out (LOSO) cross-validation
+benchmark where each held-out subject is evaluated against their corresponding fold model,
+execute:
+    python scripts/run_full_loso_crea_streaming.py
+
+Results from this diagnostic script are saved to:
+    reports/crea_streaming_diagnostic_sub05_results.json
+"""
+
 import sys
 sys.path.insert(0, ".")
 
@@ -99,18 +115,18 @@ def evaluate_streaming_crea():
     print(f"95% CI: [{ci95[0]:.2f}%, {ci95[1]:.2f}%]")
 
     output = {
-        "evaluation": "CrEA Trial-by-Trial Streaming Evaluation",
+        "evaluation": "CrEA Trial-by-Trial Streaming Diagnostic (Sub-05 Single Model)",
         "cohort": "TU Berlin Mental Arithmetic (29 participants, 1,740 trials)",
-        "protocol": "Strict causal recursive alignment, zero session lookahead",
+        "protocol": "Strict causal recursive alignment, zero session lookahead (Single checkpoint diagnostic)",
         "mean_streaming_acc": round(mean_acc, 2),
         "std_streaming_acc": round(std_acc, 2),
         "ci95": [round(ci95[0], 2), round(ci95[1], 2)],
         "subjects": subject_details
     }
 
-    out_file = Path("reports/crea_streaming_evaluation_results.json")
+    out_file = Path("reports/crea_streaming_diagnostic_sub05_results.json")
     out_file.write_text(json.dumps(output, indent=2), encoding="utf-8")
-    print(f"Saved complete streaming evaluation record to {out_file}")
+    print(f"Saved diagnostic streaming evaluation record to {out_file}")
 
 if __name__ == "__main__":
     evaluate_streaming_crea()

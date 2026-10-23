@@ -41,8 +41,8 @@ CUDA availability and GPU timing depend on the receiving machine.
 acquired/preprocessed data. Consult `DATA_AVAILABILITY.md` before those commands.
 Small unit tests or synthetic demonstrations do not revalidate every manuscript result.
 The excluded LOSO-loader test requires participant tensor files. After preparing data,
-run `python -m pytest tests -q` to include it. During packaging, all 22 tests passed in
-the source workspace with data; the archive-only check runs the other 21 tests.
+run `python -m pytest tests -q` to include it. During packaging, all 25 tests passed in
+the source workspace with data; the archive-only check runs the other 24 tests.
 
 ## DOI deposit
 
