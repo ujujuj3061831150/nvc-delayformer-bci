@@ -19,6 +19,6 @@ predictions = torch.argmax(logits, dim=-1)
 
 Executing demo forward pass on compute device...
 Execution Successful! Output Logits Shape: [4, 2]
-Decoded Class Predictions: [0 0 0 0]
-Total Instantiation + Forward Latency: 1201.84 ms
+Decoded Class Predictions: [1 1 1 1]
+Total Instantiation + Forward Latency: 495.99 ms
 ======================================================================================
