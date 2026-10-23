@@ -10,7 +10,7 @@
     "PyYAML": "6.0.3"
   },
   "pytest_returncode": 0,
-  "pytest_summary": "24 passed, 1 deselected in 3.94s",
+  "pytest_summary": "24 passed, 1 deselected in 4.10s",
   "demo_returncode": 0,
   "source_workspace_full_suite": "25 passed in 3.99s",
   "archive_excluded_test": "test_loso_three_split_isolation requires separately acquired data",

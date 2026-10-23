@@ -4,7 +4,7 @@ setup(
     name="temporal-fusion",
     version="1.0.0",
     description="Physiologically Constrained Temporal Fusion for Multimodal EEG-fNIRS Brain-Computer Interfaces",
-    author="Antigravity BCI Research Collaborative",
+    author="Hongjie Chen, Fang Duan",
     packages=find_packages(include=["temporal_fusion", "temporal_fusion.*"]),
     python_requires=">=3.9",
     install_requires=[
