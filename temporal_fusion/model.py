@@ -228,10 +228,13 @@ class PhysiologyDelayCrossAttention(nn.Module):
 
         if use_causal_mask:
             causal_mask = (delta_ij < -1e-4)
-            scores = scores.masked_fill(causal_mask, -1e9)
+            scores = scores.masked_fill(causal_mask, float("-inf"))
 
+        scores = torch.nan_to_num(scores, nan=-1e4)
         attn_weights = F.softmax(scores, dim=-1)
         attn_weights = torch.nan_to_num(attn_weights, nan=0.0)
+        if use_causal_mask:
+            attn_weights = attn_weights.masked_fill(causal_mask, 0.0)
         attn_weights_drop = self.dropout(attn_weights)
 
         out = torch.matmul(attn_weights_drop, v)

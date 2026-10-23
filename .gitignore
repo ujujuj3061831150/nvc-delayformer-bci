@@ -88,7 +88,10 @@ reports/*.md
 reports/*.txt
 !reports/Cover_Letter.md
 !reports/Highlights.md
+!reports/Highlights.txt
 !reports/Submission_Package_Checklist.md
+!reports/manuscript_IEEEtran_submission.pdf
+!reports/manuscript_submission.pdf
 reports/archive/
 reports/figures/
 *.bak

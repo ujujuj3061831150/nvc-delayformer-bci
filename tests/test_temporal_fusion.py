@@ -266,4 +266,16 @@ def test_dynamic_tpp_window_scaling():
     assert torch.isfinite(logits).all()
 
 
+def test_all_masked_causal_invariance():
+    """Verify that when all EEG keys are in the future, causal masking strictly zeroes out attention."""
+    model = NVCDelayFormer(num_classes=2, eeg_channels=30, fnirs_channels=72)
+    q = torch.randn(1, 1, 64)
+    kv = torch.randn(1, 3, 64)
+    t_n = torch.tensor([0.0])
+    t_e = torch.tensor([1.0, 2.0, 3.0])  # all future relative to t_n
+    out, attn = model.cross_attention(q, kv, use_causal_mask=True, t_fnirs=t_n, t_eeg=t_e)
+    assert not torch.isnan(out).any(), "All-masked cross-attention produced NaN output"
+    assert (attn == 0.0).all(), "All-masked cross-attention failed to zero out all future weights"
+
+
 
