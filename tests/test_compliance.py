@@ -474,3 +474,37 @@ def test_composite_multitask_loss_eq8():
     assert joint_logits.grad is not None
     assert recon_pred.grad is not None
     assert shallow_weight.grad is not None
+
+
+def test_cross_attention_future_timestamps_and_injected_nan():
+    """
+    Test rigorous boundary conditions on production PhysiologyDelayCrossAttention:
+    1. Constructed future timestamps where delta_ij < 0 for all pairs (entire matrix masked).
+    2. Actual injection of NaN and Inf into query, key, and value vectors.
+    Asserts zero probability leakage into acausal positions and strictly finite outputs.
+    """
+    from src.models.nvc_net import PhysiologyDelayCrossAttention
+    ca = PhysiologyDelayCrossAttention(embed_dim=64, num_heads=4, multi_head_delays=True)
+    ca.eval()
+
+    # 1. Constructed strictly acausal timestamps: t_fnirs < t_eeg for all i, j
+    t_fnirs = torch.tensor([0.1, 0.5]) # queries
+    t_eeg = torch.tensor([2.0, 3.0, 4.0, 5.0]) # keys
+    q = torch.randn(2, 2, 64)
+    kv = torch.randn(2, 4, 64)
+
+    out, attn = ca(q, kv, t_fnirs=t_fnirs, t_eeg=t_eeg, use_causal_mask=True, use_delay_prior=True)
+    assert torch.isfinite(out).all(), "Output contains non-finite values under strict acausal mask!"
+    assert torch.isfinite(attn).all(), "Attention weights contain non-finite values under strict acausal mask!"
+    assert torch.allclose(attn, torch.zeros_like(attn)), "Acausal positions leaked non-zero attention weights!"
+
+    # 2. Injected NaN and Inf into inputs
+    q_nan = torch.randn(2, 2, 64)
+    kv_nan = torch.randn(2, 4, 64)
+    q_nan[0, 0, 10:20] = float("nan")
+    kv_nan[1, 2, :] = float("nan")
+    kv_nan[0, 1, 5] = float("inf")
+
+    out_nan, attn_nan = ca(q_nan, kv_nan, t_fnirs=t_fnirs, t_eeg=t_eeg, use_causal_mask=True, use_delay_prior=True)
+    assert torch.isfinite(out_nan).all(), "Injected NaN/Inf produced non-finite output in cross-attention!"
+    assert torch.isfinite(attn_nan).all(), "Injected NaN/Inf produced non-finite attention weights!"

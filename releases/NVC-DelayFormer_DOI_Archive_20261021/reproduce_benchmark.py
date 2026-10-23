@@ -156,8 +156,8 @@ def run_benchmark():
         ("2D-EEGNet + EA", f"{d_multi['baselines']['Authentic 2D-EEGNet']['grand_mean']:.2f}", f"{d_p3['Authentic EEGNet-2D']['mean_acc']:.2f}", f"{d_multi['baselines']['Authentic 2D-EEGNet']['p_val']:.4f}", "0.0001"),
         ("Feature-Concat (Multi-View)", f"{d_multi['baselines']['Multi-View Hybrid CNN']['grand_mean']:.2f}", f"{m29['Feature-Concat']['mean_acc']:.2f}", f"{d_multi['baselines']['Multi-View Hybrid CNN']['p_val']:.4f}", "0.0006"),
         ("Standard-Attention (Transformer)", f"{d_multi['baselines']['Cross-Modal Transformer']['grand_mean']:.2f}", f"{m29['Standard-Attention']['mean_acc']:.2f}", f"{d_multi['baselines']['Cross-Modal Transformer']['p_val']:.4f}", "0.0007"),
-        ("Shrinkage-LDA + EA", "72.82", f"{d_p3['Handcrafted Shrinkage-LDA']['mean_acc']:.2f}", f"{d_p3['Handcrafted Shrinkage-LDA']['wilcoxon_p']:.4f}", "0.0209"),
-        ("Multimodal SVM + EA", "72.76", "72.76", "0.0014", "0.0023"),
+        ("Shrinkage-LDA + EA", "72.82", f"{d_p3['Handcrafted Shrinkage-LDA']['mean_acc']:.2f}", f"{d_p3['Handcrafted Shrinkage-LDA']['wilcoxon_p']:.4f}", "0.0167"),
+        ("Multimodal SVM + EA", "72.76", "72.76", "0.0014", "0.0019"),
         ("EEG-CNN (Shared Encoder)", "70.23", f"{m29['EEG-CNN']['mean_acc']:.2f}", f"{wilcoxon(nvc_folds, m29['EEG-CNN']['fold_accs'], alternative='greater').pvalue:.4f}", "0.0001"),
         ("fNIRS-CNN (Shared Encoder)", "63.91", f"{m29['fNIRS-CNN']['mean_acc']:.2f}", f"{wilcoxon(nvc_folds, m29['fNIRS-CNN']['fold_accs'], alternative='greater').pvalue:.4f}", "0.0001"),
     ]
@@ -228,8 +228,8 @@ def run_benchmark():
     table_4_windows = [
         ("10.0 s", "78.74 +/- 7.36", "Baseline", "24.79", "1.52"),
         ("7.5 s", "78.10 +/- 7.80", "-30.9%", "17.15", "1.93"),
-        ("5.0 s", "77.53 +/- 7.46", "-53.4%", "11.04", "2.77"),
-        ("3.0 s", "76.38 +/- 7.79", "-72.8%", "6.46", "4.21"),
+        ("5.0 s", "77.53 +/- 7.46", "-53.4%", "11.04", "2.78"),
+        ("3.0 s", "76.38 +/- 7.79", "-72.8%", "6.46", "4.23"),
     ]
     for lbl, acc_s, cut, macs_val, itr_val in table_4_windows:
         print(f"{lbl:<10} {acc_s:<18} {cut:<16} {macs_val:<12} {itr_val:<14}")
@@ -304,7 +304,7 @@ def run_train_fold(sub_id: int, epochs: int = 12, batch_size: int = 256, lr: flo
 
     from src.train import train_single_loso_fold
     res = train_single_loso_fold(
-        test_sub=sub_id, seed_base=42, epochs=epochs, batch_size=batch_size, lr=lr, verbose=True,
+        test_sub=sub_id, seed_base=42, epochs=epochs, batch_size=batch_size, lr=lr, weight_decay=weight_decay, verbose=True,
         save_checkpoint=True, ckpt_output_path=f"checkpoints/retrained_sub{sub_id:02d}.pt"
     )
 
@@ -393,7 +393,7 @@ def run_train_all(epochs: int = 12, batch_size: int = 256, lr: float = 3e-3, wei
     accs, f1s = [], []
     t_start = time.time()
     for sub in range(1, 30):
-        res = train_single_loso_fold(test_sub=sub, seed_base=42, epochs=epochs, batch_size=batch_size, lr=lr, verbose=False)
+        res = train_single_loso_fold(test_sub=sub, seed_base=42, epochs=epochs, batch_size=batch_size, lr=lr, weight_decay=weight_decay, verbose=False)
         accs.append(res["test_acc"])
         f1s.append(res["macro_f1"])
         print(f"  Fold {sub:02d}/29: Test Acc = {res['test_acc']:.2f}%, F1 = {res['macro_f1']:.2f}% ({res['elapsed_sec']:.1f}s)")
@@ -697,9 +697,9 @@ def main():
     elif args.eval_checkpoint is not None:
         run_eval_checkpoint(args.eval_checkpoint, args.eval_sub)
     elif args.train_fold is not None:
-        run_train_fold(args.train_fold, epochs=args.epochs, batch_size=args.batch_size, lr=args.lr)
+        run_train_fold(args.train_fold, epochs=args.epochs, batch_size=args.batch_size, lr=args.lr, weight_decay=args.weight_decay)
     elif args.train_all:
-        run_train_all(epochs=args.epochs, batch_size=args.batch_size, lr=args.lr)
+        run_train_all(epochs=args.epochs, batch_size=args.batch_size, lr=args.lr, weight_decay=args.weight_decay)
     elif args.train_ablation:
         run_train_ablation(args.eval_sub)
     elif args.eval_perturbations:

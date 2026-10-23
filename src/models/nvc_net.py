@@ -203,8 +203,10 @@ class PhysiologyDelayCrossAttention(nn.Module):
         q = self.q_proj(fnirs_q).view(B, Tn, self.num_heads, self.head_dim).transpose(1, 2)
         k = self.k_proj(eeg_kv).view(B, Te, self.num_heads, self.head_dim).transpose(1, 2)
         v = self.v_proj(eeg_kv).view(B, Te, self.num_heads, self.head_dim).transpose(1, 2)
+        v = torch.nan_to_num(v, nan=0.0)
 
         scores = torch.matmul(q, k.transpose(-2, -1)) / np.sqrt(self.head_dim)
+        scores = torch.nan_to_num(scores, nan=-1e4)
 
         delta_ij = t_fnirs.view(1, 1, Tn, 1) - t_eeg.view(1, 1, 1, Te)
 
@@ -236,6 +238,7 @@ class PhysiologyDelayCrossAttention(nn.Module):
         attn_weights_drop = self.dropout(attn_weights)
 
         out = torch.matmul(attn_weights_drop, v)
+        out = torch.nan_to_num(out, nan=0.0)
         out = out.transpose(1, 2).contiguous().view(B, Tn, D)
         return self.out_proj(out), attn_weights
 

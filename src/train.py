@@ -391,7 +391,7 @@ def train_single_loso_fold(
         feature_dim=64,
         num_heads=4,
         nvc_delay_mean_sec=5.0,
-        learnable_delay=True,
+        learnable_delay=False,
         readout_mode=readout_mode,
         direct_weight_mode=direct_weight_mode,
         cut_gate_latent=cut_gate_latent,
@@ -407,9 +407,10 @@ def train_single_loso_fold(
     best_state = None
     best_epoch = 0
 
-    # 4. Training loop with validation checkpointing
+    # 4. Training loop with validation checkpointing (Composite Multi-Task Loss Eq. 8)
     t0 = time.time()
     criterion = nn.CrossEntropyLoss()
+    hbo_c = getattr(model, "hbo_channels", 36)
     for epoch in range(1, epochs + 1):
         model.train()
         perm = torch.randperm(n_tr, device=device)
@@ -418,12 +419,33 @@ def train_single_loso_fold(
         for idx in range(0, n_tr, bs):
             b = perm[idx:idx+bs]
             opt.zero_grad()
-            logits, _ = model(
+            logits, _, recon_pred, (deep_logits, shallow_logits) = model(
                 tr_e[b], tr_f[b],
                 use_delay_prior=use_delay_prior,
                 use_causal_mask=use_causal_mask,
+                return_recon=True,
+                return_branch_logits=True,
             )
-            loss = criterion(logits, tr_l[b])
+            # Standardize HbO targets across time to balance loss scales
+            target_hbo = tr_f[b][:, :hbo_c, :]
+            target_hbo_mean = target_hbo.mean(dim=-1, keepdim=True)
+            target_hbo_std = target_hbo.std(dim=-1, keepdim=True) + 1e-6
+            target_hbo_norm = (target_hbo - target_hbo_mean) / target_hbo_std
+
+            # Composite multi-task loss conforming strictly to Eq. (8)
+            loss, _ = NVCDelayFormer.compute_composite_loss(
+                joint_logits=logits,
+                deep_logits=deep_logits,
+                shallow_logits=shallow_logits,
+                targets=tr_l[b],
+                recon_pred=recon_pred,
+                recon_target=target_hbo_norm,
+                shallow_weight=model.direct_readout.weight,
+                aux_weight=0.2,
+                recon_weight=1.0,
+                margin_weight=0.08,
+                criterion=criterion,
+            )
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
             opt.step()
@@ -434,14 +456,31 @@ def train_single_loso_fold(
         # Validation evaluation
         model.eval()
         with torch.no_grad():
-            v_logits, _ = model(
+            v_logits, _, v_recon, (v_deep, v_shallow) = model(
                 val_e, val_f,
                 use_delay_prior=use_delay_prior,
                 use_causal_mask=use_causal_mask,
+                return_recon=True,
+                return_branch_logits=True,
             )
-            v_preds = torch.argmax(v_logits, dim=1)
+            v_preds = torch.argmax(v_logits, dim=-1)
             v_acc = (v_preds == val_l).float().mean().item() * 100.0
-            v_loss = criterion(v_logits, val_l).item()
+            v_target_hbo = val_f[:, :hbo_c, :]
+            v_target_norm = (v_target_hbo - v_target_hbo.mean(dim=-1, keepdim=True)) / (v_target_hbo.std(dim=-1, keepdim=True) + 1e-6)
+            v_loss_t, _ = NVCDelayFormer.compute_composite_loss(
+                joint_logits=v_logits,
+                deep_logits=v_deep,
+                shallow_logits=v_shallow,
+                targets=val_l,
+                recon_pred=v_recon,
+                recon_target=v_target_norm,
+                shallow_weight=model.direct_readout.weight,
+                aux_weight=0.2,
+                recon_weight=1.0,
+                margin_weight=0.08,
+                criterion=criterion,
+            )
+            v_loss = v_loss_t.item()
 
         if v_acc > best_val_acc or (abs(v_acc - best_val_acc) < 1e-4 and v_loss < best_val_loss):
             best_val_acc = v_acc
