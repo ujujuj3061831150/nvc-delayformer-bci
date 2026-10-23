@@ -1,42 +1,75 @@
 \documentclass[10pt,a4paper]{article}
-\usepackage[margin=0.75in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=0.62in]{geometry}
 \usepackage{times}
+\usepackage{microtype}
+\usepackage{xcolor}
+\PassOptionsToPackage{hyphens}{url}
 \usepackage{hyperref}
 
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
+
 \begin{document}
+\thispagestyle{empty}
+
+% --- Header / Institutional Contact ---
 \noindent
-\textbf{Date:} October 23, 2026 \hfill \textbf{Target Venue:} \textit{IEEE Transactions on Biomedical Engineering} \\[1ex]
-\textbf{To:} Editor-in-Chief, \textit{IEEE Transactions on Biomedical Engineering} (TBME) \\[1ex]
-\textbf{Subject:} Submission of Regular Paper: \textbf{``Physiology-Guided Temporal Fusion for Cross-Subject EEG--fNIRS Brain--Computer Interfaces''} \\[1ex]
-\textbf{Authors:} Hongjie Chen and Fang Duan (Corresponding Author) \\[1ex]
-\textbf{Affiliation:} College of Information Science and Engineering, Huaqiao University, Xiamen, China \\[1.5ex]
+\textbf{College of Information Science and Engineering, Huaqiao University}\\
+{\small No. 668 Jimei Avenue, Xiamen, Fujian 361021, P.~R.~China \hfill Corresponding Author: Fang Duan, E-mail: \texttt{nkfetsh@gmail.com}}
+\vspace{0.4ex}
+\hrule height 0.6pt
+\vspace{1ex}
 
-\noindent Dear Editor-in-Chief,
+\noindent
+\textbf{Date:} October 23, 2026 \hfill \textbf{Suggested Track:} Neural Engineering \& BCI (Biomedical Signal Processing)\\[0.8ex]
+\textbf{To:} Prof.~Amir A.~Amini, Editor-in-Chief, \textit{IEEE Transactions on Biomedical Engineering} (TBME)\\
+\phantom{\textbf{To:}} Department of Electrical and Computer Engineering, University of Louisville, Louisville, KY 40292, USA\\[0.8ex]
+\textbf{Subject:} Submission of Regular Paper: \textbf{``Physiology-Guided Temporal Fusion for Cross-Subject EEG--fNIRS Brain--Computer Interfaces''}
+
+\vspace{1ex}
+\noindent Dear Prof.~Amini and Members of the Editorial Board,
 
 \smallskip
-We are pleased to submit our original research manuscript entitled \textbf{``Physiology-Guided Temporal Fusion for Cross-Subject EEG--fNIRS Brain--Computer Interfaces''} for consideration as a \textbf{Regular Paper} in \textit{IEEE Transactions on Biomedical Engineering} (TBME).
+We are pleased to submit our original research manuscript entitled \textbf{``Physiology-Guided Temporal Fusion for Cross-Subject EEG--fNIRS Brain--Computer Interfaces''} for consideration as a \textbf{Regular Paper} in the \textit{IEEE Transactions on Biomedical Engineering} (TBME).
 
 \smallskip
-\noindent\textbf{Biomedical Context \& Problem Statement:}
-Hybrid electroencephalography (EEG) and functional near-infrared spectroscopy (fNIRS) non-invasively probe complementary electrophysiological transients and localized hemodynamic dynamics. However, translating hybrid systems to zero-calibration cross-subject clinical BCIs faces a fundamental biophysical bottleneck: disparate temporal scales (milliseconds vs.\ 3.5--6.5\,s). Unconstrained neural attention models exploit spurious temporal alignments in leave-one-subject-out (LOSO) regimes, impairing generalization across unseen individuals.
+\noindent\textbf{Biomedical Context \& Clinical Rationale:}
+Hybrid EEG--fNIRS non-invasively captures complementary electrophysiological transients and localized capillary hemodynamics. Translating hybrid systems to zero-calibration clinical BCIs (e.g., for motor-impaired or locked-in individuals unable to undergo tedious calibrations) faces a fundamental biophysical bottleneck: disparate biological timescales (milliseconds vs.\ 3.5--6.5\,s). Standard unconstrained cross-attention architectures exploit spurious temporal coincidences in leave-one-subject-out (LOSO) regimes, degrading generalization across unseen individuals.
 
 \smallskip
-\noindent\textbf{Key Contributions \& Empirical Findings:}
-We present \textbf{NVC-DelayFormer}, an end-to-end biophysically constrained architecture coupling electrophysiological and optical streams through explicit neurovascular coupling inductive priors:
-\begin{enumerate}\setlength\itemsep{0.15em}
-  \item \textbf{Biophysically Constrained Cross-Attention:} Multi-head cross-attention is regularized by continuous Gaussian hemodynamic delay priors ($\tau_h \in [3.5, 6.5]$\,s) and strict token timestamp causal masking ($t_{\mathrm{nirs}} \ge t_{\mathrm{eeg}}$), eliminating acausal optimization shortcuts.
-  \item \textbf{Uncertainty-Aware Entropy-Guided Dual-Stream Gating:} An adaptive bottleneck network dynamically balances deep cross-attention tokens against shallow biophysical spectral summaries conditioned on predictive distribution entropy.
-  \item \textbf{Causal Online Adaptation \& Multi-Task Generalization:} We introduce Causal Recursive Euclidean Alignment (CrEA), stabilizing covariance within 5--8 trials under empirical Bayes shrinkage. Across 29 participants on the TU Berlin benchmark under LOSO cross-validation, NVC-DelayFormer achieves a 3-seed grand mean accuracy of \textbf{78.22\% $\pm$ 1.00\%} (primary seed: \textbf{79.37\% $\pm$ 7.73\%}), significantly outperforming 2D-EEGNet ($p = 1.10\times 10^{-4}$), covariance-aligned Shrinkage-LDA ($p = 0.0167$), and unconstrained cross-attention ($p = 7.18\times 10^{-4}$). External validations across 3,612 held-out trials demonstrate robust generalizability on $n$-back working memory (73.24\%) and motor imagery (66.32\%).
-  \item \textbf{Bedside-Ready Edge Profile:} The architecture operates with only \textbf{63,932 trainable parameters} and \textbf{24.79\,M MACs}, executing in \textbf{2.22\,ms} on a laptop GPU (P99: 4.48\,ms), ready for real-time bedside closed-loop deployment.
+\noindent\textbf{Key Contributions \& Empirical Rigor:}
+We present \textbf{NVC-DelayFormer}, an end-to-end biophysically constrained architecture coupling electrophysiological and optical feature streams through explicit neurovascular coupling inductive priors:
+\begin{enumerate}\setlength\itemsep{0.08em}\setlength\parskip{0pt}
+  \item \textbf{Biophysically Constrained Cross-Attention:} Multi-head attention is regularized by continuous Gaussian hemodynamic delay kernels ($\tau_h \in [3.5, 6.5]$\,s) and strict token timestamp causal masking ($t_{\mathrm{nirs}} \ge t_{\mathrm{eeg}}$), eliminating acausal optimization shortcuts.
+  \item \textbf{Entropy-Guided Dual-Stream Gating:} An adaptive bottleneck dynamically balances deep cross-modal tokens against shallow biophysical spectral summaries conditioned on predictive distribution entropy, safeguarded by auxiliary waveform reconstruction.
+  \item \textbf{Causal Online Adaptation \& Multi-Task Generalization:} We introduce Causal Recursive Euclidean Alignment (CrEA), eliminating session lookahead and stabilizing reference covariances within 5--8 trials under empirical Bayes shrinkage (retaining 94.9\% of offline performance in trial-causal streaming evaluation). Across 29 participants on the TU Berlin benchmark under LOSO cross-validation, NVC-DelayFormer achieves a 3-seed grand mean accuracy of \textbf{78.22\% $\pm$ 1.00\%} (primary seed: \textbf{79.37\% $\pm$ 7.73\%}), significantly outperforming standard 2D-EEGNet ($p = 1.10\times 10^{-4}$), covariance-aligned Shrinkage-LDA ($p = 0.0167$), and unconstrained cross-attention ($p = 7.18\times 10^{-4}$). External validations across 3,612 held-out trials demonstrate robust generalizability on $n$-back working memory (73.24\%) and motor imagery (66.32\%).
+  \item \textbf{Bedside-Ready Edge Profile:} The architecture operates with only \textbf{63,932 parameters} and \textbf{24.79\,M MACs}, executing in \textbf{2.22\,ms} on a laptop GPU (P99: 4.48\,ms, >400\,Hz throughput), ready for real-time bedside closed-loop deployment.
 \end{enumerate}
 
 \smallskip
-\noindent\textbf{Declarations \& Compliance:}
-This manuscript represents original work not under consideration elsewhere. All human investigations used de-identified data approved under protocol SH\_01\_20150330 by Technische Universit{\"a}t Berlin in accordance with the Declaration of Helsinki. The authors declare no competing interests. The manuscript strictly spans \textbf{8 pages} with zero overlength charges. Complete source code and reproducibility artifacts are openly available at \url{https://github.com/ujujuj3061831150/nvc-delayformer-bci}.
+\noindent\textbf{Mandatory Declarations \& Compliance:}
+\begin{itemize}\setlength\itemsep{0.06em}\setlength\parskip{0pt}
+  \item \textbf{Originality \& Conference Status:} This manuscript represents original work not published previously and not under consideration elsewhere. It is entirely new and is not an extension of any conference proceeding.
+  \item \textbf{Preprint Status:} This manuscript has not been posted to any preprint repository (e.g., arXiv, TechRxiv, bioRxiv).
+  \item \textbf{Authorship Approval:} All authors have read and approved the final manuscript and agree with its submission to IEEE TBME.
+  \item \textbf{Ethical Approval:} All human participant analyses used de-identified open-access data approved by the Ethics Committee of the Institute of Psychology and Ergonomics, Technische Universit{\"a}t Berlin (protocol SH\_01\_20150330), in accordance with the Declaration of Helsinki.
+  \item \textbf{Conflict of Interest \& Funding:} The authors declare no competing interests, and no external grant funding directly supported this specific research.
+  \item \textbf{Page Budget Guarantee:} The manuscript is formatted in standard IEEE Transactions style and strictly spans \textbf{8 pages} with \textbf{\$0 overlength charges}.
+  \item \textbf{Reproducibility:} Complete source code and test suites are openly accessible at \href{https://github.com/ujujuj3061831150/nvc-delayformer-bci}{GitHub Repository (ujujuj3061831150/nvc-delayformer-bci)}.
+\end{itemize}
 
-\bigskip
-\noindent Sincerely,\\[1.5ex]
+\smallskip
+\noindent Thank you very much for your time and consideration of our work.
+
+\smallskip
+\noindent Sincerely,\\[0.8ex]
 \textbf{Fang Duan} (Corresponding Author, E-mail: \texttt{nkfetsh@gmail.com}) \\
-\textbf{Hongjie Chen} (E-mail: \texttt{chenhj976@gmail.com}) \\
+\textbf{Hongjie Chen} (First Author, E-mail: \texttt{chenhj976@gmail.com}) \\
 College of Information Science and Engineering, Huaqiao University, Xiamen 361021, Fujian, China
 \end{document}
