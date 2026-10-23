@@ -331,9 +331,9 @@ nvc-delayformer-bci/
 如果本项目或论文中的模型、时延跨模态注意力机制或复现代码对您的研究有所启发或帮助，欢迎引用本手稿：
 
 ```bibtex
-@article{nvc_delayformer_2026,
-  title={Biophysically Grounded Neurovascular Latency Modeling and Causal Cross-Attention for Subject-Independent EEG-fNIRS Brain-Computer Interfaces},
-  author={Antigravity BCI Research Team and Collaborators},
+@article{chen2026physiology,
+  title={Physiology-Guided Temporal Fusion for Cross-Subject EEG--fNIRS Brain--Computer Interfaces},
+  author={Chen, Hongjie and Duan, Fang},
   journal={IEEE Transactions on Biomedical Engineering},
   year={2026},
   note={Under Peer Review}

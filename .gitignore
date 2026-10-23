@@ -88,7 +88,6 @@ reports/*.md
 reports/*.txt
 reports/archive/
 reports/figures/
-scripts/
 manuscript/
 config/
 run_pipeline.py
