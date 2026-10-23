@@ -1,7 +1,7 @@
 {
   "archive_date": "2026-10-21",
   "software_version": "1.0.0",
-  "base_git_commit": "1c85dbcbc47df4eb630224c7e3506c298184f677",
+  "base_git_commit": "30d3351232369a33508035eee44c75936db8dcbd",
   "working_tree_has_changes": true,
   "source": "Current working-tree bytes; not only committed files",
   "doi": null,
@@ -57,6 +57,7 @@
     "requirements.txt",
     "run_pipeline.py",
     "scripts/apply_paper_fixes.py",
+    "scripts/audit_panel_alignment.py",
     "scripts/complete_final_revision.py",
     "scripts/complete_paper_polishing.py",
     "scripts/evaluate_real_crea_streaming.py",
