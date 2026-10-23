@@ -6,7 +6,12 @@
   "description": "Working-tree software snapshot with model code, tests, saved JSON records, an example checkpoint, and manuscript materials. Third-party participant recordings are not included. Prepared for repository deposit; this archive does not assign a DOI.",
   "creators": [
     {
-      "name": "Antigravity BCI Research Collaborative"
+      "name": "Chen, Hongjie",
+      "affiliation": "College of Information Science and Engineering, Huaqiao University, Xiamen, China"
+    },
+    {
+      "name": "Duan, Fang",
+      "affiliation": "College of Information Science and Engineering, Huaqiao University, Xiamen, China"
     }
   ],
   "license": "MIT",

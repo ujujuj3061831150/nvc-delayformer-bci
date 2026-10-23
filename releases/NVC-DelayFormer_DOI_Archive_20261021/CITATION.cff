@@ -1,9 +1,15 @@
 cff-version: 1.2.0
-message: "Please cite this software archive and the original datasets when using the code."
+message: "Please cite this software archive and the companion manuscript when using this codebase."
 type: software
-title: "NVC-DelayFormer: companion software for cross-subject EEG-fNIRS brain-computer interfaces"
+title: "NVC-DelayFormer: Physiology-Guided Temporal Fusion for Cross-Subject EEG-fNIRS Brain-Computer Interfaces"
 version: "1.0.0"
 date-released: "2026-10-21"
 authors:
-  - name: "Antigravity BCI Research Collaborative"
+  - family-names: "Chen"
+    given-names: "Hongjie"
+    affiliation: "College of Information Science and Engineering, Huaqiao University, Xiamen, China"
+  - family-names: "Duan"
+    given-names: "Fang"
+    affiliation: "College of Information Science and Engineering, Huaqiao University, Xiamen, China"
 license: MIT
+repository-code: "https://github.com/ujujuj3061831150/nvc-delayformer-bci"
