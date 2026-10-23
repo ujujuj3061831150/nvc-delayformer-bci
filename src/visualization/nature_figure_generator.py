@@ -499,7 +499,6 @@ def main():
         root / "reports/figures",
         root / "latex/figures",
         root / "latex_cbm/figures",
-        Path(r"C:\Users\ikunccc\.gemini\antigravity\brain\dced5340-cb2c-4d72-a2e2-7006b0c89469\figures")
     ]
 
     print("Generating Nature-grade scientific figure suite...")

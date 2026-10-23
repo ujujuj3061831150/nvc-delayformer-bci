@@ -350,10 +350,10 @@ The study contributes a reproducible temporal-fusion formulation and a participa
 
 Sincerely,
 
-Antigravity BCI Research Collaborative
+Fang Duan (Corresponding Author), Hongjie Chen
 
-Laboratory for Neural Engineering & Neurovascular Computing
+College of Information Science and Engineering, Huaqiao University
 
-research@antigravity-bci.org
+nkfetsh@gmail.com, chenhj976@gmail.com
 ''',encoding='utf-8')
 print('Reorganized and polished CMPB manuscript; recorded experiment data unchanged.')

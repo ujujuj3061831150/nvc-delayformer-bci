@@ -42,11 +42,11 @@ The accompanying records retain subject-level results and the statistical and en
 
 Sincerely,
 
-Antigravity BCI Research Collaborative
+Fang Duan (Corresponding Author), Hongjie Chen
 
-Laboratory for Neural Engineering & Neurovascular Computing
+College of Information Science and Engineering, Huaqiao University
 
-research@antigravity-bci.org
+nkfetsh@gmail.com, chenhj976@gmail.com
 '''
 (root/'reports/CBM_Cover_Letter.md').write_text(letter,encoding='utf-8')
 

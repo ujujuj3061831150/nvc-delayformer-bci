@@ -10,7 +10,8 @@ readme = "README.md"
 requires-python = ">=3.9"
 license = {text = "MIT"}
 authors = [
-    {name = "Antigravity BCI Research Collaborative"}
+    {name = "Hongjie Chen", email = "chenhj976@gmail.com"},
+    {name = "Fang Duan", email = "nkfetsh@gmail.com"}
 ]
 keywords = ["EEG", "fNIRS", "BCI", "neurovascular-coupling", "cross-attention", "biomedical-computing"]
 classifiers = [

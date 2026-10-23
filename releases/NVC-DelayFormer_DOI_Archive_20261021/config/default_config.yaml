@@ -1,0 +1,59 @@
+# ==============================================================================
+# Global Configuration for EEG-fNIRS NVC-DelayFormer Project
+# Ensures Deterministic Execution and Reproducibility
+# ==============================================================================
+
+experiment:
+  name: "NVC_DelayFormer_TUBerlin"
+  seed: 42
+  device: "cuda"                  # "cuda" or "cpu"
+  deterministic: true             # Enforce torch.backends.cudnn.deterministic
+
+paths:
+  raw_data_dir: "data/raw"
+  processed_data_dir: "data/processed"
+  checkpoints_dir: "checkpoints"
+  logs_dir: "logs"
+
+dataset:
+  name: "TU_Berlin"
+  task: "mental_arithmetic"       # "mental_arithmetic" or "motor_imagery"
+  num_subjects: 26
+  eeg_channels: 28
+  fnirs_channels: 72              # 36 HbO + 36 HbR dual concentrations
+  eeg_sample_rate_raw: 1000       # Hz
+  eeg_sample_rate_target: 100     # Downsampled Hz
+  fnirs_sample_rate: 10.4         # Hz (TUBerlin default)
+  
+preprocessing:
+  eeg:
+    bandpass_low: 0.5             # Hz
+    bandpass_high: 40.0           # Hz
+    rereference: "CAR"            # Common Average Reference
+  fnirs:
+    wavelengths: [760, 850]       # nm
+    dpf_760: 6.51                 # Wavelength-specific DPF (Scholkmann & Wolf 2013)
+    dpf_850: 5.86                 # Tissue dispersion compensation
+    bandpass_low: 0.01            # Hz (remove drift)
+    bandpass_high: 0.20           # Hz (remove cardiac ~1Hz and Mayer ~0.1Hz)
+
+model:
+  name: "NVC_DelayFormer"
+  eeg_feature_dim: 64
+  fnirs_feature_dim: 64
+  latent_dim: 128
+  num_heads: 4
+  dropout: 0.25
+  # Physiological NVC Prior Parameters:
+  nvc_delay_mean_seconds: 5.0     # Theoretical HRF delay center ~ 5.0s
+  nvc_delay_std_seconds: 1.5      # Gaussian variance spread around the peak
+  use_physiological_delay: true
+  use_reconstruction_loss: true
+
+training:
+  batch_size: 16
+  epochs: 80
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  loss_recon_lambda: 0.1          # Weight for physiological reconstruction loss
+  evaluation_protocol: "LOSO"     # Leave-One-Subject-Out Cross-Validation

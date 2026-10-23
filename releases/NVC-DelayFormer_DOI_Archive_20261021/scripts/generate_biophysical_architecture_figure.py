@@ -182,7 +182,7 @@ def draw_architecture_schematic(output_png: Path, output_pdf: Path):
     output_png.parent.mkdir(parents=True, exist_ok=True)
     plt.savefig(output_png, dpi=300, bbox_inches="tight")
     plt.savefig(output_pdf, bbox_inches="tight")
-    for extra_dir in [Path("latex/figures"), Path("C:/Users/ikunccc/.gemini/antigravity/brain/dced5340-cb2c-4d72-a2e2-7006b0c89469/figures")]:
+    for extra_dir in [Path("latex/figures")]:
         extra_dir.mkdir(parents=True, exist_ok=True)
         plt.savefig(extra_dir / output_png.name, dpi=300, bbox_inches="tight")
         plt.savefig(extra_dir / output_pdf.name, bbox_inches="tight")

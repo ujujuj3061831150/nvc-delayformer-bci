@@ -1,7 +1,6 @@
 """
 One-Click Reproducibility Suite for IEEE TBME Manuscript:
-"Biophysically Grounded Neurovascular Latency Modeling and Causal Cross-Attention
-for Subject-Independent EEG-fNIRS Brain-Computer Interfaces"
+"Physiology-Guided Temporal Fusion for Cross-Subject EEG–fNIRS Brain–Computer Interfaces"
 
 Provides a unified, zero-configuration CLI to verify, audit, and reproduce all
 empirical findings, model architectures, and experimental tables reported in the paper.

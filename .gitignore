@@ -86,10 +86,13 @@ latex_cbm/
 reports/*.pdf
 reports/*.md
 reports/*.txt
+!reports/Cover_Letter.md
+!reports/Highlights.md
+!reports/Submission_Package_Checklist.md
 reports/archive/
 reports/figures/
-manuscript/
-config/
+*.bak
+manuscript/main_exp.*
 run_pipeline.py
 related_literature_10_papers.md
 requirements-lock.txt

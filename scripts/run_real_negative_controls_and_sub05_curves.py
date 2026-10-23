@@ -194,7 +194,7 @@ def run():
     ax2.set_title("Hemodynamic Reconstruction & Accuracy", loc="left", fontsize=7.8, fontweight="bold")
 
     plt.tight_layout()
-    for d in [Path("reports/figures"), Path("latex/figures"), Path("latex_cbm/figures"), Path(r"C:\Users\ikunccc\.gemini\antigravity\brain\dced5340-cb2c-4d72-a2e2-7006b0c89469\figures")]:
+    for d in [Path("reports/figures"), Path("latex/figures"), Path("latex_cbm/figures")]:
         d.mkdir(parents=True, exist_ok=True)
         fig.savefig(d / "training_curves_sub05.png", dpi=600)
         fig.savefig(d / "training_curves_sub05.pdf")

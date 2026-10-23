@@ -534,7 +534,7 @@ def generate_all_figures(data: Dict, locked_preds: Dict):
 
     fig_dir = Path("reports/figures")
     latex_fig_dir = Path("latex/figures")
-    artifact_fig_dir = Path("C:/Users/ikunccc/.gemini/antigravity/brain/dced5340-cb2c-4d72-a2e2-7006b0c89469/figures")
+    artifact_fig_dir = Path("reports/figures")
     fig_dir.mkdir(parents=True, exist_ok=True)
     latex_fig_dir.mkdir(parents=True, exist_ok=True)
     artifact_fig_dir.mkdir(parents=True, exist_ok=True)

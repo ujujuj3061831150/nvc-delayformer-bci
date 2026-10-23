@@ -15,7 +15,7 @@ Modules:
 """
 
 __version__ = "1.0.0"
-__author__ = "Antigravity BCI Research Collaborative"
+__author__ = "Hongjie Chen, Fang Duan"
 
 from .delay_attention import PhysiologyDelayCrossAttention
 from .temporal_weights import (
