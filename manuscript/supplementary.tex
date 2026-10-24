@@ -165,8 +165,8 @@ with numerical regularization $\epsilon = 10^{-5}$. The aligned EEG trial is tra
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=\columnwidth]{figures/attention_and_delay_diagnostics.pdf}
-\caption{Reproduction of diagnostic panels from main text Fig.~2: Panel (c) highlights the rapid exponential decay of relative covariance error $\|\mathbf{R}_k - \overline{\mathbf{R}}_{\mathrm{test}}\|_F / \|\overline{\mathbf{R}}_{\mathrm{test}}\|_F$ under empirical Bayes prior shrinkage ($\kappa_0=5.0$) vs.\ cold-start identity initialization, stabilizing within 5--8 trials.}
+\includegraphics[width=\columnwidth]{figures/supplementary_fig_s2_crea_convergence.pdf}
+\caption{Online Causal Recursive Euclidean Alignment (CrEA) covariance whitening convergence dynamics across 60 continuous trials ($k=1,\dots,60$) averaged across all 29 held-out participants. Empirical Bayes shrinkage prior ($\kappa_0=5.0$, blue solid curve with shaded 95\% CI) rapidly stabilizes within $k \le 8$ calibration trials ($\|\mathbf{R}_k - \overline{\mathbf{R}}_{\mathrm{test}}\|_F / \|\overline{\mathbf{R}}_{\mathrm{test}}\|_F \le 29.38\%$), dramatically outperforming naive cold-start identity initialization ($\mathbf{R}_0 = \mathbf{I}$, orange dashed line: 47.92\% error at trial 8).}
 \label{fig:supp_crea_curve}
 \end{figure}
 
