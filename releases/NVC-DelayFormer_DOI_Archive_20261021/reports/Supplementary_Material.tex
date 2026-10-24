@@ -73,7 +73,7 @@ A central finding in cross-paradigm evaluation (Section~V-F of the main manuscri
 \subsection{Empirical Findings and Biophysical Mechanism}
 As illustrated in Supplementary Fig.~\ref{fig:supp_s1}(a), mental arithmetic exhibits a pronounced delay resonance curve: accuracy increases monotonically from 75.34\% at $\tau = 0.0$\,s to 80.46\% at $\tau = 8.0$\,s ($\Delta = +5.12$\,pp, $p < 0.001$), plateauing across the physiological window ($\tau \in [3.5, 6.5]$\,s). In contrast, motor imagery yields an essentially horizontal trajectory: grand mean accuracy fluctuates between 68.91\% ($\tau = 1.0$\,s) and 69.60\% ($\tau = 6.0$\,s), an amplitude range of only 0.69\,pp, with overlapping confidence intervals across all candidate latencies.
 
-The retrained factorial decomposition in Supplementary Fig.~\ref{fig:supp_s1}(b) reinforces this paradigm-dependent disparity. For mental arithmetic, omitting both priors ($P_{\mathrm{off}}, M_{\mathrm{off}}$) collapses accuracy by $-4.94$\,pp ($79.37\% \to 74.43\%$, $p = 6.05 \times 10^{-5}$), with the Gaussian prior accounting for an average marginal contribution of +4.31\,pp. Conversely, for motor imagery, retraining with both priors disabled yields 68.28\% $\pm$ 13.72\% vs.\ 69.20\% $\pm$ 14.30\% for the full model ($\Delta = -0.92$\,pp, Wilcoxon $W = 156.5$, $p = 0.2128$, non-significant). Omitting causal masking alone ($P_{\mathrm{on}}, M_{\mathrm{off}}$: 68.10\%, $p = 0.0978$) or the delay prior alone ($P_{\mathrm{off}}, M_{\mathrm{on}}$: 68.68\%, $p = 0.1766$) likewise shows no statistically significant divergence.
+The retrained factorial decomposition in Supplementary Fig.~\ref{fig:supp_s1}(b) reinforces this paradigm-dependent disparity. For mental arithmetic, omitting both priors ($P_{\mathrm{off}}, M_{\mathrm{off}}$) collapses accuracy by $-4.94$\,pp ($79.37\% \to 74.43\%$, $p = 6.05 \times 10^{-5}$), with the Gaussian prior accounting for an average marginal contribution of +4.31\,pp. Conversely, for motor imagery, retraining with both priors disabled yields 68.28\% $\pm$ 13.72\% vs.\ 69.20\% $\pm$ 14.40\% for the full model ($\Delta = -0.92$\,pp, Wilcoxon $W = 106.5$, $p = 0.2128$, non-significant). Omitting causal masking alone ($P_{\mathrm{on}}, M_{\mathrm{off}}$: 68.10\%, $p = 0.0978$) or the delay prior alone ($P_{\mathrm{off}}, M_{\mathrm{on}}$: 68.68\%, $p = 0.1766$) likewise shows no statistically significant divergence.
 
 Biophysically, this fundamental contrast originates from distinct functional vascular architectures:
 \begin{enumerate}
@@ -127,14 +127,14 @@ Sub-28 & 53.33 & 53.33 & 51.67 & 55.00 & $+1.67$ \\
 Sub-29 & 63.33 & 63.33 & 63.33 & 66.67 & $+3.33$ \\
 \midrule
 \textbf{Mean} & \textbf{69.20} & \textbf{68.68} & \textbf{68.10} & \textbf{68.28} & \textbf{$-$0.92} \\
-\textbf{SD} & 14.30 & 14.85 & 14.03 & 13.72 & 3.94 \\
-\textbf{Macro F1} & 66.86 & 66.26 & 65.79 & 66.06 & $-$0.80 \\
+\textbf{SD} & 14.40 & 14.85 & 14.03 & 13.72 & 4.10 \\
+\textbf{Macro F1} & 67.00 & 66.26 & 65.79 & 66.06 & $-$0.94 \\
 \textbf{Wilcoxon $p$} & -- & 0.1766 & 0.0978 & 0.2128 & -- \\
 \bottomrule
 \end{tabular}%
 }
 \par\smallskip
-{\scriptsize Evaluated on the 29-participant Motor Imagery benchmark from Shin et al.\ (2017) \cite{shin2017open} across 1,740 trials (60 trials per participant, 30 Left Hand vs.\ 30 Right Hand). All variants trained from scratch under identical hyperparameter schedules. Wilcoxon signed-rank $p$-values are computed against the Full Model ($df=28$).}
+{\scriptsize Evaluated on the 29-participant Motor Imagery benchmark from Shin et al.\ (2017) \cite{shin2017open} across 1,740 trials (60 trials per participant, 30 Left Hand vs.\ 30 Right Hand). All variants trained from scratch under identical hyperparameter schedules. Wilcoxon signed-rank $p$-values are computed against the Full Model ($N=29$ participants).}
 \end{table}
 
 Between-subject standard deviations ($\sim 14.0$\,pp) significantly exceed the marginal differences observed across model conditions ($\le 1.1$\,pp). High responders (e.g., Sub-19 and Sub-26: $>90\%$) decode robustly regardless of prior conditioning, while challenging BCI-illiterate participants (e.g., Sub-10, Sub-12, Sub-24: $\le 50\%$) show no selective dependency on the delay parameter.
@@ -188,7 +188,7 @@ Specification & Value / Description \\
 \midrule
 EEG Sampling Rate ($f_e \to f_e^{\mathrm{eff}}$) & $100\,\mathrm{Hz} \to 25\,\mathrm{Hz}$ (4$\times$ temporal average pooling) \\
 fNIRS Sampling Rate ($f_n$) & $10.33\,\mathrm{Hz}$ (124 samples over 12.0\,s window) \\
-Temporal Receptive Field ($T_{\mathrm{win}}$) & $10.0\,\mathrm{s}$ (EEG: 1000 samples; fNIRS: 124 samples) \\
+Temporal Receptive Field ($T_{\mathrm{win}}$) & EEG: $10.0\,\mathrm{s}$ (1000 samples); fNIRS: $12.0\,\mathrm{s}$ (124 samples) \\
 Attention Embedding Dimension ($D$) & 64 ($d_h = 16$ across 4 heads) \\
 Delay Prior Centers ($\tau_h$) & $\{3.5, 4.5, 5.5, 6.5\}\,\mathrm{s}$ \\
 Delay Prior Dispersion ($\sigma_h$) & $1.5\,\mathrm{s}$ (fixed physiological prior) \\
