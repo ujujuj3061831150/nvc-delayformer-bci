@@ -92,6 +92,8 @@ reports/*.txt
 !reports/Submission_Package_Checklist.md
 !reports/manuscript_IEEEtran_submission.pdf
 !reports/manuscript_submission.pdf
+!reports/Supplementary_Material.pdf
+!reports/Cover_Letter.pdf
 reports/archive/
 reports/figures/
 *.bak
@@ -99,8 +101,8 @@ manuscript/main_exp.*
 run_pipeline.py
 related_literature_10_papers.md
 requirements-lock.txt
-AGENTS.md
-
+diff_check.txt
+*.html
 
 # ------------------------------------------------------------------------------
 # 6. IDEs & Operating System Artifacts

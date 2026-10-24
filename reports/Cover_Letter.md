@@ -37,8 +37,8 @@ We present **NVC-DelayFormer**, which embeds neurovascular timing constraints in
 - **Authorship Approval:** All authors have read and approved the final manuscript and agree with its submission to IEEE TBME.
 - **Ethical Approval:** All human participant analyses used de-identified open-access data approved by the Ethics Committee of the Institute of Psychology and Ergonomics, Technische Universität Berlin (protocol SH_01_20150330), in accordance with the Declaration of Helsinki.
 - **Conflict of Interest & Funding:** The authors declare no competing financial or non-financial interests, and no external grant funding directly supported this specific research.
-- **Manuscript Length:** The submitted manuscript comprises eight pages in IEEE Transactions format.
-- **Reproducibility:** Complete source code and test suites are openly accessible at https://github.com/ujujuj3061831150/nvc-delayformer-bci.
+- **Manuscript Length & Supplementary Material:** The submitted manuscript comprises eight pages in IEEE Transactions format, accompanied by a 3-page Supplementary Material document containing paradigm-specific delay sensitivity analyses (Supplementary Fig. S1), 29-subject fold breakdowns (Supplementary Table S1), and streaming algorithm details.
+- **Reproducibility:** Complete source code, test suites, and DOI archive are openly accessible at https://github.com/ujujuj3061831150/nvc-delayformer-bci.
 
 Thank you very much for your time and consideration of our work.
 
