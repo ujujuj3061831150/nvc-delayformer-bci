@@ -60,9 +60,6 @@ def main():
         err_shrinkage = (0.52 * np.exp(-k_trials / 4.8) + 0.08 / np.sqrt(k_trials)) * 100.0
         err_naive = (1.35 * np.exp(-k_trials / 11.0) + 0.18 / np.sqrt(k_trials)) * 100.0
 
-    ci_shrinkage = np.maximum(err_shrinkage * 0.10, 1.2)
-    ci_naive = np.maximum(err_naive * 0.12, 2.0)
-
     # Colors
     COLOR_SHRINKAGE = "#0F4D92"  # Deep Royal Blue
     COLOR_NAIVE = "#D95F02"      # High-Contrast Coral
@@ -70,12 +67,6 @@ def main():
 
     fig, ax = plt.subplots(figsize=(3.5, 2.5), dpi=600)
     plt.subplots_adjust(left=0.18, right=0.96, top=0.84, bottom=0.18)
-
-    # Shaded confidence bands (edgecolor='none' to avoid stroke crossings)
-    ax.fill_between(k_trials, err_shrinkage - ci_shrinkage, err_shrinkage + ci_shrinkage,
-                    color=COLOR_SHRINKAGE, alpha=0.18, edgecolor="none", zorder=1)
-    ax.fill_between(k_trials, err_naive - ci_naive, err_naive + ci_naive,
-                    color=COLOR_NAIVE, alpha=0.15, edgecolor="none", zorder=1)
 
     ax.plot(k_trials, err_shrinkage, color=COLOR_SHRINKAGE, lw=1.8,
             label=r"Shrinkage Prior ($\kappa_0=5.0$)", zorder=3)
