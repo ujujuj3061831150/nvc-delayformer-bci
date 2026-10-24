@@ -135,7 +135,7 @@ def main():
 
     for sid in all_subs:
         pt_path = data_dir / f"sub-{sid:02d}" / "mi_epochs.pt"
-        loaded = torch.load(pt_path, map_location="cpu", weights_only=False)
+        loaded = torch.load(pt_path, map_location="cpu", weights_only=True)
         eeg_raw = loaded["eeg"].numpy()
         fnirs_raw = loaded["fnirs"].numpy()
         labels = loaded["labels"].numpy()

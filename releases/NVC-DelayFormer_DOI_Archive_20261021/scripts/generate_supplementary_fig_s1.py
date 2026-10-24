@@ -109,7 +109,7 @@ def main():
                   arrowprops=dict(arrowstyle="->", lw=0.9, color=COLOR_MA),
                   fontsize=6.8, fontweight="bold", color=COLOR_MA)
 
-    ax_a.annotate("MI: Delay-Invariant\n(flat: $\\Delta \\leq 0.69$ pp, $p=\\mathrm{n.s.}$)",
+    ax_a.annotate("MI: Delay-Invariant\n(flat: $\\Delta \\leq 0.69$ pp, $p$ = n.s.)",
                   xy=(1.0, mi_means[1]), xytext=(0.2, 64.2),
                   arrowprops=dict(arrowstyle="->", lw=0.9, color=COLOR_MI),
                   fontsize=6.8, fontweight="bold", color=COLOR_MI)
@@ -156,65 +156,72 @@ def main():
     x = np.arange(len(cond_labels))
     width = 0.36
 
-    rects_ma = ax_b.bar(x - width/2, ma_fact_means, width, yerr=ma_fact_ses,
+    # Upper-only error bars for clean bar presentation
+    yerr_ma = [np.zeros_like(ma_fact_ses), ma_fact_ses]
+    yerr_mi = [np.zeros_like(mi_fact_ses), mi_fact_ses]
+
+    rects_ma = ax_b.bar(x - width/2, ma_fact_means, width, yerr=yerr_ma,
                         label="Mental Arithmetic (MA)", color=COLOR_MA, alpha=0.92,
                         edgecolor="#0E2343", lw=0.8, capsize=3.0, zorder=3)
-    rects_mi = ax_b.bar(x + width/2, mi_fact_means, width, yerr=mi_fact_ses,
+    rects_mi = ax_b.bar(x + width/2, mi_fact_means, width, yerr=yerr_mi,
                         label="Motor Imagery (MI)", color=COLOR_MI, alpha=0.92,
                         edgecolor="#8F3E01", lw=0.8, capsize=3.0, zorder=3)
 
-    # Value text on top of bars
+    # Value text placed cleanly inside bars near top (in white bold)
     for rect in rects_ma:
         h = rect.get_height()
-        ax_b.text(rect.get_x() + rect.get_width()/2.0, h + 1.0, f"{h:.1f}%",
-                  ha="center", va="bottom", fontsize=6.2, fontweight="bold", color=COLOR_MA)
+        ax_b.text(rect.get_x() + rect.get_width()/2.0, h - 3.0, f"{h:.1f}%",
+                  ha="center", va="top", fontsize=6.5, fontweight="bold", color="white")
 
     for rect in rects_mi:
         h = rect.get_height()
-        ax_b.text(rect.get_x() + rect.get_width()/2.0, h + 1.0, f"{h:.1f}%",
-                  ha="center", va="bottom", fontsize=6.2, fontweight="bold", color=COLOR_MI)
+        ax_b.text(rect.get_x() + rect.get_width()/2.0, h - 3.0, f"{h:.1f}%",
+                  ha="center", va="top", fontsize=6.5, fontweight="bold", color="white")
 
     ax_b.set_xticks(x)
     ax_b.set_xticklabels(cond_labels, fontsize=6.8)
     ax_b.set_ylabel("Retrained LOSO Accuracy (%)", fontweight="bold")
-    ax_b.set_ylim(58.0, 88.0)
+    ax_b.set_ylim(58.0, 91.0)
     ax_b.grid(True, axis="y", linestyle=":", alpha=0.5)
 
     ax_b.set_title("(b) Retrained Factorial Prior Decomposition", loc="left", pad=9,
                    fontsize=8.2, fontweight="bold")
 
     # Significance annotation bracket for MA (Full Model vs Both Off)
-    y_sig_ma = 83.5
+    y_sig_ma = 86.2
     ax_b.plot([0 - width/2, 3 - width/2], [y_sig_ma, y_sig_ma], lw=0.9, color=COLOR_MA)
     ax_b.plot([0 - width/2, 0 - width/2], [y_sig_ma - 0.7, y_sig_ma], lw=0.9, color=COLOR_MA)
     ax_b.plot([3 - width/2, 3 - width/2], [y_sig_ma - 0.7, y_sig_ma], lw=0.9, color=COLOR_MA)
-    ax_b.text(1.5 - width/2, y_sig_ma + 0.4, "$\\Delta = -4.94$ pp (*** $p=6.05\\times 10^{-5}$)",
+    ax_b.text(1.5 - width/2, y_sig_ma + 0.5, "$\\Delta = -4.94$ pp (*** $p=6.05\\times 10^{-5}$)",
               ha="center", va="bottom", fontsize=6.3, fontweight="bold", color=COLOR_MA)
 
     # Significance annotation for MI
-    y_sig_mi = 73.2
+    y_sig_mi = 82.2
     ax_b.plot([0 + width/2, 3 + width/2], [y_sig_mi, y_sig_mi], lw=0.9, color=COLOR_MI, linestyle="--")
     ax_b.plot([0 + width/2, 0 + width/2], [y_sig_mi - 0.7, y_sig_mi], lw=0.9, color=COLOR_MI)
     ax_b.plot([3 + width/2, 3 + width/2], [y_sig_mi - 0.7, y_sig_mi], lw=0.9, color=COLOR_MI)
-    ax_b.text(1.5 + width/2, y_sig_mi + 0.4, "$\\Delta = -0.92$ pp (n.s. $p=0.2128$)",
+    ax_b.text(1.5 + width/2, y_sig_mi + 0.5, "$\\Delta = -0.92$ pp ($p = 0.2128$, n.s.)",
               ha="center", va="bottom", fontsize=6.3, fontweight="bold", color=COLOR_MI)
 
     ax_b.legend(loc="lower left", frameon=True, framealpha=0.92, edgecolor="none", fontsize=6.6)
 
-    # Save to all target paths
-    out_paths = [
-        root / "manuscript/figures/supplementary_fig_s1_delay_curves.pdf",
-        root / "manuscript/figures/supplementary_fig_s1_delay_curves.png",
-        root / "reports/figures/supplementary_fig_s1_delay_curves.pdf",
-        root / "reports/figures/supplementary_fig_s1_delay_curves.png",
-    ]
+    # Save to manuscript paths first, then copy to reports
+    manuscript_pdf = root / "manuscript/figures/supplementary_fig_s1_delay_curves.pdf"
+    manuscript_png = root / "manuscript/figures/supplementary_fig_s1_delay_curves.png"
+    reports_pdf = root / "reports/figures/supplementary_fig_s1_delay_curves.pdf"
+    reports_png = root / "reports/figures/supplementary_fig_s1_delay_curves.png"
 
-    for p in out_paths:
-        p.parent.mkdir(parents=True, exist_ok=True)
-        fig.savefig(p, dpi=600, bbox_inches="tight")
-        print(f"[OK] Saved figure to: {p}")
+    manuscript_pdf.parent.mkdir(parents=True, exist_ok=True)
+    reports_pdf.parent.mkdir(parents=True, exist_ok=True)
 
+    fig.savefig(manuscript_pdf, dpi=600, bbox_inches="tight")
+    fig.savefig(manuscript_png, dpi=600, bbox_inches="tight")
     plt.close(fig)
+
+    import shutil
+    shutil.copy2(manuscript_pdf, reports_pdf)
+    shutil.copy2(manuscript_png, reports_png)
+    print(f"[OK] Saved figure to: {manuscript_pdf} and copied to {reports_pdf}")
 
 if __name__ == "__main__":
     main()
