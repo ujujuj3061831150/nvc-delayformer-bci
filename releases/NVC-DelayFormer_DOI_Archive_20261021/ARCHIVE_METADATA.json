@@ -1,7 +1,7 @@
 {
   "archive_date": "2026-10-21",
   "software_version": "1.0.0",
-  "base_git_commit": "81b5fba58854273dc057a2f28b07438dba81b60d",
+  "base_git_commit": "69d8ce7b03470c51927fc4554d39dc9259ea4f50",
   "working_tree_has_changes": true,
   "source": "Current working-tree bytes; not only committed files",
   "doi": null,
