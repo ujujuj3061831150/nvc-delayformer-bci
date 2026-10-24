@@ -101,6 +101,7 @@ manuscript/main_exp.*
 run_pipeline.py
 related_literature_10_papers.md
 requirements-lock.txt
+AGENTS.md
 diff_check.txt
 *.html
 
