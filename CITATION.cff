@@ -10,7 +10,6 @@ authors:
     affiliation: "College of Information Science and Engineering, Huaqiao University, Xiamen, China"
   - family-names: "Duan"
     given-names: "Fang"
-    orcid: "https://orcid.org/0000-0003-0982-2206"
     affiliation: "College of Information Science and Engineering, Huaqiao University, Xiamen, China"
 license: MIT
 repository-code: "https://github.com/ujujuj3061831150/nvc-delayformer-bci"
