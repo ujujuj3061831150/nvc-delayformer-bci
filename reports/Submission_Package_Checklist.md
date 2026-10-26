@@ -1,49 +1,118 @@
-# Journal of Neural Engineering (JNE) 投稿文件包清单与投稿风险自查对照表
+# Journal of Neural Engineering (JNE) 投稿文件包清单与投稿指南合规自查表
 
 **目标期刊：** *Journal of Neural Engineering* (JNE), IOP Publishing  
 **主编信息：** Prof. Warren M. Grill (Duke University, USA)  
 **稿件类型：** Research Paper（Format-Free Initial Submission 初审自由格式）  
 **论文标题：** Physiology-Guided Temporal Fusion for Cross-Subject EEG–fNIRS Brain–Computer Interfaces  
-**通讯作者：** 段芳（Fang Duan, `nkfetsh@gmail.com`）  
-**第一作者：** 陈宏杰（Hongjie Chen, `chenhj976@gmail.com`）  
-**作者单位：** 华侨大学信息科学与工程学院（College of Information Science and Engineering, Huaqiao University）  
-**开源代码库：** https://github.com/ujujuj3061831150/nvc-delayformer-bci  
+**通讯作者：** 段芳 博士/副教授（Fang Duan, Ph.D., Associate Professor, `nkfetsh@gmail.com`）  
+**通讯作者 ORCID：** [0000-0003-0982-2206](https://orcid.org/0000-0003-0982-2206)  
+**第一作者：** 陈宏杰 硕士研究生/助理研究员（Hongjie Chen, `chenhj976@gmail.com`）  
+**第一单位：** 华侨大学信息科学与工程学院（College of Information Science and Engineering, Huaqiao University）  
+**开源代码库：** [https://github.com/ujujuj3061831150/nvc-delayformer-bci](https://github.com/ujujuj3061831150/nvc-delayformer-bci)  
 
 ---
 
-## 一、 投稿系统直接上传核心文件资产
+## 一、 投稿系统直接上传核心文件资产清单
 
-1. **主手稿 PDF**：`manuscript/main.pdf`（或 `reports/manuscript.pdf`，严格 8.0 页双栏）
-   - 页眉：`JOURNAL OF NEURAL ENGINEERING, UNDER REVIEW, 2026`
-   - File Type in Portal: **Main Document**
-2. **补充材料 PDF**：`reports/Supplementary_Material.pdf`（4.0 页双栏）
-   - 页眉：`JOURNAL OF NEURAL ENGINEERING, UNDER REVIEW, 2026`
-   - 包含：Section S.I--S.IV 以及 **Section S.V & Table S3 (Buccino et al. 2016 独立外部数据集 15 折 LOSO 评测表，81.03%)**
-   - File Type in Portal: **Supplementary File**
-3. **投稿信 PDF**：`reports/Cover_Letter.pdf`（严格 1.0 页）
-   - 致 JNE 主编 Prof. Warren M. Grill，涵盖核心突破、双中心验证、伦理声明与无利益冲突
-   - File Type in Portal: **Cover Letter**
-4. **源码归档包**：`reports/manuscript_latex_source.zip`
-   - 包含干净的 `main.tex`, `main.bbl`, `references.bib`
+| 序号 | 投稿文件名称 | 格式/页数 | ScholarOne Portal File Designation | 核心校验指标与状态 |
+| :--- | :--- | :--- | :--- | :--- |
+| 1 | `manuscript/main.pdf` (或 `reports/manuscript.pdf`) | PDF / **严格 8.0 页双栏** | **Main Document** | 页眉标注 JNE Under Review 2026；完整双栏图表、公式与参考文献 [1]–[36]；无超页；SHA256: `f52eb07e...` |
+| 2 | `reports/Supplementary_Material.pdf` (或 `manuscript/supplementary.pdf`) | PDF / **严格 4.0 页双栏** | **Supplementary File** | 涵盖 Section S.I–S.V；Table S1–S3；Figure S1–S3；含 Buccino 2016 独立外部硬件队列评测（81.03%）；SHA256: `255628d1...` |
+| 3 | `reports/Cover_Letter.pdf` | PDF / **严格 1.0 页单栏** | **Cover Letter** | 致 JNE 主编 Prof. Warren M. Grill；包含通讯作者详细信息与 ORCID；态度谦逊礼貌；涵盖 IOP 8 项强制合规声明；SHA256: `63321bd9...` |
+| 4 | `reports/manuscript_latex_source.zip` | ZIP 压缩包 | **Source Files** | 包含清洗后的 `main.tex`, `main.bbl`, `references.bib` |
 
 ---
 
-## 二、 投稿四大核心自查对照表（审稿人视角免卡自查）
+## 二、 通讯作者与作者团队完整备案信息
 
-### 核心一：研究边界与无未证实首创（严格遵循学术边界约定）
-- [x] **无不实首创宣称**：全面剔除未逐篇核实的 "first/novel/pioneering" 宽泛宣称。
-- [x] **创新边界精准落地**：精确表述为“把以血流动力学响应时间为依据的多中心高斯时滞偏置（$\tau_h \in \{3.5, 4.5, 5.5, 6.5\}$ s）与排除未来 EEG token 的时间戳掩码共同写入 EEG–fNIRS 跨模态注意力，并在被试隔离的 LOSO 评估中用析因实验分别测量两者的作用”。
+### 1. 通讯作者（Corresponding Author）
+- **姓名：** 段芳（Fang Duan）
+- **职称/学位：** 副教授（Associate Professor）/ 工学博士（Ph.D.）
+- **所属院系：** 信息科学与工程学院（College of Information Science and Engineering）
+- **所属单位：** 华侨大学（Huaqiao University）
+- **通信地址：** 中国福建省厦门市集美区集美大道 668 号（No. 668 Jimei Avenue, Jimei District, Xiamen, Fujian 361021, P. R. China）
+- **官方邮箱：** `nkfetsh@gmail.com`
+- **ORCID：** [0000-0003-0982-2206](https://orcid.org/0000-0003-0982-2206)
 
-### 核心二：双中心跨硬件独立外部验证（解决单一数据集缺陷）
-- [x] **主数据集（TU Berlin）**：29 名被试，三大任务（心算 79.37%、工作记忆 73.24%、运动想象 66.32%）。
-- [x] **第二公开数据集（Buccino et al. 2016）**：15 名被试，3,000 试次，独立硬件（microEEG + NIRScout 8-16），取得 **81.03%** 跨被试识别率（Table S3）。
-- [x] **消融规律跨队列 100% 复现**：`Direct-Only (80.43%) > Latent-Only (73.70%)`，证明生理双流先验的普适鲁棒性。
+### 2. 第一作者（First Author）
+- **姓名：** 陈宏杰（Hongjie Chen）
+- **身份/学位：** 硕士研究生 / 助理研究员（Graduate Researcher）
+- **所属院系：** 信息科学与工程学院（College of Information Science and Engineering）
+- **所属单位：** 华侨大学（Huaqiao University）
+- **通信地址：** 中国福建省厦门市集美区集美大道 668 号（No. 668 Jimei Avenue, Jimei District, Xiamen, Fujian 361021, P. R. China）
+- **个人邮箱：** `chenhj976@gmail.com`
 
-### 核心三：工程算力与实时在线可行性（闭环 BCI 证据）
-- [x] **超轻量参数量**：全模型仅 **63,932** 参数与 **24.79 M MACs**，单试次 GPU 延迟仅 **2.22 ms**（P99: 4.48 ms）。
-- [x] **CrEA 在线递推复杂度 $\mathcal{O}(C^2)$**：CPU 单试次更新耗时 $< 1.2$ ms，8 试次内相对误差收敛至 29.38%，全闭环延迟 $< 15$ ms。
+---
 
-### 核心四：代码复现与合规伦理
-- [x] **单元测试全覆盖**：`pytest tests/` 26/26 项 100% 通过。
-- [x] **全维度审计断言**：`tests/audit_codebase_soundness.py` 12 维度 48 项断言 100% 通过。
-- [x] **开源透明度**：GitHub 仓库已完成 commit 与 push，开放完整代码。
+## 三、 对照 IOP Publishing / JNE 投稿指南逐项核对与缺漏补全表
+
+依据 IOP Publishing 官方《Author Guidelines》及《Journal of Neural Engineering Instructions for Authors》，逐项核对检查并落实：
+
+| 指南规范条目 | IOP / JNE 官方要求 | 本次投稿状态 | 核对落实细节与补全证据 |
+| :--- | :--- | :---: | :--- |
+| **1. 稿件范围契合度 (Scope & Fit)** | 跨学科结合神经科学与工程学；报道显著非增量突破 | **完全符合** | 针对 EEG–fNIRS 毫秒与秒级时间尺度失配瓶颈，提出神经血管耦合时滞先验网络，消除跨模态虚假未来关联。 |
+| **2. 投稿信格式与收件人 (Addressee)** | 需明确致信主编，陈述研究价值与关键贡献 | **完全符合** | 致信 JNE 主编 Prof. Warren M. Grill (Duke University)，涵盖 4 大核心突破与理论/工程价值。 |
+| **3. 通讯作者信息 (Contact Details)** | 须包含通讯作者姓名、单位、地址、邮箱及 ORCID | **完全补全** | 投稿信顶部与底部落款完整列明段芳博士职称、华侨大学详细地址、邮箱与 ORCID。 |
+| **4. 礼貌严谨态度 (Polite Attitude)** | 表达谦逊合作意愿，随时配合审稿需要 | **完全落实** | 投稿信结尾设置专属礼貌陈述：“随时乐意为编辑部与审稿人提供额外数据、说明或分析中间制品，全过程竭诚服务”。 |
+| **5. 原创性与独家性 (Originality)** | 论文为原创成果，未曾公开发表且未一稿多投 | **完全符合** | 投稿信与手稿中均作出强制 Originality & Exclusivity 声明。 |
+| **6. 预印本与会议披露 (Preprint Policy)** | 必须披露预印本 (arXiv/bioRxiv) 或会议衍生版本 | **完全补全** | 投稿信中明确披露：“No preprint or prior conference version of this work exists, and no text recycling has occurred”。 |
+| **7. 作者署名同意书 (Authorship)** | 全体作者均审阅、认可并同意投稿本刊 | **完全符合** | 投稿信明确声明全体作者知情同意。 |
+| **8. 伦理审查合规 (Ethical Approval)** | 必须提供伦理审查委员会名称与审批批号 | **完全符合** | 明确标明柏林工业大学伦理委员会批号 `SH_01_20150330`，符合赫尔辛基宣言。 |
+| **9. 利益冲突声明 (Conflict of Interest)** | 必须明确声明有无经济或非经济竞争利益 | **完全符合** | 声明无任何利益冲突（The authors declare no competing interests）。 |
+| **10. 基金资助说明 (Funding Statement)** | 须明确资助来源或声明无专项外部资助 | **完全补全** | 投稿信与手稿确认无专项外部基金资助偏倚。 |
+| **11. 数据与开源代码 (Data & Code)** | 倡导开放科学，提供代码与数据复现路径 | **完全符合** | 附上公开仓库 [GitHub/ujujuj3061831150/nvc-delayformer-bci](https://github.com/ujujuj3061831150/nvc-delayformer-bci)，权重与测试代码全开放。 |
+| **12. 外部独立队列验证 (Generalizability)** | 避免单一实验室/单硬件拟合，证明跨设备泛化 | **完全符合** | 补充材料 Section S.V 包含 Buccino et al. 2016 独立硬件队列 15 折 LOSO 验证（81.03%），彻底杜绝单数据集质疑。 |
+| **13. 无未证实首创词 (Overclaiming Ban)** | 严禁无据宣称 first, novel, pioneering, superior | **完全符合** | 经全局审计脚本断言核查，全面杜绝无证据首创宣称。 |
+
+---
+
+## 四、 ScholarOne 投稿系统表单填报一览表（即拷即用）
+
+### 1. 论文基础元数据（Manuscript Details）
+- **Article Type:** Research Paper
+- **Full Title:** Physiology-Guided Temporal Fusion for Cross-Subject EEG–fNIRS Brain–Computer Interfaces
+- **Running Head / Short Title:** NVC-DelayFormer for Cross-Subject EEG–fNIRS BCIs
+- **Subject / Topic Area:** Brain–Computer Interfaces & Neural Signal Processing
+- **Keywords:** Brain–computer interface, cross-subject decoding, electroencephalography, functional near-infrared spectroscopy, neurovascular coupling, temporal fusion.
+
+### 2. 摘要文本（Abstract）
+```text
+Objective: To improve cross-subject EEG-fNIRS decoding by incorporating neurovascular delay priors into multimodal fusion.
+Methods: NVC-DelayFormer combines convolutional EEG and optical encoders through cross-attention with delay priors and token timestamp masks. Entropy-guided gating integrates deep attention features with spectral summaries. Evaluation used participant-isolated leave-one-subject-out validation, with separate participants for training, checkpoint selection, and testing.
+Results: Across 29 participants and three seeds, mean accuracy was 78.22%, compared with 72.89% for standard 2D-EEGNet (p = 1.10e-4). Primary-seed accuracy was 79.37%. Recursive covariance alignment reduced relative covariance error from 45.15% after one trial to 29.38% after eight trials. Under task-specific training, accuracy reached 73.24% for working memory and 66.32% for motor imagery.
+Conclusion: Delay-guided temporal fusion improved cross-subject decoding on the primary benchmark and supported classification across three BCI tasks.
+Significance: With 63,932 trainable parameters and 24.79 million multiply-accumulate operations, NVC-DelayFormer provides a compact architecture for multimodal BCI development.
+```
+
+### 3. 推荐独立审稿人（Suggested Reviewers）
+*注：均为混合 EEG–fNIRS、脑机接口与神经工程领域的国际知名学者，无学术合作或机构利益冲突。*
+
+1. **Prof. Chang-Hwan Im**
+   - **Affiliation:** Department of Biomedical Engineering, Hanyang University, Seoul, South Korea
+   - **E-mail:** `ich@hanyang.ac.kr`
+   - **Expertise:** Hybrid EEG–fNIRS BCI, multimodal neural signal processing, mental arithmetic decoding.
+   - **Reason:** World-renowned authority in hybrid EEG-fNIRS instrumentation and decoding algorithms.
+
+2. **Prof. Sungho Jo**
+   - **Affiliation:** School of Computing, Korea Advanced Institute of Science and Technology (KAIST), Daejeon, South Korea
+   - **E-mail:** `shjo@kaist.ac.kr`
+   - **Expertise:** Brain–computer interfaces, deep learning biosignal decoding, cross-subject adaptation.
+   - **Reason:** Leading expert in robust machine learning models for non-invasive neural decoders.
+
+3. **Prof. Stéphane Perrey**
+   - **Affiliation:** EuroMov Digital Health in Motion, Univ Montpellier, IMT Mines Ales, Montpellier, France
+   - **E-mail:** `stephane.perrey@umontpellier.fr`
+   - **Expertise:** Functional near-infrared spectroscopy (fNIRS), neurovascular coupling, motor neuroimaging.
+   - **Reason:** Extensive expertise in physiological interpretation of hemodynamic and electrophysiological responses.
+
+---
+
+## 五、 全流程质量与代码一致性验证
+
+- [x] **单元测试全覆盖：** `pytest tests/` 26/26 项全部通过（100%）。
+- [x] **全局健全性审计：** `python tests/audit_codebase_soundness.py` 12 维度 48 项断言 100% 通过。
+- [x] **投稿信页数预算：** `reports/Cover_Letter.pdf` 严格 1.0 页（0 overfull hbox，0 underfull hbox）。
+- [x] **主论文页数预算：** `manuscript/main.pdf` 严格 8.0 页双栏。
+- [x] **补充材料页数预算：** `reports/Supplementary_Material.pdf` 严格 4.0 页双栏。
+- [x] **独立外部数据集对齐：** Buccino et al. 2016 评测参数精准对齐（62,340 参数，81.03% 准确率）。
+- [x] **无数据集3残留：** 全仓库及文档中彻底杜绝 “数据集3” 或 “天津数据”。
