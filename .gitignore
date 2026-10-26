@@ -117,3 +117,14 @@ diff_check.txt
 Thumbs.db
 Desktop.ini
 ehthumbs.db
+
+# ------------------------------------------------------------------------------
+# 7. Exploratory Dataset Exclusions
+# ------------------------------------------------------------------------------
+data/downloads_tianjin2024/
+data/tianjin2024_processed/
+experiments/
+scripts/preprocess_tianjin2024.py
+reports/*tianjin*
+transfers/
+reports/references.bib
