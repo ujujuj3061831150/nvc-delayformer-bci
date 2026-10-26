@@ -27,45 +27,43 @@
 \vspace{1ex}
 
 \noindent
-\textbf{Date:} October 24, 2026 \hfill \textbf{Suggested Track:} Neural Engineering \& BCI (Biomedical Signal Processing)\\[0.8ex]
-\textbf{To:} Prof.~Amir A.~Amini, Editor-in-Chief, \textit{IEEE Transactions on Biomedical Engineering} (TBME)\\
-\phantom{\textbf{To:}} Department of Electrical and Computer Engineering, University of Louisville, Louisville, KY 40292, USA\\[0.8ex]
-\textbf{Subject:} Submission of Regular Paper: \textbf{``Physiology-Guided Temporal Fusion for Cross-Subject EEG--fNIRS Brain--Computer Interfaces''}
+\textbf{Date:} October 26, 2026 \hfill \textbf{Topic / Section:} Brain--Computer Interfaces \& Neural Signal Processing\\[0.8ex]
+\textbf{To:} Prof.~Warren M.~Grill, Editor-in-Chief, \textit{Journal of Neural Engineering} (JNE)\\
+\phantom{\textbf{To:}} Department of Biomedical Engineering, Duke University, Durham, NC 27708, USA\\[0.8ex]
+\textbf{Subject:} Submission of Research Paper: \textbf{``Physiology-Guided Temporal Fusion for Cross-Subject EEG--fNIRS Brain--Computer Interfaces''}
 
 \vspace{1ex}
-\noindent Dear Prof.~Amini and Members of the Editorial Board,
+\noindent Dear Prof.~Grill and Members of the Editorial Board,
 
 \smallskip
-We are pleased to submit our original research manuscript entitled \textbf{``Physiology-Guided Temporal Fusion for Cross-Subject EEG--fNIRS Brain--Computer Interfaces''} for consideration as a \textbf{Regular Paper} in the \textit{IEEE Transactions on Biomedical Engineering} (TBME).
+We are pleased to submit our original research manuscript entitled \textbf{``Physiology-Guided Temporal Fusion for Cross-Subject EEG--fNIRS Brain--Computer Interfaces''} for consideration for publication in the \textit{Journal of Neural Engineering} (JNE).
 
 \smallskip
-\noindent\textbf{Biomedical Context \& Clinical Rationale:}
-Hybrid EEG--fNIRS non-invasively captures complementary electrophysiological transients and localized capillary hemodynamics. Translating hybrid systems to zero-calibration clinical BCIs (e.g., for motor-impaired or locked-in individuals unable to undergo tedious calibrations) faces a fundamental biophysical bottleneck: disparate biological timescales (milliseconds vs.\ 3.5--6.5\,s). Standard unconstrained cross-attention architectures exploit spurious temporal coincidences in leave-one-subject-out (LOSO) regimes, degrading generalization across unseen individuals.
+\noindent\textbf{Context \& Neural Engineering Challenge:}
+Hybrid EEG--fNIRS interfaces offer a powerful non-invasive window into neural function by pairing high-temporal-resolution electrophysiology with localized capillary hemodynamics. However, developing zero-calibration, cross-subject brain--computer interfaces (BCIs) remains constrained by the fundamental biological timescale disparity between electrophysiological transients (milliseconds) and capillary hemodynamic responses (seconds). When unconstrained deep cross-attention networks are trained in cross-subject leave-one-subject-out (LOSO) regimes, they frequently learn spurious, acausal alignments where sluggish hemodynamic tokens mistakenly attend to future neural activations ($\delta_{ij} < 0$), impairing generalization to unseen participants.
 
 \smallskip
 \noindent\textbf{Key Contributions \& Empirical Rigor:}
-We present \textbf{NVC-DelayFormer}, which embeds neurovascular timing constraints into multimodal decoding. The study connects physiological modeling with participant-isolated evaluation and computational profiling for calibration-free BCI development:
+To resolve this biophysical bottleneck, we propose \textbf{NVC-DelayFormer}, an architecture that embeds biophysical neurovascular timing priors directly into multimodal cross-attention. Our contributions are substantiated through rigorous participant-isolated evaluations and open-science benchmarking:
 \begin{enumerate}\setlength\itemsep{0.08em}\setlength\parskip{0pt}
-  \item \textbf{Biophysically Constrained Cross-Attention:} Multi-head attention is regularized by continuous Gaussian hemodynamic delay kernels ($\tau_h \in [3.5, 6.5]$\,s) and token timestamp masks ($t_{\mathrm{nirs}} \ge t_{\mathrm{eeg}}$), enforcing temporal precedence across modalities.
-  \item \textbf{Entropy-Guided Dual-Stream Gating:} An adaptive bottleneck dynamically balances deep cross-modal tokens against shallow biophysical spectral summaries conditioned on predictive distribution entropy, safeguarded by auxiliary waveform reconstruction.
-  \item \textbf{Causal Online Adaptation \& Multi-Task Generalization:} We introduce Causal Recursive Euclidean Alignment (CrEA), eliminating session lookahead and stabilizing reference covariances within 5--8 trials under empirical Bayes shrinkage (retaining 94.9\% of offline performance in trial-causal streaming evaluation). Across 29 participants on the TU Berlin benchmark under LOSO cross-validation, NVC-DelayFormer achieves a 3-seed grand mean accuracy of \textbf{78.22\% $\pm$ 1.00\%} (primary seed: \textbf{79.37\% $\pm$ 7.73\%}), significantly outperforming standard 2D-EEGNet ($p = 1.10\times 10^{-4}$), covariance-aligned Shrinkage-LDA ($p = 0.0167$), and unconstrained cross-attention ($p = 7.18\times 10^{-4}$). Task-specific LOSO evaluations across 3,612 held-out trials yielded accuracies of \textbf{73.24\%} for working memory and \textbf{66.32\%} for motor imagery.
-  \item \textbf{Computational Efficiency:} The architecture uses \textbf{63,932 parameters} and \textbf{24.79\,M MACs}, with a batch-one forward latency of \textbf{2.22\,ms} on an NVIDIA RTX 4060 Laptop GPU (P99: 4.48\,ms).
+  \item \textbf{Physiology-Guided Cross-Attention Formulation:} Multi-head cross-attention is parameterized by multicenter Gaussian delay priors grounded in canonical hemodynamic response delay windows ($\tau_h \in \{3.5, 4.5, 5.5, 6.5\}$\,s) and token timestamp masks that explicitly eliminate acausal backwards-in-time connections, ensuring temporal precedence across modalities.
+  \item \textbf{Factorial Ablation \& Dual-Cohort LOSO Validation:} Under strict leave-one-subject-out (LOSO) protocols across both the primary 29-participant cohort (TU Berlin) and an independent 15-participant external cohort (Buccino et al., 81.03\% accuracy; Supplementary Section~S.V), factorial ablations explicitly confirm cross-hardware generalizability and isolate the distinct marginal contributions of the delay prior versus the causal mask.
+  \item \textbf{Unsupervised Recursive Covariance Alignment (CrEA):} To tackle inter-subject covariance drift during test time, we introduce Causal Recursive Euclidean Alignment (CrEA), which recursively updates reference covariances online without session lookahead, reducing relative covariance error from 45.15\% to 29.38\% within the first 8 trials. Across 29 participants and three random seeds, NVC-DelayFormer achieves a grand mean accuracy of \textbf{78.22\% $\pm$ 1.00\%} (primary seed: \textbf{79.37\% $\pm$ 7.73\%}), significantly exceeding standard 2D-EEGNet (72.89\%, $p = 1.10\times 10^{-4}$) and unconstrained cross-attention ($p = 7.18\times 10^{-4}$). In task-specific training, accuracy reaches \textbf{73.24\%} for working memory and \textbf{66.32\%} for motor imagery.
+  \item \textbf{Compact Embedded Footprint:} With only \textbf{63,932 trainable parameters} and \textbf{24.79\,M MACs}, the model requires $17.5\times$ fewer parameters than EEG Conformer and operates with a batch-one forward latency of \textbf{2.22\,ms} on an NVIDIA RTX 4060 Laptop GPU, satisfying the operational envelope of wearable neural interfaces.
 \end{enumerate}
 
 \smallskip
 \noindent\textbf{Mandatory Declarations \& Compliance:}
 \begin{itemize}\setlength\itemsep{0.06em}\setlength\parskip{0pt}
-  \item \textbf{Originality \& Conference Status:} This manuscript represents original work not published previously and not under consideration elsewhere. It is entirely new and is not an extension of any conference proceeding.
-  \item \textbf{Preprint Status:} This manuscript has not been posted to any preprint repository (e.g., arXiv, TechRxiv, bioRxiv).
-  \item \textbf{Authorship Approval:} All authors have read and approved the final manuscript and agree with its submission to IEEE TBME.
+  \item \textbf{Originality:} This manuscript represents original work not published previously and not currently under consideration elsewhere.
+  \item \textbf{Authorship Approval:} All authors have read and approved the final manuscript and agree with its submission to the \textit{Journal of Neural Engineering}.
   \item \textbf{Ethical Approval:} All human participant analyses used de-identified open-access data approved by the Ethics Committee of the Institute of Psychology and Ergonomics, Technische Universit{\"a}t Berlin (protocol SH\_01\_20150330), in accordance with the Declaration of Helsinki.
-  \item \textbf{Conflict of Interest \& Funding:} The authors declare no competing interests, and no external grant funding directly supported this specific research.
-  \item \textbf{Manuscript Length \& Supplementary Material:} The submitted manuscript comprises eight pages in IEEE Transactions format, accompanied by a 3-page Supplementary Material document containing paradigm-specific delay sensitivity analyses (Supplementary Fig.~S1), 29-subject fold breakdowns (Supplementary Table~S1), and streaming algorithm details.
-  \item \textbf{Reproducibility:} Complete source code, test suites, and DOI archive are openly accessible at \href{https://github.com/ujujuj3061831150/nvc-delayformer-bci}{GitHub Repository (ujujuj3061831150/nvc-delayformer-bci)}.
+  \item \textbf{Conflict of Interest \& Funding:} The authors declare no competing financial or non-financial interests. No specific external grant supported this research.
+  \item \textbf{Reproducibility \& Open Science:} Full source code, pre-trained checkpoints, test suites, and audit logs are openly accessible at \href{https://github.com/ujujuj3061831150/nvc-delayformer-bci}{GitHub Repository (ujujuj3061831150/nvc-delayformer-bci)}.
 \end{itemize}
 
 \smallskip
-\noindent Thank you very much for your time and consideration of our work.
+\noindent Thank you very much for your time and consideration of our manuscript.
 
 \smallskip
 \noindent Sincerely,\\[0.8ex]

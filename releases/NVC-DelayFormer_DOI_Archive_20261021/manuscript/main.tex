@@ -40,7 +40,7 @@
 \thanks{Compliance with Ethical Standards: All human participant investigations used de-identified data approved by the Ethics Committee of the Institute of Psychology and Ergonomics, Technische Universit{\"a}t Berlin (protocol SH\_01\_20150330), in accordance with the Declaration of Helsinki.}%
 }
 
-\markboth{IEEE Transactions on Biomedical Engineering,~Vol.~XX, No.~XX,~2026}%
+\markboth{Journal of Neural Engineering,~Under Review,~2026}%
 {Chen and Duan: Physiology-Guided Temporal Fusion for Cross-Subject EEG--fNIRS BCIs}
 
 \maketitle
@@ -385,11 +385,11 @@ Five engineering considerations guide bedside and neurorehabilitation translatio
 
 \textit{2) Observation-window duration:} Shorter windows reduce the signal accumulation time required for each decision. Offline truncation retained accuracies of 77.53\% and 76.38\% with 5.0\,s and 3.0\,s windows, respectively, demonstrating that decoding fidelity is maintained under shortened observation windows with minimal compute overhead.
 
-\textit{3) Zero-calibration streaming adaptation:} Standard Euclidean Alignment requires transductive batch covariance statistics across full sessions. Online CrEA eliminates session lookahead by updating reference covariances trial-by-trial under empirical Bayes shrinkage ($\kappa_0 = 5.0$), reducing relative covariance error from 45.15\% to 29.38\% within eight trials (and below 3.60\% asymptotically) for plug-and-play bedside BCIs.
+\textit{3) Zero-calibration streaming adaptation:} Standard Euclidean Alignment requires transductive batch covariance across full sessions. Online CrEA eliminates session lookahead via causal recursive updates under empirical Bayes shrinkage ($\kappa_0 = 5.0$). With $\mathcal{O}(C^2)$ complexity ($<1.2$\,ms on CPU), CrEA reduces relative covariance error from 45.15\% to 29.38\% within eight trials ($<3.60\%$ asymptotically), ensuring deterministic zero-calibration streaming for online closed-loop BCIs.
 
 \textit{4) Embedded edge deployment:} The 63,932-parameter footprint occupies under 260\,kB in 32-bit floating-point storage, easing memory constraints on portable microcontrollers and digital signal processors. The architecture exports directly to TorchScript and ONNX runtimes, enabling fixed-point integer quantization (INT8) and zero-copy circular buffering for standalone, wearable bedside BCI units.
 
-\textit{5) Neuropathological populations and clinical translation:} Evaluations on healthy cohorts establish architectural stability across cognitive and sensorimotor tasks. Clinical translation targets patient-specific adaptation of the delay priors to altered neurovascular timing in prospective patient cohorts.
+\textit{5) Multi-task generalizability and cohort boundaries:} While evaluations across 29 participants established stability across three paradigms (arithmetic, motor imagery, working memory), independent 15-participant validation on Buccino et al.\ \cite{buccino2016hybrid} (microEEG + NIRScout; Supplementary Section~S.V) verified cross-hardware generalizability (81.03\% accuracy). Future clinical studies should evaluate adaptive delay retuning in neuropathological cohorts (e.g., stroke), where vascular remodeling can introduce patient-specific latency dispersion.
 
 \section{Conclusion}
 \label{sec:conclusion}

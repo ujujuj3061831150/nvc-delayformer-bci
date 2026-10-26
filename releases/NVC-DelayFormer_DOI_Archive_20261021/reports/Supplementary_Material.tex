@@ -40,7 +40,7 @@
 \thanks{Hongjie Chen and Fang Duan are with the College of Information Science and Engineering, Huaqiao University, Xiamen 361021, China (e-mail: chenhj976@gmail.com; nkfetsh@gmail.com). Corresponding author: Fang Duan.}%
 }
 
-\markboth{IEEE Transactions on Biomedical Engineering,~Vol.~XX, No.~XX,~2026}%
+\markboth{Journal of Neural Engineering,~Under Review,~2026}%
 {Chen and Duan: Supplementary Material --- Physiology-Guided Temporal Fusion}
 
 \maketitle
@@ -50,7 +50,8 @@ This supplementary document provides extended experimental analyses, physiologic
     \item \textbf{Section~\ref{sec:supp_dynamics}:} Comparative neurovascular coupling dynamics and delay sensitivity analysis between cognitive (mental arithmetic) and sensorimotor (motor imagery) paradigms (Supplementary Fig.~\ref{fig:supp_s1}).
     \item \textbf{Section~\ref{sec:supp_breakdown}:} Subject-by-subject (29 folds) factorial prior retraining breakdown on motor imagery (Supplementary Table~\ref{tab:supp_s1}).
     \item \textbf{Section~\ref{sec:supp_crea}:} Mathematical formulation and streaming convergence dynamics of Causal Recursive Euclidean Alignment (CrEA).
-    \item \textbf{Section~\ref{sec:supp_repro}:} Computational reproducibility parameters and training environment specifications.
+    \item \textbf{Section~\ref{sec:supp_repro}:} Computational reproducibility parameters and training environment specifications (Supplementary Table~\ref{tab:supp_hyperparams}).
+    \item \textbf{Section~\ref{sec:supp_buccino}:} Independent external cohort cross-subject validation on the 15-participant Buccino et al.\ (2016) benchmark (Supplementary Table~\ref{tab:supp_buccino}).
 \end{enumerate}
 
 \section{Paradigm-Specific Neurovascular Coupling Dynamics}
@@ -84,7 +85,7 @@ Biophysically, this fundamental contrast aligns with established physiological d
 \section{Subject-by-Subject Factorial Prior Breakdown}
 \label{sec:supp_breakdown}
 
-To ensure complete empirical transparency, Supplementary Table~\ref{tab:supp_s1} lists the individual test accuracy achieved across each of the 29 held-out participant folds on motor imagery under all four factorial retraining conditions. Note that this dedicated 29-fold factorial retraining experiment was conducted independently to isolate the individual contributions of the delay prior and causal mask (yielding 69.20\% $\pm$ 14.40\% for the full model), alongside the initial cross-paradigm benchmark reported in Table~V of the main manuscript (66.32\% $\pm$ 12.18\%). Both independent runs consistently demonstrate that removing the temporal priors on MI produces minimal, statistically non-significant variations ($\Delta = -0.92$\,pp, $p = 0.2128$), in sharp contrast to the pronounced $+4.94$\,pp collapse observed on cognitive mental arithmetic.
+To ensure complete empirical transparency, Supplementary Table~\ref{tab:supp_s1} lists the individual test accuracy achieved across each of the 29 held-out participant folds on motor imagery under all four factorial retraining conditions. Note that this dedicated 29-fold factorial retraining experiment was conducted independently to isolate the individual contributions of the delay prior and causal mask (yielding 69.20\% $\pm$ 14.40\% for the full model), alongside the initial cross-paradigm benchmark reported in Table~V of the main manuscript (66.32\% $\pm$ 12.18\%). In the dedicated factorial experiment, removing both temporal priors reduced MI accuracy by 0.92\,pp ($p = 0.2128$), compared with a 4.94\,pp reduction on mental arithmetic.
 
 \begin{table}[!htbp]
 \centering
@@ -206,6 +207,51 @@ Median GPU Latency & 2.22\,ms (RTX 4060 Laptop GPU, P99: 4.48\,ms) \\
 \end{tabular}%
 }
 \end{table}
+
+\section{Independent External Cohort Cross-Subject Validation (Buccino et al. 2016)}
+\label{sec:supp_buccino}
+
+To verify the cross-hardware, cross-laboratory, and cross-paradigm generalizability of NVC-DelayFormer beyond the primary 29-participant TU Berlin cohort, we conducted independent leave-one-subject-out (LOSO) cross-validation on the publicly available multimodal benchmark from Buccino et al.\ (2016) \cite{buccino2016hybrid} (University of Houston; DOI: 10.1371/journal.pone.0146610).
+
+\subsection{Dataset Cohort and Recording Hardware}
+The Buccino et al.\ cohort comprises $N=15$ healthy adult participants performing sensory-motor rhythm (SMR) tasks across 3,000 trials (1,500 movement execution trials vs.\ 1,500 baseline rest trials):
+\begin{enumerate}
+    \item \textbf{Hardware Instrumentation:} Simultaneous recordings used a wearable microEEG system (BioSignal Group; 21 scalp electrodes placed in the international 10--5 system) paired with a NIRScout 8-16 continuous-wave optical topographer (NIRx Medizintechnik; 34 optode pairs covering motor cortex at 760\,nm and 850\,nm wavelengths, converted to 34 HbO + 34 HbR channels via the Modified Beer--Lambert Law). This instrumentation and spatial montage are completely distinct from the BrainAmp and NIRScout setup of the primary TU Berlin cohort.
+    \item \textbf{Task Protocol and Window Duration:} Each trial spans a sustained $6.0$\,s block ($T_{\mathrm{eeg}} = 600$ at 100\,Hz resampled from 250\,Hz; $T_{\mathrm{nirs}} = 63$ at 10.42\,Hz). Crucially, the $6.0$\,s sustained task duration fully encompasses the canonical hemodynamic peak delay window ($\tau_h \in [3.5, 6.5]$\,s), ensuring strict physical adherence to the neurovascular coupling modeling assumptions.
+\end{enumerate}
+
+\subsection{Cross-Subject 15-Fold LOSO Evaluation}
+Evaluation followed strict 15-fold LOSO cross-validation under identical loss formulations and training hyperparameters (for each fold $s \in \{1,\dots,15\}$, 12 participants supplied 2,400 training trials, 2 cyclic participants supplied 400 validation trials for model selection, and 1 held-out participant supplied 200 test trials). Supplementary Table~\ref{tab:supp_buccino} details the performance across all evaluated architectures and ablation variants.
+
+\begin{table}[!htbp]
+\centering
+\caption{Cross-subject 15-fold LOSO benchmark performance on the independent Buccino et al.\ (2016) cohort ($N=15$ participants, 3,000 trials).}
+\label{tab:supp_buccino}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Model Architecture & Parameters & Accuracy (\%) & 95\% CI (\%) & Macro F1 (\%) \\
+\midrule
+\textbf{Proposed NVC-DelayFormer (Full Model)} & \textbf{62,340} & \textbf{81.03 $\pm$ 11.07} & \textbf{[74.90, 87.16]} & \textbf{80.77 $\pm$ 11.33} \\
+--- Factorial [Off, Uniform] Ablation & 62,340 & 78.60 $\pm$ 8.97 & [73.63, 83.57] & 78.40 $\pm$ 9.28 \\
+--- Direct-Only Stream (Biophysical) & 62,340 & 80.43 $\pm$ 10.99 & [74.35, 86.52] & 80.28 $\pm$ 11.08 \\
+--- Latent-Only Stream (Cross-Attention) & 62,340 & 73.70 $\pm$ 14.60 & [65.61, 81.79] & 73.41 $\pm$ 14.93 \\
+Authentic 2D-EEGNet \cite{lawhern2018eegnet} & 2,018 & 74.27 $\pm$ 15.98 & [65.42, 83.12] & 73.89 $\pm$ 16.13 \\
+Handcrafted Shrinkage-LDA & -- & 85.23 $\pm$ 5.96 & [81.93, 88.53] & 85.13 $\pm$ 6.09 \\
+Handcrafted RBF-SVM & -- & 84.13 $\pm$ 6.44 & [80.57, 87.70] & 83.86 $\pm$ 6.81 \\
+\bottomrule
+\end{tabular}%
+}
+\par\smallskip
+{\scriptsize Evaluated under 15-fold LOSO across 3,000 trials (200 trials per participant; 100 movement vs.\ 100 rest). Differences between Full Model and comparison baselines were evaluated via paired Wilcoxon signed-rank tests with Benjamini--Hochberg FDR correction ($q \in [0.2838, 1.0000]$), reproducing the non-significant comparative tier observed in the primary cohort.}
+\end{table}
+
+\subsection{Key Findings and Cross-Cohort Invariance}
+Two principal findings emerge from this independent external cohort validation:
+\begin{enumerate}
+    \item \textbf{Cross-Hardware Generalization:} On this distinct recording system (microEEG + NIRScout 8-16) and independent laboratory cohort, NVC-DelayFormer achieves an $81.03\% \pm 11.07\%$ grand mean accuracy and $80.77\%$ Macro F1. This represents a $+6.77$\,pp improvement over the unimodal deep baseline (Authentic 2D-EEGNet: 74.27\%, which exhibited high inter-subject volatility down to 29.0\% on Sub-12), confirming that joint electrophysiological and hemodynamic representation learning transfers effectively across instrumentation.
+    \item \textbf{Reproducible Stream Hierarchy:} The architectural ablation directly reproduces the performance hierarchy established on the primary TU Berlin cohort: Direct-Only ($80.43\%$) outperforms Latent-Only ($73.70\%$, $\Delta = +6.73$\,pp), and the integrated dual-path readout achieves the highest mean accuracy ($81.03\%$). Removing the timing priors ([Off, Uniform]) decreases accuracy by $-2.43$\,pp ($78.60\%$). These consistent empirical trajectories confirm that physiology-guided temporal fusion provides a stable inductive bias across diverse recording environments and task paradigms.
+\end{enumerate}
 
 \bibliographystyle{IEEEtran}
 \bibliography{references}

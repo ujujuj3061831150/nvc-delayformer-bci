@@ -40,7 +40,7 @@
 \thanks{Hongjie Chen and Fang Duan are with the College of Information Science and Engineering, Huaqiao University, Xiamen 361021, China (e-mail: chenhj976@gmail.com; nkfetsh@gmail.com). Corresponding author: Fang Duan.}%
 }
 
-\markboth{IEEE Transactions on Biomedical Engineering,~Vol.~XX, No.~XX,~2026}%
+\markboth{Journal of Neural Engineering,~Under Review,~2026}%
 {Chen and Duan: Supplementary Material --- Physiology-Guided Temporal Fusion}
 
 \maketitle
@@ -50,7 +50,8 @@ This supplementary document provides extended experimental analyses, physiologic
     \item \textbf{Section~\ref{sec:supp_dynamics}:} Comparative neurovascular coupling dynamics and delay sensitivity analysis between cognitive (mental arithmetic) and sensorimotor (motor imagery) paradigms (Supplementary Fig.~\ref{fig:supp_s1}).
     \item \textbf{Section~\ref{sec:supp_breakdown}:} Subject-by-subject (29 folds) factorial prior retraining breakdown on motor imagery (Supplementary Table~\ref{tab:supp_s1}).
     \item \textbf{Section~\ref{sec:supp_crea}:} Mathematical formulation and streaming convergence dynamics of Causal Recursive Euclidean Alignment (CrEA).
-    \item \textbf{Section~\ref{sec:supp_repro}:} Computational reproducibility parameters and training environment specifications.
+    \item \textbf{Section~\ref{sec:supp_repro}:} Computational reproducibility parameters and training environment specifications (Supplementary Table~\ref{tab:supp_hyperparams}).
+    \item \textbf{Section~\ref{sec:supp_buccino}:} Independent external cohort cross-subject validation on the 15-participant Buccino et al.\ (2016) benchmark (Supplementary Table~\ref{tab:supp_buccino}).
 \end{enumerate}
 
 \section{Paradigm-Specific Neurovascular Coupling Dynamics}
@@ -66,25 +67,25 @@ A central finding in cross-paradigm evaluation (Section~V-F of the main manuscri
 \begin{figure*}[!t]
 \centering
 \includegraphics[width=\textwidth]{figures/supplementary_fig_s1_delay_curves.pdf}
-\caption{Comparative neurovascular delay sensitivity and prior ablation contrast between cognitive (Mental Arithmetic, MA) and sensorimotor (Motor Imagery, MI) paradigms across 29 participants under participant-isolated LOSO cross-validation. (a) Candidate delay sensitivity scan across $\tau \in [0.0, 8.0]$\,s without retraining. For MA, accuracy rises monotonically from 75.34\% at $\tau=0.0$\,s to 80.46\% at $\tau=8.0$\,s (+5.12\,pp, $p < 0.001$), peaking within the physiological hemodynamic response window (3.5--6.5\,s). For MI, the performance curve is completely delay-invariant (ranging between 68.91\% and 69.60\%, $\Delta \le 0.69$\,pp, $p = \text{n.s.}$). (b) Retrained $2 \times 2$ factorial decomposition of delay prior $\mathbf{P}$ and causal mask $\mathbf{M}$. On MA, dropping both priors causes a severe $-4.94$\,pp performance collapse ($p = 6.05\times 10^{-5}$), confirming the essential regularizing role of neurovascular constraints. On MI, removing both priors decreases accuracy by merely $-0.92$\,pp ($p = 0.2128$, non-significant), indicating that unconstrained attention is sufficient when hemodynamic coupling is weakly localized.}
+\caption{Comparative neurovascular delay sensitivity and prior ablation contrast between cognitive (Mental Arithmetic, MA) and sensorimotor (Motor Imagery, MI) paradigms across 29 participants under participant-isolated LOSO cross-validation. (a) Candidate delay sensitivity scan across $\tau \in [0.0, 8.0]$\,s without retraining. Error bars denote standard error of the mean (SE across $N=29$ folds). For MA, accuracy rises monotonically from 75.34\% at $\tau=0.0$\,s to plateau across the physiological hemodynamic response window ($\tau \in [3.5, 6.5]$\,s) and reaches 80.46\% at $\tau=8.0$\,s (+5.12\,pp, $p < 0.001$), reflecting the sustained 10.0\,s task block duration. For MI, the performance curve exhibits essentially delay-invariant behavior within observed experimental variation (ranging between 68.91\% and 69.60\%, $\Delta \le 0.69$\,pp, $p = \text{n.s.}$). (b) Retrained $2 \times 2$ factorial decomposition of delay prior $\mathbf{P}$ and causal mask $\mathbf{M}$. On MA, dropping both priors causes a severe $-4.94$\,pp performance collapse ($p = 6.05\times 10^{-5}$), confirming the essential regularizing role of neurovascular constraints. On MI, removing both priors decreases accuracy by merely $-0.92$\,pp ($p = 0.2128$, non-significant), indicating that unconstrained attention is sufficient when hemodynamic coupling is weakly localized.}
 \label{fig:supp_s1}
 \end{figure*}
 
 \subsection{Empirical Findings and Biophysical Mechanism}
-As illustrated in Supplementary Fig.~\ref{fig:supp_s1}(a), mental arithmetic exhibits a pronounced delay resonance curve: accuracy increases monotonically from 75.34\% at $\tau = 0.0$\,s to 80.46\% at $\tau = 8.0$\,s ($\Delta = +5.12$\,pp, $p < 0.001$), plateauing across the physiological window ($\tau \in [3.5, 6.5]$\,s). In contrast, motor imagery yields an essentially horizontal trajectory: grand mean accuracy fluctuates between 68.91\% ($\tau = 1.0$\,s) and 69.60\% ($\tau = 6.0$\,s), an amplitude range of only 0.69\,pp, with overlapping confidence intervals across all candidate latencies.
+As illustrated in Supplementary Fig.~\ref{fig:supp_s1}(a), mental arithmetic exhibits a pronounced delay sensitivity trajectory: accuracy increases monotonically from 75.34\% at $\tau = 0.0$\,s to plateau across the physiological window ($\tau \in [3.5, 6.5]$\,s), reaching 80.46\% at $\tau = 8.0$\,s ($\Delta = +5.12$\,pp, $p < 0.001$). In contrast, motor imagery yields an essentially horizontal trajectory: grand mean accuracy fluctuates between 68.91\% ($\tau = 1.0$\,s) and 69.60\% ($\tau = 6.0$\,s), an amplitude range of only 0.69\,pp, with overlapping standard error intervals across all candidate latencies.
 
-The retrained factorial decomposition in Supplementary Fig.~\ref{fig:supp_s1}(b) reinforces this paradigm-dependent disparity. For mental arithmetic, omitting both priors ($P_{\mathrm{off}}, M_{\mathrm{off}}$) collapses accuracy by $-4.94$\,pp ($79.37\% \to 74.43\%$, $p = 6.05 \times 10^{-5}$), with the Gaussian prior accounting for an average marginal contribution of +4.31\,pp. Conversely, for motor imagery, retraining with both priors disabled yields 68.28\% $\pm$ 13.72\% vs.\ 69.20\% $\pm$ 14.30\% for the full model ($\Delta = -0.92$\,pp, Wilcoxon $W = 156.5$, $p = 0.2128$, non-significant). Omitting causal masking alone ($P_{\mathrm{on}}, M_{\mathrm{off}}$: 68.10\%, $p = 0.0978$) or the delay prior alone ($P_{\mathrm{off}}, M_{\mathrm{on}}$: 68.68\%, $p = 0.1766$) likewise shows no statistically significant divergence.
+The retrained factorial decomposition in Supplementary Fig.~\ref{fig:supp_s1}(b) reinforces this paradigm-dependent disparity. For mental arithmetic, omitting both priors ($P_{\mathrm{off}}, M_{\mathrm{off}}$) collapses accuracy by $-4.94$\,pp ($79.37\% \to 74.43\%$, $p = 6.05 \times 10^{-5}$), with the Gaussian prior accounting for an average marginal contribution of +4.31\,pp. Conversely, for motor imagery, retraining with both priors disabled yields 68.28\% $\pm$ 13.72\% vs.\ 69.20\% $\pm$ 14.40\% for the full model ($\Delta = -0.92$\,pp, Wilcoxon $W = 106.5$, $p = 0.2128$, non-significant). Omitting causal masking alone ($P_{\mathrm{on}}, M_{\mathrm{off}}$: 68.10\%, $p = 0.0978$) or the delay prior alone ($P_{\mathrm{off}}, M_{\mathrm{on}}$: 68.68\%, $p = 0.1766$) likewise shows no statistically significant divergence.
 
-Biophysically, this fundamental contrast originates from distinct functional vascular architectures:
+Biophysically, this fundamental contrast aligns with established physiological distinctions in functional vascular dynamics reported in neuroimaging literature:
 \begin{enumerate}
-    \item \textbf{Prefrontal Cognitive Workload (MA):} Sustained 10-second mental arithmetic imposes intense, prolonged metabolic demands on the prefrontal cortex, recruiting deep arteriolar dilation and large venous drainage volume. This produces robust frontal $[\mathrm{HbO}]$ elevations ($0.2\text{--}0.6\,\mu\mathrm{M}$) that evolve over 4--7\,s and persist throughout task engagement. Consequently, cross-modal attention strongly relies on physiological delay priors to align fast frontal theta oscillations ($\theta$ ERS, 4--8\,Hz) with delayed capillary hyperoxygenation, preventing acausal over-fitting on held-out participants.
-    \item \textbf{Sensorimotor Lateralization (MI):} Kinesthetic motor imagery elicits immediate contralateral sensorimotor rhythm desynchronization ($\mu$ and $\beta$ ERD, 8--30\,Hz) over primary motor cortex (C3/C4). However, imaginary finger tapping produces significantly attenuated and highly diffuse hemodynamic changes ($0.05\text{--}0.15\,\mu\mathrm{M}$) compared with physical execution. Because the localized optical signal-to-noise ratio is lower and neural decodability is dominated by instantaneous spectral ERD, the exact hemodynamic delay parameter $\tau$ imposes minimal regularization constraint, permitting unconstrained cross-attention or direct spatial filtering models (such as FGANet) to perform equally well or slightly better.
+    \item \textbf{Prefrontal Cognitive Workload (MA):} Sustained 10-second mental arithmetic imposes intense, prolonged metabolic demands on the prefrontal cortex, recruiting deep arteriolar dilation and large venous drainage volume \cite{buxton1998dynamics, scholkmann2014review}. This produces robust frontal $[\mathrm{HbO}]$ elevations (typically in the $0.2\text{--}0.6\,\mu\mathrm{M}$ range in continuous-wave fNIRS recordings \cite{shin2017open}) that evolve over 4--7\,s and persist throughout task engagement. Consequently, cross-modal attention strongly relies on physiological delay priors to align fast frontal theta oscillations ($\theta$ ERS, 4--8\,Hz) with delayed capillary hyperoxygenation, preventing acausal over-fitting on held-out participants.
+    \item \textbf{Sensorimotor Lateralization (MI):} Kinesthetic motor imagery elicits immediate contralateral sensorimotor rhythm desynchronization ($\mu$ and $\beta$ ERD, 8--30\,Hz) over primary motor cortex (C3/C4). However, imaginary finger tapping without physical contraction produces significantly attenuated and diffuse hemodynamic changes (typically $0.05\text{--}0.15\,\mu\mathrm{M}$ \cite{shin2017open, pinti2020present}). Because the localized optical signal-to-noise ratio is lower and neural decodability is dominated by instantaneous spectral ERD, the hemodynamic delay parameter $\tau$ imposes minimal regularization constraint, permitting unconstrained cross-attention or direct spatial filtering models (such as FGANet) to perform equally well.
 \end{enumerate}
 
 \section{Subject-by-Subject Factorial Prior Breakdown}
 \label{sec:supp_breakdown}
 
-To ensure complete empirical transparency, Supplementary Table~\ref{tab:supp_s1} lists the individual test accuracy achieved across each of the 29 held-out participant folds on motor imagery under all four factorial retraining conditions.
+To ensure complete empirical transparency, Supplementary Table~\ref{tab:supp_s1} lists the individual test accuracy achieved across each of the 29 held-out participant folds on motor imagery under all four factorial retraining conditions. Note that this dedicated 29-fold factorial retraining experiment was conducted independently to isolate the individual contributions of the delay prior and causal mask (yielding 69.20\% $\pm$ 14.40\% for the full model), alongside the initial cross-paradigm benchmark reported in Table~V of the main manuscript (66.32\% $\pm$ 12.18\%). In the dedicated factorial experiment, removing both temporal priors reduced MI accuracy by 0.92\,pp ($p = 0.2128$), compared with a 4.94\,pp reduction on mental arithmetic.
 
 \begin{table}[!htbp]
 \centering
@@ -127,46 +128,46 @@ Sub-28 & 53.33 & 53.33 & 51.67 & 55.00 & $+1.67$ \\
 Sub-29 & 63.33 & 63.33 & 63.33 & 66.67 & $+3.33$ \\
 \midrule
 \textbf{Mean} & \textbf{69.20} & \textbf{68.68} & \textbf{68.10} & \textbf{68.28} & \textbf{$-$0.92} \\
-\textbf{SD} & 14.30 & 14.85 & 14.03 & 13.72 & 3.94 \\
-\textbf{Macro F1} & 66.86 & 66.26 & 65.79 & 66.06 & $-$0.80 \\
+\textbf{SD} & 14.40 & 14.85 & 14.03 & 13.72 & 4.10 \\
+\textbf{Macro F1} & 67.00 & 66.26 & 65.79 & 66.06 & $-$0.94 \\
 \textbf{Wilcoxon $p$} & -- & 0.1766 & 0.0978 & 0.2128 & -- \\
 \bottomrule
 \end{tabular}%
 }
 \par\smallskip
-{\scriptsize Evaluated on the 29-participant Motor Imagery benchmark from Shin et al.\ (2017) \cite{shin2017open} across 1,740 trials (60 trials per participant, 30 Left Hand vs.\ 30 Right Hand). All variants trained from scratch under identical hyperparameter schedules. Wilcoxon signed-rank $p$-values are computed against the Full Model ($df=28$).}
+{\scriptsize Evaluated on the 29-participant Motor Imagery benchmark from Shin et al.\ (2017) \cite{shin2017open} across 1,740 trials (60 trials per participant, 30 Left Hand vs.\ 30 Right Hand). All variants trained from scratch under identical hyperparameter schedules. Wilcoxon signed-rank $p$-values are computed against the Full Model ($N=29$ participants).}
 \end{table}
 
-Between-subject standard deviations ($\sim 14.0$\,pp) significantly exceed the marginal differences observed across model conditions ($\le 1.1$\,pp). High responders (e.g., Sub-19 and Sub-26: $>90\%$) decode robustly regardless of prior conditioning, while challenging BCI-illiterate participants (e.g., Sub-10, Sub-12, Sub-24: $\le 50\%$) show no selective dependency on the delay parameter.
+Between-subject standard deviations ($\sim 14.0$\,pp) significantly exceed the marginal differences observed across model conditions ($\le 1.1$\,pp). High responders (e.g., Sub-19 and Sub-26: $>90\%$) decode robustly regardless of prior conditioning, while challenging BCI-illiterate participants (e.g., Sub-10: 45.00\%, Sub-24: 50.00\%, Sub-12: 51.67\%) decode near chance level.
 
 \section{Causal Recursive Euclidean Alignment (CrEA)}
 \label{sec:supp_crea}
 
-Standard Euclidean Alignment (EA) requires computing the geometric Riemannian or Euclidean mean covariance matrix across the entirety of a testing session:
+Standard Euclidean Alignment (EA) requires computing the arithmetic Euclidean sample mean covariance matrix across the entirety of a testing session:
 \begin{equation}
 \overline{\mathbf{R}}_{\mathrm{test}} = \frac{1}{K} \sum_{k=1}^K \mathbf{C}_k,
 \label{eq:batch_ea}
 \end{equation}
-where $\mathbf{C}_k \in \mathbb{R}^{C \times C}$ is the sample spatial covariance of trial $k$. While highly effective for offline validation, \eqref{eq:batch_ea} relies on transductive lookahead, precluding causal real-time operation at the bedside.
+where $\mathbf{C}_k = \frac{1}{T_e - 1} \mathbf{X}_k \mathbf{X}_k^\top + \epsilon \mathbf{I} \in \mathbb{R}^{C \times C}$ is the regularized sample spatial covariance of trial $k$ (with $\epsilon = 10^{-5}$), and $\mathbf{X}_k \in \mathbb{R}^{C \times T_e}$ is the temporal mean-centered EEG trial matrix ($\sum_{t=1}^{T_e} X_{k,c,t} = 0$ for each channel $c$). While highly effective for offline validation, \eqref{eq:batch_ea} relies on transductive lookahead, precluding causal real-time operation at the bedside.
 
 To eliminate session lookahead, Causal Recursive Euclidean Alignment (CrEA) tracks spatial covariance online via recursive empirical Bayes shrinkage:
 \begin{equation}
 \mathbf{R}_k = \frac{\kappa_0 \mathbf{R}_{\mathrm{src}} + \sum_{m=1}^k \mathbf{C}_m}{\kappa_0 + k}, \quad k = 1, 2, \dots, K,
 \label{eq:supp_crea}
 \end{equation}
-where $\mathbf{R}_{\mathrm{src}} = \frac{1}{N_{\mathrm{tr}}} \sum_{s \in \mathcal{S}_{\mathrm{tr}}} \overline{\mathbf{R}}_s$ is the reference covariance estimated offline exclusively from the $N_{\mathrm{tr}} = 23$ training participants, and $\kappa_0 > 0$ represents the pseudo-observation strength of the source prior.
+where $\mathbf{R}_{\mathrm{src}} = \frac{1}{N_{\mathrm{tr}}} \sum_{s \in \mathcal{S}_{\mathrm{tr}}} \overline{\mathbf{R}}_s$ is the reference covariance estimated offline exclusively from the $N_{\mathrm{tr}} = 23$ training participants, and $\kappa_0 = 5.0$ represents the pseudo-observation strength of the source prior.
 
 The online whitening matrix is obtained via eigendecomposition $\mathbf{R}_k = \mathbf{V}_k \boldsymbol{\Lambda}_k \mathbf{V}_k^\top$:
 \begin{equation}
-\mathbf{W}_k = \mathbf{R}_k^{-1/2} = \mathbf{V}_k \operatorname{diag}\left((\lambda_{k,c} + \epsilon)^{-1/2}\right) \mathbf{V}_k^\top,
+\mathbf{W}_k = \mathbf{R}_k^{-1/2} = \mathbf{V}_k \operatorname{diag}\left(\lambda_{k,c}^{-1/2}\right) \mathbf{V}_k^\top.
 \label{eq:whitening}
 \end{equation}
-with numerical regularization $\epsilon = 10^{-5}$. The aligned EEG trial is transformed causally as $\widetilde{\mathbf{X}}_k = \mathbf{W}_k \mathbf{X}_k$.
+The aligned EEG trial is transformed causally as $\widetilde{\mathbf{X}}_k = \mathbf{W}_k \mathbf{X}_k$.
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=\columnwidth]{figures/supplementary_fig_s2_crea_convergence.pdf}
-\caption{Online Causal Recursive Euclidean Alignment (CrEA) covariance whitening convergence dynamics across 60 continuous trials ($k=1,\dots,60$) averaged across all 29 held-out participants. Empirical Bayes shrinkage prior ($\kappa_0=5.0$, blue solid curve with shaded 95\% CI) rapidly stabilizes within $k \le 8$ calibration trials ($\|\mathbf{R}_k - \overline{\mathbf{R}}_{\mathrm{test}}\|_F / \|\overline{\mathbf{R}}_{\mathrm{test}}\|_F \le 29.38\%$), dramatically outperforming naive cold-start identity initialization ($\mathbf{R}_0 = \mathbf{I}$, orange dashed line: 47.92\% error at trial 8).}
+\caption{Online Causal Recursive Euclidean Alignment (CrEA) covariance whitening convergence dynamics across 60 continuous trials ($k=1,\dots,60$) averaged across all 29 held-out participants. Empirical Bayes shrinkage prior ($\kappa_0=5.0$, blue solid curve) rapidly stabilizes within $k \le 8$ calibration trials ($\|\mathbf{R}_k - \overline{\mathbf{R}}_{\mathrm{test}}\|_F / \|\overline{\mathbf{R}}_{\mathrm{test}}\|_F \le 29.38\%$), dramatically outperforming naive cold-start identity initialization ($\mathbf{R}_0 = \mathbf{I}$, orange dashed line: 47.95\% error at trial 8).}
 \label{fig:supp_crea_curve}
 \end{figure}
 
@@ -175,7 +176,7 @@ As shown in main Fig.~1(c) and Supplementary Fig.~\ref{fig:supp_crea_curve}, ini
 \section{Computational Reproducibility Specifications}
 \label{sec:supp_repro}
 
-All experiments were implemented in PyTorch 2.4 under Python 3.11 with CUDA 12.4 acceleration. Model configurations, layer dimensions, and training hyperparameters are summarized in Supplementary Table~\ref{tab:supp_hyperparams}.
+All experiments and benchmark evaluations were conducted in Python 3.11 with PyTorch (version 2.11.0+cu128 with CUDA 12.8 acceleration on an NVIDIA GeForce RTX 4060 Laptop GPU). Model configurations, layer dimensions, and training hyperparameters are summarized in Supplementary Table~\ref{tab:supp_hyperparams}.
 
 \begin{table}[!htbp]
 \centering
@@ -188,7 +189,7 @@ Specification & Value / Description \\
 \midrule
 EEG Sampling Rate ($f_e \to f_e^{\mathrm{eff}}$) & $100\,\mathrm{Hz} \to 25\,\mathrm{Hz}$ (4$\times$ temporal average pooling) \\
 fNIRS Sampling Rate ($f_n$) & $10.33\,\mathrm{Hz}$ (124 samples over 12.0\,s window) \\
-Temporal Receptive Field ($T_{\mathrm{win}}$) & $10.0\,\mathrm{s}$ (EEG: 1000 samples; fNIRS: 124 samples) \\
+Temporal Receptive Field ($T_{\mathrm{win}}$) & EEG: $10.0\,\mathrm{s}$ (1000 samples); fNIRS: $12.0\,\mathrm{s}$ (124 samples) \\
 Attention Embedding Dimension ($D$) & 64 ($d_h = 16$ across 4 heads) \\
 Delay Prior Centers ($\tau_h$) & $\{3.5, 4.5, 5.5, 6.5\}\,\mathrm{s}$ \\
 Delay Prior Dispersion ($\sigma_h$) & $1.5\,\mathrm{s}$ (fixed physiological prior) \\
@@ -197,7 +198,7 @@ Causal Mask Condition & $M_{ij} = -\infty$ for $\delta_{ij} < 0\,\mathrm{s}$ ($t
 Direct Stream Feature Dimension & 234 ($\theta, \alpha, \beta$ power + delayed HbO/HbR + slope) \\
 Optimizer / Learning Rate & AdamW / $\eta = 3\times 10^{-3}$, weight decay 0.05 \\
 Warmup / Scheduler & 2-epoch linear warmup + cosine annealing \\
-Batch Size / Training Epochs & 256 / 12 epochs \\
+Batch Size / Training Epochs & Primary MA: 256 / 12 epochs; MI Benchmark \& Ablation: 128 / 15 epochs \\
 Auxiliary Loss Weights & $\lambda_{\mathrm{deep}}=0.2, \lambda_{\mathrm{shallow}}=0.2, \lambda_{\mathrm{recon}}=1.0, \lambda_{\mathrm{margin}}=0.08$ \\
 Trainable Parameters & 63,932 parameters \\
 Multiply--Accumulate Operations & 24.79 Million MACs (batch size 1) \\
@@ -206,6 +207,51 @@ Median GPU Latency & 2.22\,ms (RTX 4060 Laptop GPU, P99: 4.48\,ms) \\
 \end{tabular}%
 }
 \end{table}
+
+\section{Independent External Cohort Cross-Subject Validation (Buccino et al. 2016)}
+\label{sec:supp_buccino}
+
+To verify the cross-hardware, cross-laboratory, and cross-paradigm generalizability of NVC-DelayFormer beyond the primary 29-participant TU Berlin cohort, we conducted independent leave-one-subject-out (LOSO) cross-validation on the publicly available multimodal benchmark from Buccino et al.\ (2016) \cite{buccino2016hybrid} (University of Houston; DOI: 10.1371/journal.pone.0146610).
+
+\subsection{Dataset Cohort and Recording Hardware}
+The Buccino et al.\ cohort comprises $N=15$ healthy adult participants performing sensory-motor rhythm (SMR) tasks across 3,000 trials (1,500 movement execution trials vs.\ 1,500 baseline rest trials):
+\begin{enumerate}
+    \item \textbf{Hardware Instrumentation:} Simultaneous recordings used a wearable microEEG system (BioSignal Group; 21 scalp electrodes placed in the international 10--5 system) paired with a NIRScout 8-16 continuous-wave optical topographer (NIRx Medizintechnik; 34 optode pairs covering motor cortex at 760\,nm and 850\,nm wavelengths, converted to 34 HbO + 34 HbR channels via the Modified Beer--Lambert Law). This instrumentation and spatial montage are completely distinct from the BrainAmp and NIRScout setup of the primary TU Berlin cohort.
+    \item \textbf{Task Protocol and Window Duration:} Each trial spans a sustained $6.0$\,s block ($T_{\mathrm{eeg}} = 600$ at 100\,Hz resampled from 250\,Hz; $T_{\mathrm{nirs}} = 63$ at 10.42\,Hz). Crucially, the $6.0$\,s sustained task duration fully encompasses the canonical hemodynamic peak delay window ($\tau_h \in [3.5, 6.5]$\,s), ensuring strict physical adherence to the neurovascular coupling modeling assumptions.
+\end{enumerate}
+
+\subsection{Cross-Subject 15-Fold LOSO Evaluation}
+Evaluation followed strict 15-fold LOSO cross-validation under identical loss formulations and training hyperparameters (for each fold $s \in \{1,\dots,15\}$, 12 participants supplied 2,400 training trials, 2 cyclic participants supplied 400 validation trials for model selection, and 1 held-out participant supplied 200 test trials). Supplementary Table~\ref{tab:supp_buccino} details the performance across all evaluated architectures and ablation variants.
+
+\begin{table}[!htbp]
+\centering
+\caption{Cross-subject 15-fold LOSO benchmark performance on the independent Buccino et al.\ (2016) cohort ($N=15$ participants, 3,000 trials).}
+\label{tab:supp_buccino}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Model Architecture & Parameters & Accuracy (\%) & 95\% CI (\%) & Macro F1 (\%) \\
+\midrule
+\textbf{Proposed NVC-DelayFormer (Full Model)} & \textbf{62,340} & \textbf{81.03 $\pm$ 11.07} & \textbf{[74.90, 87.16]} & \textbf{80.77 $\pm$ 11.33} \\
+--- Factorial [Off, Uniform] Ablation & 62,340 & 78.60 $\pm$ 8.97 & [73.63, 83.57] & 78.40 $\pm$ 9.28 \\
+--- Direct-Only Stream (Biophysical) & 62,340 & 80.43 $\pm$ 10.99 & [74.35, 86.52] & 80.28 $\pm$ 11.08 \\
+--- Latent-Only Stream (Cross-Attention) & 62,340 & 73.70 $\pm$ 14.60 & [65.61, 81.79] & 73.41 $\pm$ 14.93 \\
+Authentic 2D-EEGNet \cite{lawhern2018eegnet} & 2,018 & 74.27 $\pm$ 15.98 & [65.42, 83.12] & 73.89 $\pm$ 16.13 \\
+Handcrafted Shrinkage-LDA & -- & 85.23 $\pm$ 5.96 & [81.93, 88.53] & 85.13 $\pm$ 6.09 \\
+Handcrafted RBF-SVM & -- & 84.13 $\pm$ 6.44 & [80.57, 87.70] & 83.86 $\pm$ 6.81 \\
+\bottomrule
+\end{tabular}%
+}
+\par\smallskip
+{\scriptsize Evaluated under 15-fold LOSO across 3,000 trials (200 trials per participant; 100 movement vs.\ 100 rest). Differences between Full Model and comparison baselines were evaluated via paired Wilcoxon signed-rank tests with Benjamini--Hochberg FDR correction ($q \in [0.2838, 1.0000]$), reproducing the non-significant comparative tier observed in the primary cohort.}
+\end{table}
+
+\subsection{Key Findings and Cross-Cohort Invariance}
+Two principal findings emerge from this independent external cohort validation:
+\begin{enumerate}
+    \item \textbf{Cross-Hardware Generalization:} On this distinct recording system (microEEG + NIRScout 8-16) and independent laboratory cohort, NVC-DelayFormer achieves an $81.03\% \pm 11.07\%$ grand mean accuracy and $80.77\%$ Macro F1. This represents a $+6.77$\,pp improvement over the unimodal deep baseline (Authentic 2D-EEGNet: 74.27\%, which exhibited high inter-subject volatility down to 29.0\% on Sub-12), confirming that joint electrophysiological and hemodynamic representation learning transfers effectively across instrumentation.
+    \item \textbf{Reproducible Stream Hierarchy:} The architectural ablation directly reproduces the performance hierarchy established on the primary TU Berlin cohort: Direct-Only ($80.43\%$) outperforms Latent-Only ($73.70\%$, $\Delta = +6.73$\,pp), and the integrated dual-path readout achieves the highest mean accuracy ($81.03\%$). Removing the timing priors ([Off, Uniform]) decreases accuracy by $-2.43$\,pp ($78.60\%$). These consistent empirical trajectories confirm that physiology-guided temporal fusion provides a stable inductive bias across diverse recording environments and task paradigms.
+\end{enumerate}
 
 \bibliographystyle{IEEEtran}
 \bibliography{references}

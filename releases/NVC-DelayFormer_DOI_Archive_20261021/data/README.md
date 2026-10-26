@@ -1,7 +1,7 @@
 # Benchmark Datasets and Data Provenance
 
 This directory contains preprocessed multimodal EEG–fNIRS benchmark datasets accompanying the manuscript:  
-**"Physiology-Guided Temporal Fusion for Cross-Subject EEG–fNIRS Brain–Computer Interfaces"** (*IEEE Transactions on Biomedical Engineering*).
+**"Physiology-Guided Temporal Fusion for Cross-Subject EEG–fNIRS Brain–Computer Interfaces"** (*Journal of Neural Engineering*).
 
 ---
 

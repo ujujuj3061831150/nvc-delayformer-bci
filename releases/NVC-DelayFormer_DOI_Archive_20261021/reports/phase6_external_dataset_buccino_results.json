@@ -6,7 +6,19 @@
     "total_trials": 3000,
     "window_duration_sec": 6.0,
     "evaluation_scheme": "15-fold LOSO (Train 12 / Val 2 / Test 1)",
-    "timestamp": "2026-10-14 21:53:26"
+    "timestamp": "2026-10-14 21:53:26",
+    "canonical_unaligned_loso_summary": {
+      "mean_acc": 81.03,
+      "std_acc": 11.07,
+      "ci_95": [
+        74.9,
+        87.16
+      ],
+      "mean_f1": 80.77,
+      "std_f1": 11.33,
+      "parameters": 62340,
+      "note": "Canonical unaligned LOSO baseline reported in Table S3 and main text"
+    }
   },
   "models": {
     "Full Model": {
