@@ -3,7 +3,7 @@
 [![Python 3.11](https://img.shields.io/badge/Python-3.9%2B%20%7C%203.11.9-blue.svg)](https://www.python.org/)
 [![PyTorch 2.0+](https://img.shields.io/badge/PyTorch-2.0%2B-EE4C2C.svg)](https://pytorch.org/)
 [![Target Journal](https://img.shields.io/badge/Target%20Journal-Journal%20of%20Neural%20Engineering%20(JNE)-00629B.svg)](https://iopscience.iop.org/journal/1741-2552)
-[![Unit Tests](https://img.shields.io/badge/pytest-25%2F25%20PASSED-brightgreen.svg)](tests/)
+[![Unit Tests](https://img.shields.io/badge/pytest-26%2F26%20PASSED-brightgreen.svg)](tests/)
 [![Primary Dataset](https://img.shields.io/badge/Dataset-TU%20Berlin%20(29%20Subjects)-purple.svg)](https://doi.org/10.1109/TNSRE.2016.2628057)
 [![Parameters](https://img.shields.io/badge/Parameters-63%2C932-orange.svg)](reproduce_benchmark.py)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -117,7 +117,7 @@ python reproduce_benchmark.py --verify-data
 # 2. 架构契约与因果掩码核验：快速验证参数量(63,932)、因果违规(0.00s)与4种时间窗前向契约
 python reproduce_benchmark.py --verify
 
-# 3. 执行全局单元测试（21 项完整测试全绿通过）
+# 3. 执行全局单元测试（26 项完整测试全绿通过）
 python reproduce_benchmark.py --test-suite
 # 或直接运行：
 pytest tests/ -v
@@ -275,7 +275,7 @@ Temporal Pyramid Pooling + Latent MLP (64-dim)                       Broadband P
 为保证研究成果的最高可复现性与代码稳健性，本项目维护了覆盖核心算法与协议的自动化测试套件：
 
 ### 自动化功能与合规性单元测试 (`pytest tests/`)
-包含 **25 个全自动单元测试**，覆盖：
+包含 **26 个全自动单元测试**，覆盖：
 - 随机种子与多平台确定性复现测试（`test_seed_determinism`）
 - MBLL 比尔-朗伯定律消光系数与光密度数值稳定性（`test_mbll_numerical_integrity`）
 - 因果时延注意力掩码防泄露数学断言（`test_causal_delay_attention_invariants`）
@@ -286,7 +286,7 @@ Temporal Pyramid Pooling + Latent MLP (64-dim)                       Broadband P
 
 ```bash
 pytest tests/ -v
-# 输出：============================= 25 passed in 3.82s ==============================
+# 输出：============================= 26 passed in 3.60s ==============================
 ```
 
 ---
@@ -323,7 +323,7 @@ nvc-delayformer-bci/
 ├── tests/                           # 自动化单元测试套件 (26/26 全自动通过)
 │   ├── test_compliance.py           # 核心协议合规性与数据隔离测试 (13 项测试)
 │   ├── test_crea_convergence.py     # 因果在线递归对齐 (CrEA) 数值测试 (3 项测试)
-│   └── test_temporal_fusion.py      # temporal_fusion 独立包接口测试 (9 项测试)
+│   └── test_temporal_fusion.py      # temporal_fusion 独立包接口测试 (10 项测试)
 ├── reproduce_benchmark.py           # 导师与审稿人极速一键复现主入口 CLI
 ├── requirements.txt                 # 标准 Python 环境依赖清单
 ├── setup.py / pyproject.toml        # 标准 Python 包安装定义

@@ -11,7 +11,7 @@ Usage Examples:
     python reproduce_benchmark.py --benchmark   # Display full locked experimental benchmark tables (Tables I-V)
     python reproduce_benchmark.py --demo        # Run standalone 5-line plug-and-play inference demo
     python reproduce_benchmark.py --train-fold 5# Train a single LOSO subject fold on GPU/CPU (~9s on GPU)
-    python reproduce_benchmark.py --test-suite  # Run complete automated pytest test suite (21 tests)
+    python reproduce_benchmark.py --test-suite  # Run complete automated pytest test suite (26 tests)
     python reproduce_benchmark.py --audit       # Run 48-assertion codebase soundness & numerical audit
 """
 

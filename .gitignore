@@ -83,6 +83,7 @@ tmp/
 scratch/
 latex_cbm/
 .codex-remote-attachments/
+.agents/
 reports/*.pdf
 reports/*.md
 reports/*.txt
@@ -90,7 +91,6 @@ reports/*.txt
 !reports/Highlights.md
 !reports/Highlights.txt
 !reports/Submission_Package_Checklist.md
-!reports/manuscript_IEEEtran_submission.pdf
 !reports/manuscript_submission.pdf
 !reports/Supplementary_Material.pdf
 !reports/Cover_Letter.pdf
