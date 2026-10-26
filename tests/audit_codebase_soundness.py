@@ -1,6 +1,6 @@
 """
 Comprehensive White-Box Codebase Soundness Audit Suite (12 Dimensions, 48 Checks).
-The Gold Standard for IEEE TBME / IEEE TNSRE Submission-Grade Neuroimaging Systems.
+The Gold Standard for JNE / IEEE TNSRE Submission-Grade Neuroimaging Systems.
 
 Audited Dimensions:
 - Dim 1: Biophysical & Physiological Rigor (MBLL, Causality, Gaussian Prior) [5 checks]

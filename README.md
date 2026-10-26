@@ -2,7 +2,7 @@
 
 [![Python 3.11](https://img.shields.io/badge/Python-3.9%2B%20%7C%203.11.9-blue.svg)](https://www.python.org/)
 [![PyTorch 2.0+](https://img.shields.io/badge/PyTorch-2.0%2B-EE4C2C.svg)](https://pytorch.org/)
-[![Target Journal](https://img.shields.io/badge/Target%20Journal-IEEE%20TBME-00629B.svg)](https://tbme.embs.org/)
+[![Target Journal](https://img.shields.io/badge/Target%20Journal-Journal%20of%20Neural%20Engineering%20(JNE)-00629B.svg)](https://iopscience.iop.org/journal/1741-2552)
 [![Unit Tests](https://img.shields.io/badge/pytest-25%2F25%20PASSED-brightgreen.svg)](tests/)
 [![Primary Dataset](https://img.shields.io/badge/Dataset-TU%20Berlin%20(29%20Subjects)-purple.svg)](https://doi.org/10.1109/TNSRE.2016.2628057)
 [![Parameters](https://img.shields.io/badge/Parameters-63%2C932-orange.svg)](reproduce_benchmark.py)
@@ -11,7 +11,7 @@
 An open-source, mathematically grounded, and hardware-efficient PyTorch implementation of **NVC-DelayFormer**, an end-to-end multimodal deep learning architecture designed for cross-subject brain-computer interfaces (BCIs) combining electroencephalography (EEG) and functional near-infrared spectroscopy (fNIRS).
 
 Accompanying the manuscript:  
-**"Physiology-Guided Temporal Fusion for Cross-Subject EEG–fNIRS Brain–Computer Interfaces"** (Target: *IEEE Transactions on Biomedical Engineering*).
+**"Physiology-Guided Temporal Fusion for Cross-Subject EEG–fNIRS Brain–Computer Interfaces"** (Target: *Journal of Neural Engineering*).
 
 ---
 
@@ -320,7 +320,7 @@ nvc-delayformer-bci/
 │   ├── utils/                       # 随机种子、评估指标、拓扑绘图工具
 │   ├── train.py                     # 严谨留一法 (LOSO) 跨被试从头训练核心流水线
 │   └── benchmark_engineering_metrics.py # GPU 显存、MACs 与推理耗时基准评测
-├── tests/                           # 自动化单元测试套件 (25/25 全自动通过)
+├── tests/                           # 自动化单元测试套件 (26/26 全自动通过)
 │   ├── test_compliance.py           # 核心协议合规性与数据隔离测试 (13 项测试)
 │   ├── test_crea_convergence.py     # 因果在线递归对齐 (CrEA) 数值测试 (3 项测试)
 │   └── test_temporal_fusion.py      # temporal_fusion 独立包接口测试 (9 项测试)
@@ -351,7 +351,7 @@ nvc-delayformer-bci/
 @article{chen2026physiology,
   title={Physiology-Guided Temporal Fusion for Cross-Subject EEG--fNIRS Brain--Computer Interfaces},
   author={Chen, Hongjie and Duan, Fang},
-  journal={IEEE Transactions on Biomedical Engineering},
+  journal={Journal of Neural Engineering},
   year={2026},
   note={Under Peer Review}
 }

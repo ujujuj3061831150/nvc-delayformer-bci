@@ -1,5 +1,5 @@
 """
-One-Click Reproducibility Suite for IEEE TBME Manuscript:
+One-Click Reproducibility Suite for Journal of Neural Engineering (JNE) Manuscript:
 "Physiology-Guided Temporal Fusion for Cross-Subject EEG–fNIRS Brain–Computer Interfaces"
 
 Provides a unified, zero-configuration CLI to verify, audit, and reproduce all
@@ -41,7 +41,7 @@ from temporal_fusion import (
 def run_verify():
     """Verify package integrity, data directories, parameter counts, and tensor contracts."""
     print("=" * 86)
-    print("  IEEE TBME ARTIFACT VERIFICATION SUITE: NVC-DELAYFORMER ARCHITECTURE")
+    print("  JOURNAL OF NEURAL ENGINEERING ARTIFACT VERIFICATION SUITE: NVC-DELAYFORMER")
     print("=" * 86)
 
     # 1. Hardware & Framework Check
@@ -662,7 +662,7 @@ def run_train_ablation(sub_id: int = 5):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="One-Click Reproducibility Suite for IEEE TBME Manuscript",
+        description="One-Click Reproducibility Suite for Journal of Neural Engineering (JNE) Manuscript",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("--verify", action="store_true", help="Run automated architecture verification & tensor contracts")
