@@ -4,7 +4,7 @@
 **主编信息：** Prof. Warren M. Grill (Duke University, USA)  
 **稿件类型：** Research Paper（Format-Free Initial Submission 初审自由格式）  
 **论文标题：** Physiology-Guided Temporal Fusion for Cross-Subject EEG–fNIRS Brain–Computer Interfaces  
-**通讯作者：** 段芳 博士/副教授（Fang Duan, Ph.D., Associate Professor, `nkfetsh@gmail.com`）  
+**通讯作者：** 段芳 博士/讲师（Fang Duan, Ph.D., Lecturer, `nkfetsh@gmail.com`）
 **通讯作者 ORCID：** [0000-0003-0982-2206](https://orcid.org/0000-0003-0982-2206)  
 **第一作者：** 陈宏杰 硕士研究生/助理研究员（Hongjie Chen, `chenhj976@gmail.com`）  
 **第一单位：** 华侨大学信息科学与工程学院（College of Information Science and Engineering, Huaqiao University）  
@@ -16,10 +16,10 @@
 
 | 序号 | 投稿文件名称 | 格式/页数 | ScholarOne Portal File Designation | 核心校验指标与状态 |
 | :--- | :--- | :--- | :--- | :--- |
-| 1 | `manuscript/main.pdf` (或 `reports/manuscript.pdf`) | PDF / **严格 8.0 页双栏** | **Main Document** | 页眉标注 JNE Under Review 2026；完整双栏图表、公式与参考文献 [1]–[36]；无超页；SHA256: `f52eb07e...` |
-| 2 | `reports/Supplementary_Material.pdf` (或 `manuscript/supplementary.pdf`) | PDF / **严格 4.0 页双栏** | **Supplementary File** | 涵盖 Section S.I–S.V；Table S1–S3；Figure S1–S3；含 Buccino 2016 独立外部硬件队列评测（81.03%）；SHA256: `255628d1...` |
-| 3 | `reports/Cover_Letter.pdf` | PDF / **严格 1.0 页单栏** | **Cover Letter** | 致 JNE 主编 Prof. Warren M. Grill；包含通讯作者详细信息与 ORCID；态度谦逊礼貌；涵盖 IOP 8 项强制合规声明；SHA256: `63321bd9...` |
-| 4 | `reports/manuscript_latex_source.zip` | ZIP 压缩包 | **Source Files** | 包含清洗后的 `main.tex`, `main.bbl`, `references.bib` |
+| 1 | `manuscript/main.pdf` (或 `reports/manuscript.pdf`) | PDF / 8 页 | **Main Document** | 完整双栏图表、公式与参考文献；SHA-256 前 16 位：`09A05AB18FDE39CB`。 |
+| 2 | `reports/Supplementary_Material.pdf` (或 `manuscript/supplementary.pdf`) | PDF / 4 页 | **Supplementary File** | Section S.I–S.V、Table S1–S3、Figure S1–S2；Buccino 独立队列单独训练的 15 折 LOSO 评测（79.83%）；SHA-256 前 16 位：`33F57FEA9A48B0C9`。 |
+| 3 | `reports/Cover_Letter.pdf` | PDF / 1 页 | **Cover Letter** | 致 JNE 主编；包含通讯作者详细信息与 ORCID、原创性、伦理、利益冲突及开放代码声明；SHA-256 前 16 位：`25B2FD440C5E35BC`。 |
+| 4 | `reports/manuscript_latex_source.zip` | ZIP 压缩包 | **Source Files（如系统要求）** | 含主稿和补充材料 TeX、参考文献及全部被引用的图文件；独立解压编译已通过。 |
 
 ---
 
@@ -27,7 +27,7 @@
 
 ### 1. 通讯作者（Corresponding Author）
 - **姓名：** 段芳（Fang Duan）
-- **职称/学位：** 副教授（Associate Professor）/ 工学博士（Ph.D.）
+- **职称/学位：** 讲师（Lecturer）/ 工学博士（Ph.D.）
 - **所属院系：** 信息科学与工程学院（College of Information Science and Engineering）
 - **所属单位：** 华侨大学（Huaqiao University）
 - **通信地址：** 中国福建省厦门市集美区集美大道 668 号（No. 668 Jimei Avenue, Jimei District, Xiamen, Fujian 361021, P. R. China）
@@ -57,11 +57,11 @@
 | **5. 原创性与独家性 (Originality)** | 论文为原创成果，未曾公开发表且未一稿多投 | **完全符合** | 投稿信与手稿中均作出强制 Originality & Exclusivity 声明。 |
 | **6. 预印本与会议披露 (Preprint Policy)** | 必须披露预印本 (arXiv/bioRxiv) 或会议衍生版本 | **完全补全** | 投稿信中明确披露：“No preprint or prior conference version of this work exists, and no text recycling has occurred”。 |
 | **7. 作者署名同意书 (Authorship)** | 全体作者均审阅、认可并同意投稿本刊 | **完全符合** | 投稿信明确声明全体作者知情同意。 |
-| **8. 伦理审查合规 (Ethical Approval)** | 必须提供伦理审查委员会名称与审批批号 | **完全符合** | 明确标明柏林工业大学伦理委员会批号 `SH_01_20150330`，符合赫尔辛基宣言。 |
+| **8. 伦理审查合规 (Ethical Approval)** | 准确说明各原始数据集的审批和同意情况 | **已核对** | TU Berlin 原始研究批号为 `SH_01_20150330`；Buccino 原论文报告 University of Houston IRB 审批和书面知情同意。 |
 | **9. 利益冲突声明 (Conflict of Interest)** | 必须明确声明有无经济或非经济竞争利益 | **完全符合** | 声明无任何利益冲突（The authors declare no competing interests）。 |
 | **10. 基金资助说明 (Funding Statement)** | 须明确资助来源或声明无专项外部资助 | **完全补全** | 投稿信与手稿确认无专项外部基金资助偏倚。 |
 | **11. 数据与开源代码 (Data & Code)** | 倡导开放科学，提供代码与数据复现路径 | **完全符合** | 附上公开仓库 [GitHub/ujujuj3061831150/nvc-delayformer-bci](https://github.com/ujujuj3061831150/nvc-delayformer-bci)，权重与测试代码全开放。 |
-| **12. 外部独立队列验证 (Generalizability)** | 避免单一实验室/单硬件拟合，证明跨设备泛化 | **完全符合** | 补充材料 Section S.V 包含 Buccino et al. 2016 独立硬件队列 15 折 LOSO 验证（81.03%），彻底杜绝单数据集质疑。 |
+| **12. 外部独立队列评估 (External Cohort)** | 在不同采集设备和任务协议上评估架构 | **已完成** | 补充材料 Section S.V 包含 Buccino et al. 2016 队列单独训练的 15 折 LOSO 评测（79.83%）；不等同于跨队列权重直接迁移。 |
 | **13. 无未证实首创词 (Overclaiming Ban)** | 严禁无据宣称 first, novel, pioneering, superior | **完全符合** | 经全局审计脚本断言核查，全面杜绝无证据首创宣称。 |
 
 ---
@@ -78,10 +78,9 @@
 ### 2. 摘要文本（Abstract）
 ```text
 Objective: To improve cross-subject EEG-fNIRS decoding by incorporating neurovascular delay priors into multimodal fusion.
-Methods: NVC-DelayFormer combines convolutional EEG and optical encoders through cross-attention with delay priors and token timestamp masks. Entropy-guided gating integrates deep attention features with spectral summaries. Evaluation used participant-isolated leave-one-subject-out validation, with separate participants for training, checkpoint selection, and testing.
-Results: Across 29 participants and three seeds, mean accuracy was 78.22%, compared with 72.89% for standard 2D-EEGNet (p = 1.10e-4). Primary-seed accuracy was 79.37%. Recursive covariance alignment reduced relative covariance error from 45.15% after one trial to 29.38% after eight trials. Under task-specific training, accuracy reached 73.24% for working memory and 66.32% for motor imagery.
-Conclusion: Delay-guided temporal fusion improved cross-subject decoding on the primary benchmark and supported classification across three BCI tasks.
-Significance: With 63,932 trainable parameters and 24.79 million multiply-accumulate operations, NVC-DelayFormer provides a compact architecture for multimodal BCI development.
+Approach: NVC-DelayFormer combines convolutional EEG and optical encoders through cross-attention with delay priors and token timestamp masks. Entropy-guided gating integrates deep attention features with spectral summaries. Evaluation used participant-isolated leave-one-subject-out validation, with separate participants for training, checkpoint selection, and testing.
+Main results: Across 29 participants and three seeds, mean accuracy was 78.22%, compared with 72.89% for standard 2D-EEGNet (p = 1.10e-4). Primary-seed accuracy was 79.37%. Recursive covariance alignment reduced relative covariance error from 45.15% after one trial to 29.38% after eight trials. Under task-specific training, accuracy reached 73.24% for working memory and 66.32% for motor imagery.
+Significance: Delay-guided temporal fusion improved cross-subject decoding on the primary benchmark and supported classification across three BCI tasks. With 63,932 trainable parameters and 24.79 million multiply-accumulate operations, NVC-DelayFormer provides a compact architecture for multimodal BCI development.
 ```
 
 ### 3. 推荐独立审稿人（Suggested Reviewers）
@@ -111,8 +110,8 @@ Significance: With 63,932 trainable parameters and 24.79 million multiply-accumu
 
 - [x] **单元测试全覆盖：** `pytest tests/` 26/26 项全部通过（100%）。
 - [x] **全局健全性审计：** `python tests/audit_codebase_soundness.py` 12 维度 48 项断言 100% 通过。
-- [x] **投稿信页数预算：** `reports/Cover_Letter.pdf` 严格 1.0 页（0 overfull hbox，0 underfull hbox）。
-- [x] **主论文页数预算：** `manuscript/main.pdf` 严格 8.0 页双栏。
-- [x] **补充材料页数预算：** `reports/Supplementary_Material.pdf` 严格 4.0 页双栏。
-- [x] **独立外部数据集对齐：** Buccino et al. 2016 评测参数精准对齐（62,340 参数，81.03% 准确率）。
+- [x] **投稿信页数：** `reports/Cover_Letter.pdf` 1 页。
+- [x] **主论文页数：** `manuscript/main.pdf` 8 页双栏。
+- [x] **补充材料页数：** `reports/Supplementary_Material.pdf` 4 页双栏。
+- [x] **独立外部数据集对齐：** 当前 62,340 参数配置完整重跑 Buccino et al. 2016 的 15 折 LOSO，平均准确率 79.83%。
 - [x] **无数据集3残留：** 全仓库及文档中彻底杜绝 “数据集3” 或 “天津数据”。

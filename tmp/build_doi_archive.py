@@ -8,10 +8,12 @@ import shutil
 import subprocess
 import sys
 import zipfile
+from datetime import datetime, timezone
 
 ROOT = Path(__file__).resolve().parents[1]
 DATE = '2026-10-21'
 NAME = 'NVC-DelayFormer_DOI_Archive_20261021'
+BUILT_AT_UTC = datetime.now(timezone.utc).isoformat(timespec='seconds')
 OUT = ROOT / 'releases'
 STAGE = OUT / NAME
 if STAGE.resolve().parent != OUT.resolve() or OUT.resolve().parent != ROOT.resolve():
@@ -133,6 +135,8 @@ terms and are not redistributed here. This archive omits raw/processed participa
 Git history and configuration, credentials, caches, build outputs, audit conversations and older PDF copies.
 Verify `MANIFEST.sha256` after extraction; the external `.zip.sha256` checks the ZIP itself.
 '''
+readme = readme.replace('Archive date: 2026-10-21.',
+                        f'Release-series date: 2026-10-21. Snapshot built at: {BUILT_AT_UTC}.')
 (STAGE / 'README.md').write_text(readme, encoding='utf-8')
 (STAGE / 'DATA_AVAILABILITY.md').write_text('''# Data availability and preparation
 
@@ -207,7 +211,8 @@ for name in ['torch', 'numpy', 'scipy', 'scikit-learn', 'matplotlib', 'pytest', 
 (STAGE / 'environment/requirements-tested-core.txt').write_text('\n'.join(f'{k}=={v}' for k,v in env.items()) + '\n', encoding='utf-8')
 revision = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
 status = subprocess.check_output(['git', 'status', '--porcelain', '-z'], cwd=ROOT).decode('utf-8', errors='replace')
-metadata = {'archive_date': DATE, 'software_version': '1.0.0',
+metadata = {'archive_date': DATE, 'snapshot_built_at_utc': BUILT_AT_UTC,
+            'software_version': '1.0.0',
             'base_git_commit': revision, 'working_tree_has_changes': bool(status.strip()),
             'source': 'Current working-tree bytes; not only committed files',
             'doi': None, 'participant_recordings_included': False,

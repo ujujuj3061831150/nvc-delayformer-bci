@@ -27,17 +27,17 @@ Hybrid EEG–fNIRS interfaces offer a powerful non-invasive window into neural f
 To resolve this biophysical bottleneck, we propose **NVC-DelayFormer**, an architecture that embeds biophysical neurovascular timing priors directly into multimodal cross-attention. Our contributions are substantiated through rigorous participant-isolated evaluations and open-science benchmarking:
 
 1. **Physiology-Guided Cross-Attention Formulation:** Multi-head cross-attention is parameterized by multicenter Gaussian delay priors grounded in canonical hemodynamic response delay windows ($\tau_h \in \{3.5, 4.5, 5.5, 6.5\}$ s) and token timestamp masks that explicitly eliminate acausal backwards-in-time connections, ensuring temporal precedence across modalities.
-2. **Factorial Ablation & Dual-Cohort LOSO Validation:** Under strict leave-one-subject-out (LOSO) protocols across both the primary 29-participant cohort (TU Berlin) and an independent 15-participant external cohort (Buccino et al., 81.03% accuracy; Supplementary Section S.V), factorial ablations explicitly confirm cross-hardware generalizability and isolate the distinct marginal contributions of the delay prior versus the causal mask.
+2. **Factorial Ablation & Dual-Cohort LOSO Evaluation:** In the primary 29-participant TU Berlin cohort, factorial ablations isolate the contributions of the delay prior and causal mask. Separately trained 15-fold LOSO evaluation on the independent Buccino et al. cohort, acquired with different EEG–fNIRS hardware, yielded 79.83% accuracy (Supplementary Section S.V).
 3. **Unsupervised Recursive Covariance Alignment (CrEA):** To tackle inter-subject covariance drift during test time, we introduce Causal Recursive Euclidean Alignment (CrEA), which recursively updates reference covariances online without session lookahead, reducing relative covariance error from 45.15% to 29.38% within the first 8 trials. Across 29 participants and three random seeds, NVC-DelayFormer achieves a grand mean accuracy of **78.22% ± 1.00%** (primary seed: **79.37% ± 7.73%**), significantly exceeding standard 2D-EEGNet (72.89%, $p = 1.10\times 10^{-4}$) and unconstrained cross-attention ($p = 7.18\times 10^{-4}$). In task-specific training, accuracy reaches **73.24%** for working memory and **66.32%** for motor imagery.
-4. **Compact Embedded Footprint:** With only **63,932 trainable parameters** and **24.79 M MACs**, the model requires $17.5\times$ fewer parameters than EEG Conformer and operates with a batch-one forward latency of **2.22 ms** on an NVIDIA RTX 4060 Laptop GPU, satisfying the operational envelope of wearable neural interfaces.
+4. **Compact Model and Measured Inference:** With **63,932 trainable parameters** and **24.79 M MACs**, the model requires $17.5\times$ fewer parameters than EEG Conformer. Batch-one forward latency was **2.22 ms** on an NVIDIA RTX 4060 Laptop GPU.
 
 ### Mandatory Declarations & Guidelines Compliance
 - **Originality & Exclusivity:** This manuscript represents original scientific work not published previously and not currently under consideration elsewhere.
 - **Preprint & Conference Disclosure:** No preprint or prior conference version of this work exists, and no text recycling has occurred.
 - **Authorship Approval:** All authors have read, critically reviewed, and approved the final manuscript and agree with its submission to JNE.
-- **Ethical Approval:** All human participant analyses used de-identified open-access data approved by the Ethics Committee of the Institute of Psychology and Ergonomics, Technische Universität Berlin (protocol SH_01_20150330), in accordance with the Declaration of Helsinki.
+- **Ethical Approval:** This study reanalyzed de-identified public data. The original TU Berlin collections were approved under protocol SH_01_20150330; the Buccino et al. collection was approved by the University of Houston Institutional Review Board. Both original studies reported written participant consent.
 - **Conflict of Interest & Funding:** The authors declare no competing financial or non-financial interests. No specific external grant supported this research.
-- **Reproducibility & Open Science:** Full source code, pre-trained checkpoints, test suites, and audit logs are openly accessible at [GitHub Repository (ujujuj3061831150/nvc-delayformer-bci)](https://github.com/ujujuj3061831150/nvc-delayformer-bci). Qualified peer reviewers have been suggested in the submission portal.
+- **Reproducibility & Open Science:** Source code, available example checkpoints, test suites, and audit logs are openly accessible at [GitHub Repository (ujujuj3061831150/nvc-delayformer-bci)](https://github.com/ujujuj3061831150/nvc-delayformer-bci).
 
 We believe that the interdisciplinary neuroengineering methodology and rigorous dual-cohort validation presented in this paper will be of strong interest to the readership of the *Journal of Neural Engineering*. Should the Editor or reviewers require any further details, clarifications, or access to intermediate audit artifacts, please do not hesitate to contact the corresponding author; we remain entirely at your disposal throughout the evaluation process.
 
@@ -47,7 +47,7 @@ Respectfully submitted,
 
 | **Fang Duan**, Ph.D. (Corresponding Author) | **Hongjie Chen** (First Author) |
 | :--- | :--- |
-| Associate Professor | Graduate Researcher |
+| Lecturer | Graduate Researcher |
 | College of Information Science and Engineering | College of Information Science and Engineering |
 | Huaqiao University, Xiamen 361021, China | Huaqiao University, Xiamen 361021, China |
 | E-mail: `nkfetsh@gmail.com` | E-mail: `chenhj976@gmail.com` |
