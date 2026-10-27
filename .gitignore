@@ -91,6 +91,7 @@ reports/*.txt
 !reports/Highlights.md
 !reports/Highlights.txt
 !reports/Submission_Package_Checklist.md
+!reports/research_guidelines_and_code_consistency.md
 !reports/manuscript_submission.pdf
 !reports/Supplementary_Material.pdf
 !reports/Cover_Letter.pdf
@@ -101,7 +102,7 @@ manuscript/main_exp.*
 run_pipeline.py
 related_literature_10_papers.md
 requirements-lock.txt
-AGENTS.md
+# AGENTS.md tracked as research guideline
 diff_check.txt
 *.html
 
