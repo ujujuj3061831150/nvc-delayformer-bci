@@ -7,9 +7,6 @@ Engineered using scipilot-figure-skill (IEEE / Journal of Neural Engineering Spe
 from pathlib import Path
 import sys
 ROOT = Path(__file__).resolve().parent.parent
-SCIPILOT_SCRIPTS = Path(r"C:\Users\ikunccc\.gemini\config\skills\scipilot-figure\scripts")
-if str(SCIPILOT_SCRIPTS) not in sys.path:
-    sys.path.insert(0, str(SCIPILOT_SCRIPTS))
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
@@ -19,9 +16,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-from setup_style import setup_style
-from visual_qa import audit_layout, print_report
-from export_figure import export_figure
+from scripts.figure_support import setup_style, audit_layout, print_report, export_figure
 
 OUT = ROOT / 'manuscript/figures'
 OUT.mkdir(parents=True, exist_ok=True)
@@ -60,17 +55,17 @@ def main():
 
     ax.plot([8, 14], [err_shrinkage[7], 44], color=COLOR_SHRINKAGE, lw=0.7)
     ax.text(15, 44, 'Trial 8: 29.38%\n(unscaled: 36.47%)', va='center',
-            fontsize=6.8, fontweight='bold', color=COLOR_SHRINKAGE)
+            fontsize=8.0, fontweight='bold', color=COLOR_SHRINKAGE)
 
     ax.set_xlabel('Online Test Trial $k$', fontsize=8.0, labelpad=3)
     ax.set_ylabel('Relative Covariance Error (%)', fontsize=8.0, labelpad=3)
     ax.set_xlim(1, 60)
     ax.set_ylim(0, 95)
     ax.set_yticks([0, 25, 50, 75])
-    ax.tick_params(labelsize=7.5)
-    ax.legend(loc='upper right', fontsize=6.6, frameon=False)
+    ax.tick_params(labelsize=8.0)
+    ax.legend(loc='upper right', fontsize=9.0, frameon=False)
     ax.set_title(r"$\bf{CrEA\ Whitening\ Convergence}$", loc='left', pad=6,
-                 fontsize=8.6, color='#1A2D42')
+                 fontsize=9.1, color='#1A2D42')
 
     # Visual QA Layout Audit
     issues = audit_layout(fig)
@@ -79,7 +74,7 @@ def main():
 
     for folder in (OUT, REPORTS_FIG):
         export_figure(fig, basename=str(folder / 'supplementary_fig_s2_crea_convergence'),
-                      formats=['pdf', 'png'], dpi=300)
+                      formats=['pdf', 'png'], dpi=300, grayscale_preview=True)
 
     plt.close(fig)
     print(f"[+] SciPilot Fig S2 successfully generated: {OUT / 'supplementary_fig_s2_crea_convergence.pdf'}")

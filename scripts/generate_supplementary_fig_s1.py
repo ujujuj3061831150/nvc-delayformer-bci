@@ -7,9 +7,6 @@ Engineered using scipilot-figure-skill (IEEE / Journal of Neural Engineering Spe
 from pathlib import Path
 import sys
 ROOT = Path(__file__).resolve().parent.parent
-SCIPILOT_SCRIPTS = Path(r"C:\Users\ikunccc\.gemini\config\skills\scipilot-figure\scripts")
-if str(SCIPILOT_SCRIPTS) not in sys.path:
-    sys.path.insert(0, str(SCIPILOT_SCRIPTS))
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
@@ -18,11 +15,8 @@ import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from scipy.interpolate import make_interp_spline
 
-from setup_style import setup_style
-from visual_qa import audit_layout, print_report
-from export_figure import export_figure
+from scripts.figure_support import setup_style, audit_layout, print_report, export_figure
 
 OUT = ROOT / 'manuscript/figures'
 OUT.mkdir(parents=True, exist_ok=True)
@@ -50,41 +44,37 @@ def main():
     COLOR_MI = "#D95F02"
 
     fig, (ax_a, ax_b) = plt.subplots(1, 2, figsize=(7.16, 2.90), dpi=300)
-    plt.subplots_adjust(wspace=0.30, left=0.088, right=0.98, top=0.86, bottom=0.20)
+    plt.subplots_adjust(wspace=0.30, left=0.088, right=0.98, top=0.86, bottom=0.28)
 
     # -------------------------------------------------------------------------
     # (a) Delay Sensitivity
     # -------------------------------------------------------------------------
     ax_a.axvspan(3.5, 6.5, color='#F0F4F8', zorder=1, label=r'HRF Prior [3.5, 6.5] s')
 
-    ma_dense_x = np.linspace(ma_taus.min(), ma_taus.max(), 200)
-    ma_spl = make_interp_spline(ma_taus, ma_means, k=2)
-    ax_a.plot(ma_dense_x, ma_spl(ma_dense_x), color=COLOR_MA, lw=1.8, zorder=3)
+    ax_a.plot(ma_taus, ma_means, color=COLOR_MA, lw=1.8, zorder=3)
     ax_a.errorbar(ma_taus, ma_means, yerr=ma_ses, fmt='o', color=COLOR_MA,
                   ecolor=COLOR_MA, elinewidth=1.1, capsize=2.5, capthick=0.9,
                   markersize=4.8, zorder=4, label='Mental Arithmetic (MA)')
 
-    mi_dense_x = np.linspace(mi_taus.min(), mi_taus.max(), 200)
-    mi_spl = make_interp_spline(mi_taus, mi_means, k=2)
-    ax_a.plot(mi_dense_x, mi_spl(mi_dense_x), color=COLOR_MI, lw=1.8, linestyle='--', zorder=3)
+    ax_a.plot(mi_taus, mi_means, color=COLOR_MI, lw=1.8, linestyle='--', zorder=3)
     ax_a.errorbar(mi_taus, mi_means, yerr=mi_ses, fmt='s', color=COLOR_MI,
                   ecolor=COLOR_MI, elinewidth=1.1, capsize=2.5, capthick=0.9,
                   markersize=4.5, zorder=4, label='Motor Imagery (MI)')
 
-    ax_a.text(8.0, ma_means[-1] + 0.6, "MA (+5.12 pp, $p < 0.001$)", va="bottom", ha="right",
-              fontsize=7.2, fontweight="bold", color=COLOR_MA)
-    ax_a.text(8.0, mi_means[-1] - 1.6, "MI (flat response, $p = 0.58$)", va="top", ha="right",
-              fontsize=7.2, fontweight="bold", color=COLOR_MI)
+    ax_a.text(0.03, 0.94, "MA (+5.12 pp, $p < 0.001$)", transform=ax_a.transAxes, va="top", ha="left",
+              fontsize=8.0, fontweight="bold", color=COLOR_MA)
+    ax_a.text(0.98, 0.05, "MI ($p = 0.58$)", transform=ax_a.transAxes, va="bottom", ha="right",
+              fontsize=8.0, fontweight="bold", color=COLOR_MI)
 
     ax_a.set_xlabel(r"Inference Candidate Delay $\bar{\tau}$ (s)", fontsize=8.0, labelpad=3)
     ax_a.set_ylabel("Grand Mean LOSO Accuracy (%)", fontsize=8.0, labelpad=3)
     ax_a.set_xlim(-0.4, 8.4)
     ax_a.set_xticks([0, 2, 4, 5, 6, 8])
     ax_a.set_ylim(63.0, 85.0)
-    ax_a.tick_params(labelsize=7.5)
-    ax_a.legend(loc="lower left", fontsize=6.8, frameon=False)
+    ax_a.tick_params(labelsize=8.0)
+
     ax_a.set_title(r"$\bf{(a)}$ Delay Sensitivity Across Paradigms", loc="left", pad=7,
-                   fontsize=8.6, color='#1A2D42')
+                   fontsize=9.1, color='#1A2D42')
 
     # -------------------------------------------------------------------------
     # (b) Factorial Ablation
@@ -112,35 +102,35 @@ def main():
 
     x = np.arange(len(cond_labels))
     width = 0.32
-    b_base = 50.0
-
-    rects_ma = ax_b.bar(x - width/2 - 0.02, [m - b_base for m in ma_fact_means], width, bottom=b_base,
-                        yerr=ma_fact_ses, color=COLOR_MA, alpha=0.92,
-                        edgecolor="#0A2544", linewidth=0.7, capsize=2.5, label="Mental Arithmetic")
-
-    rects_mi = ax_b.bar(x + width/2 + 0.02, [m - b_base for m in mi_fact_means], width, bottom=b_base,
-                        yerr=mi_fact_ses, color=COLOR_MI, alpha=0.90,
-                        edgecolor="#8A3B00", linewidth=0.7, capsize=2.5, label="Motor Imagery")
+    # Point-and-interval summaries do not imply a bar-length baseline. Raw
+    # participant arrays are not available for every archived condition.
+    ax_b.errorbar(x - width/2 - 0.02, ma_fact_means, yerr=ma_fact_ses,
+                  fmt='o', color=COLOR_MA, elinewidth=1.2, capsize=2.5,
+                  markersize=5, label='Mental Arithmetic')
+    ax_b.errorbar(x + width/2 + 0.02, mi_fact_means, yerr=mi_fact_ses,
+                  fmt='s', color=COLOR_MI, elinewidth=1.2, capsize=2.5,
+                  markersize=4.5, label='Motor Imagery')
 
     ax_b.axhline(50.0, color="#888888", linestyle="--", linewidth=0.8, zorder=1)
-    ax_b.text(3.4, 50.4, "50% Chance", ha="right", va="bottom", fontsize=6.8, color="#666666")
 
     # Statistical bracket: Full vs Both Off
     bracket_y = 82.5
     ax_b.plot([x[0] - width/2, x[0] - width/2, x[3] - width/2, x[3] - width/2],
               [bracket_y - 0.8, bracket_y, bracket_y, bracket_y - 0.8], color=COLOR_MA, lw=0.9)
-    ax_b.text((x[0] + x[3]) / 2 - width/2, bracket_y + 0.5, r"$+4.94$\,pp ($p = 6.05\times 10^{-5}$)",
-              ha="center", va="bottom", fontsize=7.2, fontweight="bold", color=COLOR_MA)
+    ax_b.text((x[0] + x[3]) / 2 - width/2, bracket_y + 0.5, r"$+4.94\,\mathrm{pp}$ ($p = 6.05\times 10^{-5}$)",
+              ha="center", va="bottom", fontsize=9.0, fontweight="bold", color=COLOR_MA)
 
     ax_b.set_xticks(x)
-    ax_b.set_xticklabels(cond_labels, fontsize=7.4)
+    ax_b.set_xticklabels(cond_labels, fontsize=8.0)
     ax_b.set_ylabel("Held-Out LOSO Accuracy (%)", fontsize=8.0, labelpad=3)
     ax_b.set_ylim(48.0, 88.0)
     ax_b.set_yticks([50, 60, 70, 80])
-    ax_b.tick_params(labelsize=7.5)
-    ax_b.legend(loc="upper right", fontsize=6.8, frameon=False)
+    ax_b.tick_params(labelsize=8.0)
+    handles, labels = ax_a.get_legend_handles_labels()
+    fig.legend(handles, labels, loc='lower center', bbox_to_anchor=(0.5, 0.005),
+               ncol=3, fontsize=8.0, frameon=False, columnspacing=1.6)
     ax_b.set_title(r"$\bf{(b)}$ Factorial Constraint Decomposition", loc="left", pad=7,
-                   fontsize=8.6, color='#1A2D42')
+                   fontsize=9.1, color='#1A2D42')
 
     # Visual QA Layout Audit
     issues = audit_layout(fig)
@@ -149,7 +139,7 @@ def main():
 
     for folder in (OUT, REPORTS_FIG):
         export_figure(fig, basename=str(folder / 'supplementary_fig_s1_delay_curves'),
-                      formats=['pdf', 'png'], dpi=300)
+                      formats=['pdf', 'png'], dpi=300, grayscale_preview=True)
 
     plt.close(fig)
     print(f"[+] SciPilot Fig S1 successfully generated: {OUT / 'supplementary_fig_s1_delay_curves.pdf'}")

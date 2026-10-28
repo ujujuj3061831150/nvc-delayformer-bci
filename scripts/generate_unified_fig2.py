@@ -1,20 +1,17 @@
 """
-Generate Figure 2: Minimalist, Publication-Grade Diagnostics for NVC-DelayFormer
+Generate the temporal diagnostics figure for NVC-DelayFormer.
 Engineered using scipilot-figure-skill (IEEE / Journal of Neural Engineering Specs).
 
 Core Principles:
 - "图不需要有太多的文字说明，尽量精简直观，图是来支撑结果的"
 - High Data-Ink Ratio, Minimal Text, Pure Empirical Evidence
 - Panel (a): Delay Attention Profile (Learned Attention vs Prior Kernels, Acausal Mask)
-- Panel (b): Cortical Topographies (Mental Arithmetic vs Motor Imagery, 1:1 Circular Heads)
+- Panel (b): Saved attention matrix with the token timestamp boundary
 - Panel (c): Branch Gating Balance (Raincloud Plot: Half-Violin + Box + Jitter Points)
 """
 from pathlib import Path
 import sys
 ROOT = Path(__file__).resolve().parent.parent
-SCIPILOT_SCRIPTS = Path(r"C:\Users\ikunccc\.gemini\config\skills\scipilot-figure\scripts")
-if str(SCIPILOT_SCRIPTS) not in sys.path:
-    sys.path.insert(0, str(SCIPILOT_SCRIPTS))
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
@@ -25,16 +22,13 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-from setup_style import setup_style
-from visual_qa import audit_layout, print_report
-from export_figure import export_figure
-from src.utils.topomap import EEG_28_COORDS_2D, draw_anatomical_head_contour, interpolate_topomap
+from scripts.figure_support import setup_style, audit_layout, print_report, export_figure
 
 OUT = ROOT / 'manuscript/figures'
 OUT.mkdir(parents=True, exist_ok=True)
 REPORTS_FIG = ROOT / 'reports/figures'
 REPORTS_FIG.mkdir(parents=True, exist_ok=True)
-ARTIFACT_DIR = Path(r"C:\Users\ikunccc\.gemini\antigravity\brain\a6318103-3047-483b-b4e4-e3e0ac3b17f3")
+ARTIFACT_DIR = ROOT / 'tmp/figure_layout_revision_20261028'
 
 def generate_figure():
     # Configure IEEE style
@@ -50,7 +44,7 @@ def generate_figure():
     fig = plt.figure(figsize=(7.16, 2.65), dpi=300)
 
     # 1 Row x 3 Columns Layout with ample breathing room
-    gs = fig.add_gridspec(1, 3, left=0.080, right=0.985, top=0.88, bottom=0.22,
+    gs = fig.add_gridspec(1, 3, left=0.080, right=0.985, top=0.76, bottom=0.23,
                           width_ratios=[1.10, 1.45, 1.05], wspace=0.36)
 
     ax1 = fig.add_subplot(gs[0, 0])
@@ -63,88 +57,74 @@ def generate_figure():
     delta_grid = np.linspace(-2.0, 10.0, 300)
 
     # Shaded physiological HRF window
-    ax1.axvspan(3.5, 6.5, color='#F0F4F8', zorder=1, label='HRF Prior')
+    ax1.axvspan(3.5, 6.5, color='#F0F4F8', zorder=1, label='_nolegend_')
     # Acausal rejection zone
-    ax1.axvspan(-2.0, 0.0, color='#FFF1F0', alpha=0.8, zorder=1, label=r'Causal Mask ($t_j < t_i$)')
+    ax1.axvspan(-2.0, 0.0, color='#FFF1F0', alpha=0.8, zorder=1, label='_nolegend_')
 
     # Plot Prior Gaussian Kernels
     delays = [3.5, 4.5, 5.5, 6.5]
     colors_tau = ['#F59E0B', '#D97706', '#B45309', '#92400E']
     for idx, (tau, c) in enumerate(zip(delays, colors_tau)):
-        kernel = np.exp(-((delta_grid - tau) ** 2) / (2 * (1.0 ** 2)))
+        penalty = -0.5 * ((delta_grid - tau) / 1.5) ** 2
+        tail = 1.0 + 0.3 * np.maximum(0.0, delta_grid - tau)
+        kernel = np.exp(penalty * tail)
         kernel[delta_grid < 0] = 0.0
         ax1.plot(delta_grid, kernel, color=c, lw=1.1, ls='--', alpha=0.85,
-                 label='Prior Kernels' if idx == 0 else None, zorder=3)
+                 label='Prior kernels' if idx == 0 else None, zorder=3)
 
     # Calculate empirical cross-attention density profile
-    t_eeg = np.linspace(0, 10, 250)
-    t_fnirs = np.linspace(0, 12, 124)
-    empirical_delays = []
-    empirical_weights = []
-    for j in range(124):
-        for i in range(250):
-            d_val = t_fnirs[j] - t_eeg[i]
-            w_val = A[j, i]
-            if -2.0 <= d_val <= 10.0 and w_val > 0.005:
-                empirical_delays.append(d_val)
-                empirical_weights.append(w_val)
-
-    bins = np.linspace(-2.0, 10.0, 60)
-    hist, bin_edges = np.histogram(empirical_delays, bins=bins, weights=empirical_weights, density=True)
+    t_eeg = np.arange(A.shape[1]) / 25.0
+    t_fnirs = np.arange(A.shape[0]) / (124.0 / 12.0)
+    delays_grid = t_fnirs[:, None] - t_eeg[None, :]
+    bins = np.linspace(-2.0, 10.0, 61)
+    hist, bin_edges = np.histogram(delays_grid.ravel(), bins=bins, weights=A.ravel())
     bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
-    hist_smooth = np.convolve(hist, np.ones(5)/5, mode='same')
+    hist_smooth = hist.astype(float).copy()
+    # Smooth the two sides separately without erasing measured negative-lag weights.
+    for side in (bin_centers < 0, bin_centers >= 0):
+        hist_smooth[side] = np.convolve(hist[side], np.ones(5) / 5, mode='same')
     hist_norm = hist_smooth / hist_smooth.max()
-    hist_norm[bin_centers < 0] = 0.0
 
-    ax1.plot(bin_centers, hist_norm, color='#0F4D92', lw=2.0, label='Learned Attention', zorder=4)
+    ax1.plot(bin_centers, hist_norm, color='#0F4D92', lw=2.0, label='Attention', zorder=4)
     ax1.fill_between(bin_centers, 0, hist_norm, color='#0F4D92', alpha=0.18, zorder=2)
 
-    ax1.set_xlabel(r'Hemodynamic Delay $\delta = t_j - t_i$ (s)', fontsize=8.0, labelpad=3)
-    ax1.set_ylabel('Attention Weight Density', fontsize=8.0, labelpad=3)
+    ax1.set_xlabel(r'Hemodynamic Delay $\delta = t_j - t_i$ (s)', fontsize=9.0, labelpad=3)
+    ax1.set_ylabel('Normalized lag profile', fontsize=8.0, labelpad=3)
     ax1.set_xlim(-2.0, 10.0)
     ax1.set_ylim(0.0, 1.30)
-    ax1.tick_params(labelsize=7.5)
-    ax1.set_title(r'$\bf{(a)}$ Delay Attention Profile', fontsize=8.6, pad=7, loc='left', color='#1A2D42')
-    ax1.legend(loc='upper right', fontsize=6.2, frameon=False, ncol=2)
+    ax1.tick_params(labelsize=8.0)
+    ax1.set_title(r'$\bf{(a)}$ Delay Attention Profile', fontsize=9.1, pad=0, y=1.32, loc='left', color='#1A2D42')
+    ax1.legend(loc='lower left', bbox_to_anchor=(0.0, 1.01), fontsize=8.0, frameon=False, borderaxespad=0, handlelength=1.6, labelspacing=0.2)
 
     # =========================================================================
-    # Panel (b): Cortical Topographies (Pure anatomical visual evidence)
+    # Panel (b): Saved trial- and head-averaged Sub-05 MA attention weights.
     # =========================================================================
-    ax2.axis('off')
     pos2 = ax2.get_position()
-    ax2.set_title(r'$\bf{(b)}$ Cortical Topographies', fontsize=8.6, pad=7, loc='left', color='#1A2D42')
-
-    w_head = 1.05 / 7.16
-    h_head = 1.05 / 2.65
-    y_head = pos2.y0 + 0.010
-
-    # Left Head: Mental Arithmetic
-    ax_ma = fig.add_axes([pos2.x0 + 0.004, y_head, w_head, h_head])
-    draw_anatomical_head_contour(ax_ma, radius=0.95)
-    names = list(EEG_28_COORDS_2D.keys())
-    coords = np.array([EEG_28_COORDS_2D[k] for k in names])
-    vals_ma = np.array([2.3 if k in ['Fp1', 'Fp2', 'AFz', 'AFF5h', 'AFF6h'] else 1.6 if k in ['F1', 'F2'] else 0.4 for k in names])
-    gx1, gy1, gz1 = interpolate_topomap(coords, vals_ma, radius=0.95, grid_res=150)
-    ax_ma.contourf(gx1, gy1, gz1, levels=30, cmap='YlOrRd', zorder=2)
-    ax_ma.scatter(coords[:, 0], coords[:, 1], c='white', edgecolors='#222222', s=13, lw=0.6, zorder=4)
-    ax_ma.set_title('Mental Arithmetic', fontsize=7.6, fontweight='bold', pad=5, color='#1F4E79')
-    ax_ma.set_xlim(-1.22, 1.22)
-    ax_ma.set_ylim(-1.18, 1.24)
-    ax_ma.set_aspect('equal')
-    ax_ma.axis('off')
-
-    # Right Head: Motor Imagery
-    ax_mi = fig.add_axes([pos2.x0 + w_head + 0.015, y_head, w_head, h_head])
-    draw_anatomical_head_contour(ax_mi, radius=0.95)
-    vals_mi = np.array([2.2 if k in ['C3', 'C4'] else 1.7 if k in ['FC1', 'FC2', 'Cz', 'CP1', 'CP2'] else 0.4 for k in names])
-    gx2, gy2, gz2 = interpolate_topomap(coords, vals_mi, radius=0.95, grid_res=150)
-    ax_mi.contourf(gx2, gy2, gz2, levels=30, cmap='YlOrRd', zorder=2)
-    ax_mi.scatter(coords[:, 0], coords[:, 1], c='white', edgecolors='#222222', s=13, lw=0.6, zorder=4)
-    ax_mi.set_title('Motor Imagery', fontsize=7.6, fontweight='bold', pad=5, color='#C65911')
-    ax_mi.set_xlim(-1.22, 1.22)
-    ax_mi.set_ylim(-1.18, 1.24)
-    ax_mi.set_aspect('equal')
-    ax_mi.axis('off')
+    ax2.set_position([pos2.x0 + 0.015, pos2.y0, pos2.width - 0.055, pos2.height])
+    cmap = plt.get_cmap('cividis').copy()
+    cmap.set_bad('white')
+    # Use every stored positive weight. Exact zeros remain white rather than
+    # receiving an arbitrary pseudocount before the logarithm.
+    logged = np.ma.masked_all(A.shape)
+    logged[A > 0] = np.log10(A[A > 0])
+    step_e = 1.0 / 25.0
+    step_n = 12.0 / 124.0
+    heat = ax2.imshow(logged, origin='lower', aspect='auto', interpolation='nearest',
+                      extent=[-step_e/2, t_eeg[-1]+step_e/2,
+                              -step_n/2, t_fnirs[-1]+step_n/2],
+                      cmap=cmap, vmin=np.log10(A[A > 0].min()), vmax=np.log10(A.max()))
+    ax2.plot([0, 10], [0, 10], color='#777777', lw=0.7, ls='--')
+    ax2.set(xlim=(0, 10), ylim=(0, 12), xticks=[0, 5, 10], yticks=[0, 6, 12])
+    ax2.set_xlabel('EEG token time (s)', fontsize=8.0, labelpad=3)
+    ax2.set_ylabel('fNIRS token time (s)', fontsize=8.0, labelpad=3)
+    ax2.tick_params(labelsize=8.0)
+    ax2.set_title(r'$\bf{(b)}$ Empirical Attention', fontsize=9.1, pad=0, y=1.32,
+                  loc='left', color='#1A2D42')
+    cax = fig.add_axes([pos2.x1 - 0.023, pos2.y0, 0.010, pos2.height])
+    cb = fig.colorbar(heat, cax=cax, ticks=[-6, -3, 0])
+    cb.ax.tick_params(labelsize=8.0, length=2)
+    cb.ax.set_title('log10 A', fontsize=8.0, pad=5)
+    cb.outline.set_linewidth(0.5)
 
     # =========================================================================
     # Panel (c): Branch Gating Balance (Raincloud Plot: Direct distribution proof)
@@ -182,29 +162,29 @@ def generate_figure():
 
     ax3.axhline(0.5, color='#888888', ls=':', lw=0.9, zorder=1)
     ax3.set_xticks(positions)
-    ax3.set_xticklabels(labels, fontsize=7.4)
-    ax3.set_ylabel(r'Branch Gate Weight $g_{b}$', labelpad=3.0, fontsize=8.0)
+    ax3.set_xticklabels(labels, fontsize=8.0)
+    ax3.set_ylabel(r'Branch Gate Weight $g_{b}$', labelpad=3.0, fontsize=9.0)
     ax3.set_xlim(0.5, 3.5)
-    ax3.set_ylim(0.15, 0.85)
+    ax3.set_ylim(0.10, 0.85)
     ax3.set_yticks([0.2, 0.4, 0.5, 0.6, 0.8])
-    ax3.tick_params(labelsize=7.5)
-    ax3.set_title(r'$\bf{(c)}$ Branch Gating Balance', fontsize=8.6, pad=7, loc='left', color='#1A2D42')
+    ax3.tick_params(labelsize=8.0)
+    ax3.set_title(r'$\bf{(c)}$ Branch Gating Balance', fontsize=9.1, pad=0, y=1.32, loc='left', color='#1A2D42')
 
     # Visual QA Layout Audit
     issues = audit_layout(fig)
-    print("--- Running SciPilot Visual QA Audit on Minimalist Fig 2 ---")
+    print("--- Running visual QA on the temporal diagnostics figure ---")
     print_report(issues)
 
     # Export to manuscript/figures, reports/figures, and artifacts
     for folder in (OUT, REPORTS_FIG):
         export_figure(fig, basename=str(folder / 'attention_and_delay_diagnostics'),
-                      formats=['pdf', 'svg', 'png'], dpi=300, grayscale_preview=False)
+                      formats=['pdf', 'svg', 'png'], dpi=300, grayscale_preview=True)
 
     export_figure(fig, basename=str(ARTIFACT_DIR / 'minimalist_pure_evidence_fig2'),
                   formats=['png'], dpi=300, grayscale_preview=True)
 
     plt.close(fig)
-    print(f"[+] Minimalist Pure-Evidence Fig 2 successfully generated: {OUT / 'attention_and_delay_diagnostics.pdf'}")
+    print(f"[+] Temporal diagnostics figure generated: {OUT / 'attention_and_delay_diagnostics.pdf'}")
 
 if __name__ == '__main__':
     generate_figure()
