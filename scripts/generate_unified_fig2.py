@@ -1,29 +1,32 @@
 """
-Generate Figure 2: Consolidated Diagnostics for NVC-DelayFormer
-Includes:
-- Panel (a): Multi-Head Cross-Modal Attention Heatmap
-- Panel (b): Hemodynamic Delay Parameter Scan (tau in [0, 8] s)
-- Panel (c): Online CrEA Streaming Convergence (k=1..60)
-- Panel (d): Multi-Task Adaptive Gating Distributions (Zero-Collapse Verification)
-- Panel (e): Cortical Spatial Coupling Topographies (10-20 Standard Montage)
+Generate Figure 2: Publication-Grade Diagnostics for NVC-DelayFormer
+Engineered using scipilot-figure-skill (IEEE / Journal of Neural Engineering Specs).
 
-Target height: 255 pt (3.55 inches)
-Width: 7.16 inches (IEEE textwidth)
+3-Panel Streamlined Single-Row Layout:
+- Panel (a): Cross-Modal Attention Heatmap with Causal Mask & Delay Priors
+- Panel (b): Cortical Coupling Topographies (MA PFC vs MI SMC, 1:1 Circular Heads)
+- Panel (c): Adaptive Branch Gating Balance (Multi-Task Distribution)
+
+Eliminates all cross-panel collisions, redundant text labels, and vertical stacking.
 """
 from pathlib import Path
 import sys
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parent.parent
+SCIPILOT_SCRIPTS = Path(r"C:\Users\ikunccc\.gemini\config\skills\scipilot-figure\scripts")
+if str(SCIPILOT_SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(SCIPILOT_SCRIPTS))
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 import json
 import numpy as np
-import scipy.stats as stats
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import matplotlib.patches as patches
 
+from setup_style import setup_style
+from visual_qa import audit_layout, print_report
+from export_figure import export_figure
 from src.utils.topomap import EEG_28_COORDS_2D, draw_anatomical_head_contour, interpolate_topomap
 
 OUT = ROOT / 'manuscript/figures'
@@ -31,220 +34,134 @@ OUT.mkdir(parents=True, exist_ok=True)
 REPORTS_FIG = ROOT / 'reports/figures'
 REPORTS_FIG.mkdir(parents=True, exist_ok=True)
 
-plt.rcParams.update({
-    'font.family': 'sans-serif',
-    'font.sans-serif': ['Arial', 'Helvetica', 'DejaVu Sans', 'sans-serif'],
-    'font.size': 7.5,
-    'pdf.fonttype': 42,
-    'svg.fonttype': 'none',
-    'axes.spines.top': False,
-    'axes.spines.right': False,
-    'axes.linewidth': 0.75,
-    'axes.labelsize': 8.0,
-    'xtick.labelsize': 7.2,
-    'ytick.labelsize': 7.2,
-    'legend.frameon': False,
-    'legend.fontsize': 7.0,
-})
-
 def generate_figure():
-    bench = json.loads((ROOT / 'reports/real_29sub_benchmark_and_ablation_summary.json').read_text(encoding='utf-8'))
+    # Configure IEEE journal style
+    setup_style(journal='ieee', lang='en', constrained_layout=False)
+
     real_diag = json.loads((ROOT / 'reports/real_diagnostics_data.json').read_text(encoding='utf-8'))
-
     A = np.array(real_diag['attention_matrix'])
-    assert A.shape == (124, 250), 'Unexpected attention matrix shape'
-
     gates_ma = np.array(real_diag['ma_gate_channels'])
     gates_mi = np.array(real_diag['mi_gate_channels'])
     gates_nback = np.array(real_diag['nback_gate_channels'])
 
-    # 7.16 inches wide, 3.55 inches high (exact IEEE textwidth)
-    fig = plt.figure(figsize=(7.16, 3.55), dpi=300)
+    # IEEE double-column width = 7.16 inches (181.9 mm), Height = 2.65 inches
+    fig = plt.figure(figsize=(7.16, 2.65), dpi=300)
 
-    # Row 1: Panels (a, b, c)
-    gs_row1 = fig.add_gridspec(1, 3, left=0.065, right=0.985, top=0.94, bottom=0.59,
-                                width_ratios=[1.0, 1.0, 1.0], wspace=0.38)
-    ax1 = fig.add_subplot(gs_row1[0, 0])
-    ax2 = fig.add_subplot(gs_row1[0, 1])
-    ax3 = fig.add_subplot(gs_row1[0, 2])
+    # 1 Row x 3 Columns Layout with ample breathing room
+    gs = fig.add_gridspec(1, 3, left=0.088, right=0.985, top=0.88, bottom=0.22,
+                          width_ratios=[1.05, 1.45, 0.82], wspace=0.38)
 
-    # Row 2: Panels (d, e)
-    gs_row2 = fig.add_gridspec(1, 2, left=0.065, right=0.985, top=0.44, bottom=0.07,
-                                width_ratios=[0.95, 1.20], wspace=0.30)
-    ax4 = fig.add_subplot(gs_row2[0, 0])
-    ax5 = fig.add_subplot(gs_row2[0, 1])
+    ax1 = fig.add_subplot(gs[0, 0])
+    ax2 = fig.add_subplot(gs[0, 1])
+    ax3 = fig.add_subplot(gs[0, 2])
 
-    # -------------------------------------------------------------
-    # (a) Attention Matrix (Clean & Direct)
-    # -------------------------------------------------------------
+    # -------------------------------------------------------------------------
+    # Panel (a): Cross-Modal Attention Heatmap
+    # -------------------------------------------------------------------------
     im = ax1.imshow(A, aspect='auto', origin='lower', extent=[0, 10, 0, 12], cmap='viridis')
-    pos = ax1.get_position()
-    cax = fig.add_axes([pos.x1 + 0.008, pos.y0, 0.009, pos.height])
+    pos1 = ax1.get_position()
+    cax = fig.add_axes([pos1.x1 + 0.012, pos1.y0, 0.014, pos1.height])
     cbar = fig.colorbar(im, cax=cax)
-    cbar.ax.set_title(r'$A_{ij}$', fontsize=7.2, pad=3)
-    cbar.ax.tick_params(labelsize=6.8)
+    cbar.ax.tick_params(labelsize=7.0)
+    cbar.set_label('Attention Weight', fontsize=7.5, labelpad=3)
 
-    t_vals = np.linspace(0, 10, 150)
-    ax1.plot(t_vals, t_vals, color='#FF5555', ls='--', lw=1.1, label='Causal Boundary ($t_j=t_i$)')
+    t_vals = np.linspace(0, 10, 100)
+    ax1.plot(t_vals, t_vals, color='#FF4444', ls='--', lw=1.2, label='Causal mask ($t_j=t_i$)')
 
     delays = [3.5, 4.5, 5.5, 6.5]
     colors_tau = ['#FFE066', '#FFCC00', '#FF9900', '#FF6600']
     for idx, (tau_val, c) in enumerate(zip(delays, colors_tau)):
         t_valid = np.linspace(0, max(0.1, 12.0 - tau_val), 100)
-        lbl = r'Prior $\tau_h \in [3.5, 6.5]$\,s' if idx == 0 else None
-        ax1.plot(t_valid, t_valid + tau_val, color=c, ls='-', lw=0.9, alpha=0.95, label=lbl)
-
-    ax1.text(6.8, 2.2, 'Zero Attention\n($t_j < t_i$, causal mask)', ha='center', va='center',
-             fontsize=6.5, color='#CCCCCC', style='italic')
+        lbl = r'Prior $\tau_h \in [3.5, 6.5]$ s' if idx == 0 else None
+        ax1.plot(t_valid, t_valid + tau_val, color=c, ls='-', lw=1.0, alpha=0.9, label=lbl)
 
     ax1.set_xlim(0, 10)
     ax1.set_ylim(0, 12)
-    ax1.set_xlabel('EEG Time $t_i$ (s)', labelpad=2.0)
-    ax1.set_ylabel('fNIRS Time $t_j$ (s)', labelpad=2.0)
-    ax1.legend(loc='upper left', fontsize=6.2, frameon=False, labelcolor='#FFFFFF', borderpad=0.2)
-    ax1.set_title(r'$\bf{(a)}$ Cross-Modal Attention Heatmap', fontsize=8.0, pad=4, color='#1A2D42', loc='left')
+    ax1.set_xlabel('EEG Time $t_i$ (s)', labelpad=3.0, fontsize=8.0)
+    ax1.set_ylabel('fNIRS Time $t_j$ (s)', labelpad=3.0, fontsize=8.0)
+    ax1.tick_params(labelsize=7.5)
+    ax1.set_title(r'$\bf{(a)}$ Cross-Modal Attention', fontsize=8.6, pad=7, loc='left', color='#1A2D42')
+    ax1.legend(loc='upper left', fontsize=6.6, labelcolor='#FFFFFF', frameon=False, borderpad=0.2)
 
-    # -------------------------------------------------------------
-    # (b) Delay Parameter Scan (Direct & Clean)
-    # -------------------------------------------------------------
-    delay_keys = sorted(bench['delay_sweep'], key=float)
-    x_delays = np.array([float(k) for k in delay_keys])
-    y_means = []
-    y_cis = []
-    for k in delay_keys:
-        f_accs = np.array(bench['delay_sweep'][k]['fold_accs'])
-        y_means.append(f_accs.mean())
-        y_cis.append(stats.t.ppf(0.975, len(f_accs) - 1) * f_accs.std(ddof=1) / np.sqrt(len(f_accs)))
+    # -------------------------------------------------------------------------
+    # Panel (b): Cortical Coupling Topographies (1:1 Circular Heads)
+    # -------------------------------------------------------------------------
+    ax2.axis('off')
+    pos2 = ax2.get_position()
+    ax2.set_title(r'$\bf{(b)}$ Cortical Coupling Topographies', fontsize=8.6, pad=7, loc='left', color='#1A2D42')
 
-    y_means = np.array(y_means)
-    y_cis = np.array(y_cis)
+    w_head = 1.05 / 7.16
+    h_head = 1.05 / 2.65
+    y_head = pos2.y0 + 0.008
 
-    ax2.axvspan(3.5, 6.5, color='#F5EFE6', alpha=0.9, zorder=1, label=r'HRF Prior [3.5, 6.5]\,s')
-    ax2.errorbar(x_delays, y_means, yerr=y_cis, fmt='o-', color='#0F4D92',
-                 lw=1.4, ms=4.2, capsize=2.5, capthick=0.9, ecolor='#0F4D92',
-                 label='Mean $\pm$ 95% CI', zorder=3)
+    # Left Head: Mental Arithmetic (Frontal)
+    ax_ma = fig.add_axes([pos2.x0 + 0.004, y_head, w_head, h_head])
+    draw_anatomical_head_contour(ax_ma, radius=0.95)
+    names = list(EEG_28_COORDS_2D.keys())
+    coords = np.array([EEG_28_COORDS_2D[k] for k in names])
+    vals_ma = np.array([2.3 if k in ['Fp1', 'Fp2', 'AFz', 'AFF5h', 'AFF6h'] else 1.6 if k in ['F1', 'F2'] else 0.4 for k in names])
+    gx1, gy1, gz1 = interpolate_topomap(coords, vals_ma, radius=0.95, grid_res=150)
+    ax_ma.contourf(gx1, gy1, gz1, levels=30, cmap='YlOrRd', zorder=2)
+    ax_ma.scatter(coords[:, 0], coords[:, 1], c='white', edgecolors='#222222', s=13, lw=0.6, zorder=4)
+    ax_ma.set_title('Mental Arithmetic (PFC)\nFrontal $\\theta$ ERS / $\\Delta$[HbO]', fontsize=7.0, pad=4, color='#1F4E79')
+    ax_ma.set_xlim(-1.22, 1.22)
+    ax_ma.set_ylim(-1.18, 1.24)
+    ax_ma.set_aspect('equal')
+    ax_ma.axis('off')
 
-    ax2.axhline(74.43, color='#888888', ls=':', lw=0.9, zorder=2, label='Priors Off (74.43%)')
+    # Right Head: Motor Imagery (Sensorimotor)
+    ax_mi = fig.add_axes([pos2.x0 + w_head + 0.015, y_head, w_head, h_head])
+    draw_anatomical_head_contour(ax_mi, radius=0.95)
+    vals_mi = np.array([2.2 if k in ['C3', 'C4'] else 1.7 if k in ['FC1', 'FC2', 'Cz', 'CP1', 'CP2'] else 0.4 for k in names])
+    gx2, gy2, gz2 = interpolate_topomap(coords, vals_mi, radius=0.95, grid_res=150)
+    ax_mi.contourf(gx2, gy2, gz2, levels=30, cmap='YlOrRd', zorder=2)
+    ax_mi.scatter(coords[:, 0], coords[:, 1], c='white', edgecolors='#222222', s=13, lw=0.6, zorder=4)
+    ax_mi.set_title('Motor Imagery (SMC)\nSensorimotor $\\mu/\\beta$ ERD', fontsize=7.0, pad=4, color='#C65911')
+    ax_mi.set_xlim(-1.22, 1.22)
+    ax_mi.set_ylim(-1.18, 1.24)
+    ax_mi.set_aspect('equal')
+    ax_mi.axis('off')
 
-    peak_idx = 3 # tau = 5.0s
-    ax2.text(5.0, y_means[peak_idx] + 0.6, f'Peak: {y_means[peak_idx]:.2f}%\n($\\bar{{\\tau}}=5.0$\,s)',
-             ha='center', va='bottom', fontsize=6.8, fontweight='bold', color='#0F4D92')
-
-    ax2.set_xlabel(r'Candidate Delay $\bar{\tau}$ (s)', labelpad=2.0)
-    ax2.set_ylabel('LOSO Accuracy (%)', labelpad=2.0)
-    ax2.set_xlim(-0.4, 8.4)
-    ax2.set_xticks([0, 2, 4, 5, 6, 8])
-    ax2.set_ylim(72.0, 83.0)
-    ax2.set_yticks([74, 77, 80])
-    ax2.legend(loc='lower right', fontsize=6.2, frameon=False)
-    ax2.set_title(r'$\bf{(b)}$ Hemodynamic Delay Sensitivity', fontsize=8.0, pad=4, color='#1A2D42', loc='left')
-
-    # -------------------------------------------------------------
-    # (c) Online CrEA Convergence (Clean & Clear)
-    # -------------------------------------------------------------
-    k_trials = np.array(real_diag['crea_trials'])
-    err_shrinkage = np.array(real_diag['crea_error_shrinkage'])
-    err_naive = np.array(real_diag['crea_error_naive'])
-
-    ax3.axvspan(1, 8, color='#EBF3F9', alpha=0.9, zorder=1, label=r'Bedside Calibration ($k \leq 8$)')
-    ax3.axvline(8.0, color='#2A9D8F', ls=':', lw=0.9, zorder=2)
-
-    ax3.plot(k_trials, err_shrinkage, color='#0F4D92', lw=1.8, label=r'CrEA: $\widetilde{\mathbf{R}}_{\mathrm{src}}$ Prior', zorder=3)
-    ax3.plot(k_trials, err_naive, color='#D95F02', lw=1.3, ls='--', label=r'CrEA: Identity $\mathbf{I}$ Prior', zorder=3)
-
-    ax3.plot([8, 14], [err_shrinkage[7], 44], color='#0F4D92', lw=0.7)
-    ax3.text(15, 44, 'Trial 8: 29.38%\n(Identity: 47.20%)', va='center', fontsize=6.8, fontweight='bold', color='#0F4D92')
-
-    ax3.set_xlabel('Online Test Trial $k$', labelpad=2.0)
-    ax3.set_ylabel('Relative Cov. Error (%)', labelpad=2.0)
-    ax3.set_xlim(1, 60)
-    ax3.set_ylim(0, 95)
-    ax3.set_yticks([0, 25, 50, 75])
-    ax3.legend(loc='upper right', fontsize=6.2, frameon=False)
-    ax3.set_title(r'$\bf{(c)}$ Online CrEA Adaptation', fontsize=8.0, pad=4, color='#1A2D42', loc='left')
-
-    # -------------------------------------------------------------
-    # (d) Multi-Task Gating Distributions (Pure Clean Boxplots)
-    # -------------------------------------------------------------
+    # -------------------------------------------------------------------------
+    # Panel (c): Branch Gating Balance (Multi-Task Distribution)
+    # -------------------------------------------------------------------------
     gate_data = [gates_ma, gates_nback, gates_mi]
-    labels = ['Mental\nArithmetic', 'Working\nMemory', 'Motor\nImagery']
-    colors_box = ['#D1E7DD', '#CFE2FF', '#F8D7DA']
-    colors_edge = ['#198754', '#0D6EFD', '#DC3545']
+    labels = ['Mental\nArith.', 'Working\nMemory', 'Motor\nImagery']
+    colors_box = ['#E2F0D9', '#DDEBF7', '#FCE4D6']
+    colors_edge = ['#385723', '#1F4E79', '#C65911']
 
-    bp = ax4.boxplot(gate_data, positions=[1, 2, 3], patch_artist=True, widths=0.45,
+    bp = ax3.boxplot(gate_data, positions=[1, 2, 3], patch_artist=True, widths=0.48,
                      medianprops=dict(color='#111111', linewidth=1.6),
                      boxprops=dict(linewidth=0.9),
-                     whiskerprops=dict(color='#333333', linewidth=0.9),
-                     capprops=dict(color='#333333', linewidth=0.9),
+                     whiskerprops=dict(color='#444444', linewidth=0.9),
+                     capprops=dict(color='#444444', linewidth=0.9),
                      showfliers=False, zorder=3)
 
     for patch_elem, col_b, col_e in zip(bp['boxes'], colors_box, colors_edge):
         patch_elem.set_facecolor(col_b)
         patch_elem.set_edgecolor(col_e)
 
-    for idx, (vals, col_e) in enumerate(zip(gate_data, colors_edge)):
-        m_val = vals.mean()
-        ax4.text(idx + 1, 0.94, f'$\\bar{{g}}={m_val:.2f}$', ha='center', fontsize=7.2, fontweight='bold', color=col_e)
+    ax3.axhline(0.5, color='#888888', ls=':', lw=0.9, zorder=1)
+    ax3.set_xticks([1, 2, 3])
+    ax3.set_xticklabels(labels, fontsize=7.4)
+    ax3.set_ylabel(r'Branch Gate Weight $g_{b}$', labelpad=3.0, fontsize=8.0)
+    ax3.tick_params(labelsize=7.5)
+    ax3.set_ylim(0.15, 0.85)
+    ax3.set_yticks([0.2, 0.4, 0.5, 0.6, 0.8])
+    ax3.set_title(r'$\bf{(c)}$ Branch Gating Balance', fontsize=8.6, pad=7, loc='left', color='#1A2D42')
 
-    ax4.axhline(0.5, color='#888888', ls=':', lw=0.8, zorder=1)
-    ax4.text(3.45, 0.50, 'Equilibrium (0.50)', va='center', ha='right', fontsize=6.2, color='#666666')
-
-    ax4.set_xticks([1, 2, 3])
-    ax4.set_xticklabels(labels, fontsize=7.2)
-    ax4.set_ylabel(r'Branch Gate Weight $g_{b}$', labelpad=2.0)
-    ax4.set_ylim(0.05, 1.05)
-    ax4.set_yticks([0.2, 0.4, 0.6, 0.8, 1.0])
-    ax4.set_title(r'$\bf{(d)}$ Branch Gating Balance (Zero Collapse)', fontsize=8.0, pad=4, color='#1A2D42', loc='left')
-
-    # -------------------------------------------------------------
-    # (e) Authentic 2D Cortical Topographies (Clean & Direct)
-    # -------------------------------------------------------------
-    ax5.axis('off')
-    pos5 = ax5.get_position()
-    w_sub = pos5.width * 0.46
-    h_sub = pos5.height * 0.88
-
-    cax5a = fig.add_axes([pos5.x0 + 0.01, pos5.y0 + 0.02, w_sub, h_sub])
-    draw_anatomical_head_contour(cax5a, radius=0.95)
-    names = list(EEG_28_COORDS_2D.keys())
-    coords = np.array([EEG_28_COORDS_2D[k] for k in names])
-    vals_ma = np.array([2.3 if k in ['Fp1', 'Fp2', 'AFz', 'AFF5h', 'AFF6h'] else 1.6 if k in ['F1', 'F2'] else 0.4 for k in names])
-    gx1, gy1, gz1 = interpolate_topomap(coords, vals_ma, radius=0.95, grid_res=150)
-    cax5a.contourf(gx1, gy1, gz1, levels=30, cmap='YlOrRd', zorder=2)
-    cax5a.scatter(coords[:, 0], coords[:, 1], c='white', edgecolors='#222222', s=10, lw=0.5, zorder=4)
-    for k in ['Fp1', 'Fp2', 'AFz']:
-        x, y = EEG_28_COORDS_2D[k]
-        cax5a.text(x, y + 0.04, k, fontsize=5.8, ha='center', fontweight='bold', color='#111111', zorder=5)
-    cax5a.set_title('Mental Arithmetic (PFC)\n$\\theta$ ERS + Frontal $\\Delta$[HbO]', fontsize=7.0, fontweight='bold', pad=3, color='#0F4D92')
-    cax5a.set_xlim(-1.20, 1.20)
-    cax5a.set_ylim(-1.15, 1.22)
-    cax5a.axis('off')
-
-    cax5b = fig.add_axes([pos5.x0 + pos5.width * 0.53, pos5.y0 + 0.02, w_sub, h_sub])
-    draw_anatomical_head_contour(cax5b, radius=0.95)
-    vals_mi = np.array([2.2 if k in ['C3', 'C4'] else 1.7 if k in ['FC1', 'FC2', 'Cz', 'CP1', 'CP2'] else 0.4 for k in names])
-    gx2, gy2, gz2 = interpolate_topomap(coords, vals_mi, radius=0.95, grid_res=150)
-    cax5b.contourf(gx2, gy2, gz2, levels=30, cmap='YlOrRd', zorder=2)
-    cax5b.scatter(coords[:, 0], coords[:, 1], c='white', edgecolors='#222222', s=10, lw=0.5, zorder=4)
-    for k in ['C3', 'Cz', 'C4']:
-        x, y = EEG_28_COORDS_2D[k]
-        cax5b.text(x, y + 0.04, k, fontsize=5.8, ha='center', fontweight='bold', color='#111111', zorder=5)
-    cax5b.set_title('Motor Imagery (SMC)\nSensorimotor $\\mu/\\beta$ ERD', fontsize=7.0, fontweight='bold', pad=3, color='#B24700')
-    cax5b.set_xlim(-1.20, 1.20)
-    cax5b.set_ylim(-1.15, 1.22)
-    cax5b.axis('off')
-
-    fig.text(pos5.x0, pos5.y1 + 0.02, r'$\bf{(e)}$ Cortical Coupling Topographies (10--20 Montage)',
-             fontsize=8.0, color='#1A2D42', va='bottom')
+    # Visual QA Layout Audit
+    issues = audit_layout(fig)
+    print("--- Running SciPilot Visual QA Audit on Fig 2 ---")
+    print_report(issues)
 
     # Export to both manuscript/figures and reports/figures
     for folder in (OUT, REPORTS_FIG):
-        fig.savefig(folder / 'attention_and_delay_diagnostics.pdf', dpi=600, bbox_inches='tight', pad_inches=0.02)
-        fig.savefig(folder / 'attention_and_delay_diagnostics.svg', dpi=600, bbox_inches='tight', pad_inches=0.02)
-        fig.savefig(folder / 'attention_and_delay_diagnostics.png', dpi=600, bbox_inches='tight', pad_inches=0.02)
+        export_figure(fig, basename=str(folder / 'attention_and_delay_diagnostics'),
+                      formats=['pdf', 'svg', 'png'], dpi=300, grayscale_preview=False)
 
     plt.close(fig)
-    print(f"[+] Consolidated Fig 2 successfully generated: {OUT / 'attention_and_delay_diagnostics.pdf'}")
+    print(f"[+] SciPilot Fig 2 successfully exported to: {OUT / 'attention_and_delay_diagnostics.pdf'}")
 
 if __name__ == '__main__':
     generate_figure()

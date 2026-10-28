@@ -1,45 +1,37 @@
 """
-Generate Publication-Quality Supplementary Figure S1:
+Generate Supplementary Figure S1:
 Candidate Delay Sensitivity and Factorial Prior Ablation Contrast between Mental Arithmetic (MA)
 and Motor Imagery (MI) across 29 LOSO Folds.
-
-Adheres strictly to Nature / IEEE publication guidelines:
-- Minimum glyph floor >= 5.0 pt
-- Clean direct presentation of statistical effects (+4.94 pp, p = 6.05e-5)
-- Standard chance level reference line (50.0%)
+Engineered using scipilot-figure-skill (IEEE / Journal of Neural Engineering Specs).
 """
-
-import sys
-import json
 from pathlib import Path
+import sys
+ROOT = Path(__file__).resolve().parent.parent
+SCIPILOT_SCRIPTS = Path(r"C:\Users\ikunccc\.gemini\config\skills\scipilot-figure\scripts")
+if str(SCIPILOT_SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(SCIPILOT_SCRIPTS))
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+import json
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from scipy.interpolate import make_interp_spline
 
-ROOT = Path(__file__).resolve().parent.parent
+from setup_style import setup_style
+from visual_qa import audit_layout, print_report
+from export_figure import export_figure
+
 OUT = ROOT / 'manuscript/figures'
 OUT.mkdir(parents=True, exist_ok=True)
 REPORTS_FIG = ROOT / 'reports/figures'
 REPORTS_FIG.mkdir(parents=True, exist_ok=True)
 
-plt.rcParams.update({
-    'font.family': 'sans-serif',
-    'font.sans-serif': ['Arial', 'Helvetica', 'DejaVu Sans', 'sans-serif'],
-    'font.size': 8.0,
-    'axes.labelsize': 8.5,
-    'axes.titlesize': 9.0,
-    'xtick.labelsize': 7.5,
-    'ytick.labelsize': 7.5,
-    'axes.linewidth': 0.8,
-    'axes.spines.top': False,
-    'axes.spines.right': False,
-    'pdf.fonttype': 42,
-    'svg.fonttype': 'none',
-})
-
 def main():
+    setup_style(journal='ieee', lang='en', constrained_layout=False)
+
     ma_summary = json.loads((ROOT / "reports/real_29sub_benchmark_and_ablation_summary.json").read_text(encoding="utf-8"))
     mi_investigation = json.loads((ROOT / "reports/mi_delay_and_priors_investigation_results.json").read_text(encoding="utf-8"))
     ma_factorial = json.loads((ROOT / "reports/factorial_and_attention_results.json").read_text(encoding="utf-8"))["factorial_ablation"]
@@ -57,11 +49,13 @@ def main():
     COLOR_MA = "#0F4D92"
     COLOR_MI = "#D95F02"
 
-    fig, (ax_a, ax_b) = plt.subplots(1, 2, figsize=(7.16, 2.95), dpi=300)
-    plt.subplots_adjust(wspace=0.28, left=0.08, right=0.98, top=0.84, bottom=0.17)
+    fig, (ax_a, ax_b) = plt.subplots(1, 2, figsize=(7.16, 2.90), dpi=300)
+    plt.subplots_adjust(wspace=0.30, left=0.088, right=0.98, top=0.86, bottom=0.20)
 
+    # -------------------------------------------------------------------------
     # (a) Delay Sensitivity
-    ax_a.axvspan(3.5, 6.5, color='#F0F4F8', zorder=1, label=r'HRF Prior [3.5, 6.5]\,s')
+    # -------------------------------------------------------------------------
+    ax_a.axvspan(3.5, 6.5, color='#F0F4F8', zorder=1, label=r'HRF Prior [3.5, 6.5] s')
 
     ma_dense_x = np.linspace(ma_taus.min(), ma_taus.max(), 200)
     ma_spl = make_interp_spline(ma_taus, ma_means, k=2)
@@ -77,20 +71,24 @@ def main():
                   ecolor=COLOR_MI, elinewidth=1.1, capsize=2.5, capthick=0.9,
                   markersize=4.5, zorder=4, label='Motor Imagery (MI)')
 
-    ax_a.text(8.2, ma_means[-1] + 0.3, "MA (+5.12 pp)\n($p < 0.001$)", va="center", ha="left",
+    ax_a.text(8.0, ma_means[-1] + 0.6, "MA (+5.12 pp, $p < 0.001$)", va="bottom", ha="right",
               fontsize=7.2, fontweight="bold", color=COLOR_MA)
-    ax_a.text(8.2, mi_means[-1] - 0.3, "MI (flat response)\n($p = 0.58$, n.s.)", va="center", ha="left",
+    ax_a.text(8.0, mi_means[-1] - 1.6, "MI (flat response, $p = 0.58$)", va="top", ha="right",
               fontsize=7.2, fontweight="bold", color=COLOR_MI)
 
-    ax_a.set_xlabel(r"Inference Candidate Delay $\tau$ (s)", fontweight="bold")
-    ax_a.set_ylabel("Grand Mean LOSO Accuracy (%)", fontweight="bold")
-    ax_a.set_xlim(-0.4, 10.4)
+    ax_a.set_xlabel(r"Inference Candidate Delay $\bar{\tau}$ (s)", fontsize=8.0, labelpad=3)
+    ax_a.set_ylabel("Grand Mean LOSO Accuracy (%)", fontsize=8.0, labelpad=3)
+    ax_a.set_xlim(-0.4, 8.4)
+    ax_a.set_xticks([0, 2, 4, 5, 6, 8])
     ax_a.set_ylim(63.0, 85.0)
-    ax_a.legend(loc="lower left", fontsize=7.0, frameon=False)
-    ax_a.set_title(r"$\bf{(a)}$ Delay Sensitivity Across Paradigms", loc="left", pad=6,
-                   fontsize=8.5, color='#1A2D42')
+    ax_a.tick_params(labelsize=7.5)
+    ax_a.legend(loc="lower left", fontsize=6.8, frameon=False)
+    ax_a.set_title(r"$\bf{(a)}$ Delay Sensitivity Across Paradigms", loc="left", pad=7,
+                   fontsize=8.6, color='#1A2D42')
 
+    # -------------------------------------------------------------------------
     # (b) Factorial Ablation
+    # -------------------------------------------------------------------------
     cond_labels = ["Full Model", "Delay Only", "Mask Only", "Both Off"]
 
     ma_fact_means = [ma_factorial["P_on_M_on (Full Architecture)"]["mean"],
@@ -125,38 +123,36 @@ def main():
                         edgecolor="#8A3B00", linewidth=0.7, capsize=2.5, label="Motor Imagery")
 
     ax_b.axhline(50.0, color="#888888", linestyle="--", linewidth=0.8, zorder=1)
-    ax_b.text(3.5, 50.4, "50% Chance Level", ha="right", va="bottom", fontsize=6.5, color="#666666")
-
-    for rect, val in zip(rects_ma, ma_fact_means):
-        ax_b.text(rect.get_x() + rect.get_width() / 2, rect.get_height() + b_base + 1.0,
-                  f"{val:.1f}%", ha="center", va="bottom", fontsize=6.8, fontweight="bold", color=COLOR_MA)
-
-    for rect, val in zip(rects_mi, mi_fact_means):
-        ax_b.text(rect.get_x() + rect.get_width() / 2, rect.get_height() + b_base + 1.0,
-                  f"{val:.1f}%", ha="center", va="bottom", fontsize=6.8, fontweight="bold", color=COLOR_MI)
+    ax_b.text(3.4, 50.4, "50% Chance", ha="right", va="bottom", fontsize=6.8, color="#666666")
 
     # Statistical bracket: Full vs Both Off
-    bracket_y = 83.2
+    bracket_y = 82.5
     ax_b.plot([x[0] - width/2, x[0] - width/2, x[3] - width/2, x[3] - width/2],
               [bracket_y - 0.8, bracket_y, bracket_y, bracket_y - 0.8], color=COLOR_MA, lw=0.9)
     ax_b.text((x[0] + x[3]) / 2 - width/2, bracket_y + 0.5, r"$+4.94$\,pp ($p = 6.05\times 10^{-5}$)",
-              ha="center", va="bottom", fontsize=7.0, fontweight="bold", color=COLOR_MA)
+              ha="center", va="bottom", fontsize=7.2, fontweight="bold", color=COLOR_MA)
 
     ax_b.set_xticks(x)
-    ax_b.set_xticklabels(cond_labels, fontsize=7.2)
-    ax_b.set_ylabel("Held-Out LOSO Accuracy (%)", fontweight="bold")
+    ax_b.set_xticklabels(cond_labels, fontsize=7.4)
+    ax_b.set_ylabel("Held-Out LOSO Accuracy (%)", fontsize=8.0, labelpad=3)
     ax_b.set_ylim(48.0, 88.0)
     ax_b.set_yticks([50, 60, 70, 80])
-    ax_b.legend(loc="upper right", fontsize=7.0, frameon=False)
-    ax_b.set_title(r"$\bf{(b)}$ Factorial Constraint Decomposition", loc="left", pad=6,
-                   fontsize=8.5, color='#1A2D42')
+    ax_b.tick_params(labelsize=7.5)
+    ax_b.legend(loc="upper right", fontsize=6.8, frameon=False)
+    ax_b.set_title(r"$\bf{(b)}$ Factorial Constraint Decomposition", loc="left", pad=7,
+                   fontsize=8.6, color='#1A2D42')
+
+    # Visual QA Layout Audit
+    issues = audit_layout(fig)
+    print("--- Running SciPilot Visual QA Audit on Fig S1 ---")
+    print_report(issues)
 
     for folder in (OUT, REPORTS_FIG):
-        fig.savefig(folder / 'supplementary_fig_s1_delay_curves.pdf', dpi=600, bbox_inches='tight', pad_inches=0.02)
-        fig.savefig(folder / 'supplementary_fig_s1_delay_curves.png', dpi=600, bbox_inches='tight', pad_inches=0.02)
+        export_figure(fig, basename=str(folder / 'supplementary_fig_s1_delay_curves'),
+                      formats=['pdf', 'png'], dpi=300)
 
     plt.close(fig)
-    print(f"[+] Clean Fig S1 successfully generated: {OUT / 'supplementary_fig_s1_delay_curves.pdf'}")
+    print(f"[+] SciPilot Fig S1 successfully generated: {OUT / 'supplementary_fig_s1_delay_curves.pdf'}")
 
 if __name__ == '__main__':
     main()
