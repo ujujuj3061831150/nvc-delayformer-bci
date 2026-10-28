@@ -21,7 +21,7 @@
 | 1 | `manuscript/main.pdf` (或 `reports/manuscript.pdf`) | PDF / 9 页 | **Main Document** | 完整双栏图表、公式与参考文献；SHA-256 前 16 位：`7A8747FD6914F598`。 |
 | 2 | `reports/Supplementary_Material.pdf` (或 `manuscript/supplementary.pdf`) | PDF / 4 页 | **Supplementary File** | Section S.I–S.V、Table S1–S3、Figure S1–S2；Buccino 独立队列单独训练的 15 折 LOSO 评测（79.83%）；SHA-256 前 16 位：`E7A0DECA434AAEA0`。 |
 | 3 | `reports/Cover_Letter.pdf` | PDF / 1 页 | **Cover Letter** | 致 JNE 主编；包含通讯作者详细信息与 ORCID、原创性、伦理、利益冲突及开放代码声明；SHA-256 前 16 位：`C4F9CB22A4E04038`。 |
-| 4 | `reports/manuscript_latex_source.zip` | ZIP 压缩包 | **Source Files（如系统要求）** | 含主稿和补充材料 TeX、参考文献及全部被引用的图文件；SHA-256 前 16 位：`D24AE3B75CE44B29`；独立解压编译已通过。 |
+| 4 | `reports/manuscript_latex_source.zip` | ZIP 压缩包 | **Source Files（如系统要求）** | 含主稿和补充材料 TeX、参考文献及全部被引用的图文件；SHA-256 前 16 位：`7909E6A735AC1062`；独立解压编译已通过。 |
 
 ---
 
