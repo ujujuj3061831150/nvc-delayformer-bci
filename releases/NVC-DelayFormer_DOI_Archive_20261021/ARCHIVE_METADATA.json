@@ -1,8 +1,8 @@
 {
   "archive_date": "2026-10-21",
-  "snapshot_built_at_utc": "2026-10-28T14:16:35+00:00",
+  "snapshot_built_at_utc": "2026-10-28T14:42:43+00:00",
   "software_version": "1.0.0",
-  "base_git_commit": "f988808cf803a5d4d5027dced8bafcc680c64dc9",
+  "base_git_commit": "f45fbf5d18e924db8ba5241834ca12329051f312",
   "working_tree_has_changes": true,
   "source": "Current working-tree bytes; not only committed files",
   "doi": null,
@@ -95,6 +95,7 @@
     "scripts/finalize_manuscript_assets.py",
     "scripts/finalize_manuscripts.py",
     "scripts/generate_biophysical_architecture_figure.py",
+    "scripts/generate_scipilot_alternative_paradigm.py",
     "scripts/generate_supplementary_fig_s1.py",
     "scripts/generate_supplementary_fig_s2.py",
     "scripts/generate_unified_fig2.py",
