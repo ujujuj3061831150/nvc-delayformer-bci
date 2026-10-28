@@ -21,7 +21,7 @@
 | 1 | `manuscript/main.pdf` (或 `reports/manuscript.pdf`) | PDF / 9 页 | **Main Document** | 完整双栏图表、公式与参考文献；SHA-256 前 16 位：`7A8747FD6914F598`。 |
 | 2 | `reports/Supplementary_Material.pdf` (或 `manuscript/supplementary.pdf`) | PDF / 4 页 | **Supplementary File** | Section S.I–S.V、Table S1–S3、Figure S1–S2；Buccino 独立队列单独训练的 15 折 LOSO 评测（79.83%）；SHA-256 前 16 位：`E7A0DECA434AAEA0`。 |
 | 3 | `reports/Cover_Letter.pdf` | PDF / 1 页 | **Cover Letter** | 致 JNE 主编；包含通讯作者详细信息与 ORCID、原创性、伦理、利益冲突及开放代码声明；SHA-256 前 16 位：`C4F9CB22A4E04038`。 |
-| 4 | `reports/manuscript_latex_source.zip` | ZIP 压缩包 | **Source Files（如系统要求）** | 含主稿和补充材料 TeX、参考文献及全部被引用的图文件；SHA-256 前 16 位：`079FF4AA6E63198F`；独立解压编译已通过。 |
+| 4 | `reports/manuscript_latex_source.zip` | ZIP 压缩包 | **Source Files（如系统要求）** | 含主稿和补充材料 TeX、参考文献及全部被引用的图文件；SHA-256 前 16 位：`D24AE3B75CE44B29`；独立解压编译已通过。 |
 
 ---
 
@@ -117,3 +117,4 @@ Significance: By embedding neurovascular timing constraints, NVC-DelayFormer est
 - [x] **补充材料页数：** `reports/Supplementary_Material.pdf` 4 页双栏。
 - [x] **独立外部数据集对齐：** 当前 62,340 参数配置完整重跑 Buccino et al. 2016 的 15 折 LOSO，平均准确率 79.83%。
 - [x] **无数据集3残留：** 全仓库及文档中彻底杜绝 “数据集3” 或 “天津数据”。
+- [x] **析因消融逐折数据溯源口径：** 在 `reports/factorial_and_attention_results.json` 中，全模型（79.37%）、仅时延先验（78.33%）和仅因果掩码（74.66%）均具备完整的 29 折逐人测试准确率数组；双先验关闭组（74.43%）作为历史汇总基准保留其均值、标准差与配对 $p$ 值（$p=6.05\times 10^{-5}$），客观呈现其归档状态，不夸大宣称四组均已补齐逐折数组。
