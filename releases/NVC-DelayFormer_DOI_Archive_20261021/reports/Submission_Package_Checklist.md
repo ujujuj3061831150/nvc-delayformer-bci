@@ -18,10 +18,10 @@
 
 | 序号 | 投稿文件名称 | 格式/页数 | ScholarOne Portal File Designation | 核心校验指标与状态 |
 | :--- | :--- | :--- | :--- | :--- |
-| 1 | `manuscript/main.pdf` (或 `reports/manuscript.pdf`) | PDF / 9 页 | **Main Document** | 完整双栏图表、公式与参考文献；SHA-256 前 16 位：`7A8747FD6914F598`。 |
-| 2 | `reports/Supplementary_Material.pdf` (或 `manuscript/supplementary.pdf`) | PDF / 4 页 | **Supplementary File** | Section S.I–S.V、Table S1–S3、Figure S1–S2；Buccino 独立队列单独训练的 15 折 LOSO 评测（79.83%）；SHA-256 前 16 位：`E7A0DECA434AAEA0`。 |
+| 1 | `manuscript/main.pdf` (或 `reports/manuscript.pdf`) | PDF / 9 页 | **Main Document** | 完整双栏图表、公式与参考文献；SHA-256 前 16 位：`8172AE56C2E1729B`。 |
+| 2 | `reports/Supplementary_Material.pdf` (或 `manuscript/supplementary.pdf`) | PDF / 4 页 | **Supplementary File** | Section S.I–S.V、Table S1–S3、Figure S1–S2；Buccino 独立队列单独训练的 15 折 LOSO 评测（79.83%）；SHA-256 前 16 位：`41A43F288EC30A9F`。 |
 | 3 | `reports/Cover_Letter.pdf` | PDF / 1 页 | **Cover Letter** | 致 JNE 主编；包含通讯作者详细信息与 ORCID、原创性、伦理、利益冲突及开放代码声明；SHA-256 前 16 位：`C4F9CB22A4E04038`。 |
-| 4 | `reports/manuscript_latex_source.zip` | ZIP 压缩包 | **Source Files（如系统要求）** | 含主稿和补充材料 TeX、参考文献及全部被引用的图文件；SHA-256 前 16 位：`7909E6A735AC1062`；独立解压编译已通过。 |
+| 4 | `reports/manuscript_latex_source.zip` | ZIP 压缩包 | **Source Files（如系统要求）** | 含主稿和补充材料 TeX、参考文献及全部被引用的图文件；SHA-256 前 16 位：`79DB62E94D780A77`；独立解压编译已通过。 |
 
 ---
 
@@ -81,8 +81,8 @@
 ```text
 Objective: To improve cross-subject EEG-fNIRS decoding by incorporating neurovascular delay priors into multimodal fusion.
 Approach: NVC-DelayFormer combines convolutional EEG and optical encoders through cross-attention with delay priors and token timestamp masks. Entropy-guided gating integrates deep attention features with spectral summaries. Evaluation used participant-isolated leave-one-subject-out validation, with separate participants for training, checkpoint selection, and testing.
-Main results: Across 29 participants and three seeds, mean accuracy was 78.22%, compared with 72.89% for standard 2D-EEGNet (p = 1.10e-4). Primary-seed accuracy was 79.37%. Under trace-matched source reference initialization, recursive covariance alignment reduced relative covariance error from 45.15% after one trial to 29.38% after eight trials. Under task-specific training, accuracy reached 73.24% for working memory and 66.32% for motor imagery.
-Significance: By embedding neurovascular timing constraints, NVC-DelayFormer establishes a generalizable cross-subject decoding paradigm across cognitive and sensorimotor tasks. With 63,932 parameters (17.5× smaller than representative transformers) and 2.22 ms single-trial forward execution latency on an NVIDIA RTX 4060 GPU, the architecture provides an ultra-compact computational foundation for prospective zero-calibration BCI integration.
+Main results: Across 29 participants and three seeds, mean accuracy was 78.22%, compared with 72.89% for standard 2D-EEGNet (p = 1.10e-4), with primary-seed accuracy reaching 79.37%. Under trace-matched source reference initialization, recursive covariance alignment reduced relative covariance error from 45.15% after one trial to 29.38% after eight trials. In task-specific evaluations, accuracy was 73.24% for working memory and 66.32% for motor imagery.
+Significance: By embedding neurovascular timing constraints, NVC-DelayFormer achieves cross-subject generalization across cognitive and sensorimotor tasks. Operating with 63,932 parameters (17.5× smaller than representative transformers) and 2.22 ms single-trial forward execution latency on an NVIDIA RTX 4060 GPU, the compact architecture is suitable for prospective zero-calibration BCI deployment.
 ```
 
 ### 3. 推荐独立审稿人（Suggested Reviewers）
