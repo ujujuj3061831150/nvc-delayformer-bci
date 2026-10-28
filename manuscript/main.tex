@@ -79,6 +79,14 @@ Neuronal activation triggers active arteriolar vasodilation and increased cerebr
 
 \section{Methods}
 \label{sec:methods}
+
+The architecture is summarized in Fig.~\ref{fig:architecture}.
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=\textwidth]{figures/architecture_manuscript_figure.pdf}
+\caption{Schematic of NVC-DelayFormer. EEG and fNIRS features are combined by cross-attention with a delay prior and token timestamp mask. Temporal pooling forms deep features. A shallow stream extracts EEG spectral and fNIRS summaries; entropy-guided gating fuses the streams for classification. Gray feature stacks depict representations schematically.}
+\label{fig:architecture}
+\end{figure*}
 NVC-DelayFormer maps paired multichannel EEG and fNIRS trials into cognitive states through a biophysically parameterized temporal fusion network. Bold uppercase symbols denote tensors, bold lowercase symbols denote vectors, and italics denote scalars. Mini-batch dimension is $B$.
 
 \subsection{Input Data and Preprocessing}

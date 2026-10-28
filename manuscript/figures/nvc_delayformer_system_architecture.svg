@@ -1,0 +1,264 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="2048" height="748" viewBox="0 0 2048 748">
+<title>NVC-DelayFormer System Architecture</title>
+<desc>Physiology-guided temporal fusion for cross-subject EEG-fNIRS brain-computer interfaces with delay priors, causal masking, entropy gating, and online CrEA.</desc>
+
+<defs>
+  <!-- Drop Shadow Filters -->
+  <filter id="card-shadow" x="-3%" y="-3%" width="106%" height="108%" filterUnits="userSpaceOnUse">
+    <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#0F172A" flood-opacity="0.06"/>
+  </filter>
+  <filter id="block-shadow" x="-5%" y="-5%" width="110%" height="112%" filterUnits="userSpaceOnUse">
+    <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#0F172A" flood-opacity="0.08"/>
+  </filter>
+  
+  <!-- Arrow Markers -->
+  <marker id="arrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#475569"/>
+  </marker>
+  <marker id="arrow-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#0284C7"/>
+  </marker>
+  <marker id="arrow-red" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#DC2626"/>
+  </marker>
+  <marker id="arrow-purple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#9333EA"/>
+  </marker>
+  <marker id="arrow-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#16A34A"/>
+  </marker>
+</defs>
+
+<!-- Overall Canvas Background -->
+<rect x="0" y="0" width="2048" height="748" fill="#FFFFFF"/>
+
+<!-- Outer Boundary Container -->
+<rect x="40" y="20" width="1968" height="708" rx="16" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="2" filter="url(#card-shadow)"/>
+
+<!-- ========================================================================================= -->
+<!-- STAGE 1: MULTIMODAL ACQUISITION & ENCODERS (x: 60..630)                                  -->
+<!-- ========================================================================================= -->
+<rect x="60" y="40" width="570" height="668" rx="12" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+<text x="345" y="75" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="19" font-weight="bold" fill="#0F172A" text-anchor="middle">Stage 1: Multimodal Spatial-Temporal Encoders</text>
+
+<!-- EEG Stream Group -->
+<g id="eeg-group">
+  <rect x="80" y="105" width="230" height="180" rx="8" fill="#F0F9FF" stroke="#0284C7" stroke-width="1.5"/>
+  <text x="195" y="135" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="15" font-weight="bold" fill="#0369A1" text-anchor="middle">Raw EEG (30 Channels)</text>
+  <text x="195" y="160" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12" fill="#475569" text-anchor="middle">Sampling: 100 Hz  |  Latency ~10 ms</text>
+  <!-- Synthetic EEG Multi-channel Waveform representation -->
+  <polyline points="95,195 110,185 125,210 140,175 155,200 170,180 185,215 200,190 215,180 230,205 245,185 260,210 275,190 295,195" fill="none" stroke="#0284C7" stroke-width="1.5"/>
+  <polyline points="95,225 115,235 130,215 145,240 160,220 175,230 190,215 205,245 220,225 235,235 250,215 265,230 280,225 295,225" fill="none" stroke="#38BDF8" stroke-width="1.5"/>
+  <text x="195" y="270" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="11" fill="#64748B" text-anchor="middle">Input: X_e ∈ ℝ^[B × 30 × 1000]</text>
+
+  <!-- Connection to 2D-EEGNet -->
+  <line x1="310" y1="195" x2="350" y2="195" stroke="#0284C7" stroke-width="2" marker-end="url(#arrow-blue)"/>
+
+  <!-- 2D-EEGNet Backbone -->
+  <rect x="350" y="105" width="260" height="180" rx="8" fill="#E0F2FE" stroke="#0284C7" stroke-width="1.5" filter="url(#block-shadow)"/>
+  <text x="480" y="135" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="15" font-weight="bold" fill="#0369A1" text-anchor="middle">2D-EEGNet Backbone</text>
+  <text x="480" y="160" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12" fill="#0F172A" text-anchor="middle">Temporal Conv (1×64, F₁=8)</text>
+  <text x="480" y="180" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12" fill="#0F172A" text-anchor="middle">Depthwise Spatial Conv (30×1, D=2)</text>
+  <text x="480" y="200" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12" fill="#0F172A" text-anchor="middle">AvgPool (1×4) + Separable Conv</text>
+  <rect x="370" y="225" width="220" height="42" rx="6" fill="#BAE6FD" stroke="#0284C7" stroke-width="1"/>
+  <text x="480" y="251" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="13" font-weight="bold" fill="#0369A1" text-anchor="middle">Keys &amp; Values: K, V ∈ ℝ^[B × 250 × 64]</text>
+</g>
+
+<!-- Central Biological NVC Bridge -->
+<g id="nvc-delay-bridge">
+  <rect x="180" y="300" width="370" height="65" rx="8" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.2"/>
+  <line x1="210" y1="290" x2="210" y2="380" stroke="#D97706" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <text x="375" y="325" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="13" font-weight="bold" fill="#B45309" text-anchor="middle">Neurovascular Coupling (NVC) Disparity</text>
+  <text x="375" y="348" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="11.5" fill="#92400E" text-anchor="middle">Capillary Transit Peak Delay: Δτ = t_i^nirs - t_j^eeg ∈ [3.5, 6.5] s</text>
+</g>
+
+<!-- fNIRS Stream Group -->
+<g id="fnirs-group">
+  <rect x="80" y="380" width="230" height="185" rx="8" fill="#FFF1F2" stroke="#DC2626" stroke-width="1.5"/>
+  <text x="195" y="410" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="15" font-weight="bold" fill="#991B1B" text-anchor="middle">Raw fNIRS (72 Channels)</text>
+  <text x="195" y="433" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12" fill="#475569" text-anchor="middle">Sampling: 10.33 Hz  |  36 Optode Pairs</text>
+  <!-- Synthetic Hemodynamic Response Curve -->
+  <path d="M 95,505 C 130,505 145,465 175,465 C 205,465 220,515 250,515 C 270,515 285,505 295,505" fill="none" stroke="#DC2626" stroke-width="2.2"/>
+  <path d="M 95,505 C 130,505 145,525 175,525 C 205,525 220,495 250,495 C 270,495 285,505 295,505" fill="none" stroke="#2563EB" stroke-width="1.8" stroke-dasharray="4,3"/>
+  <text x="195" y="545" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="11" fill="#64748B" text-anchor="middle">ΔHbO (Red) &amp; ΔHbR (Blue) via MBLL</text>
+
+  <!-- Connection to Optical Encoder -->
+  <line x1="310" y1="472" x2="350" y2="472" stroke="#DC2626" stroke-width="2" marker-end="url(#arrow-red)"/>
+
+  <!-- Optical Conv1D Encoder -->
+  <rect x="350" y="380" width="260" height="185" rx="8" fill="#FEE2E2" stroke="#DC2626" stroke-width="1.5" filter="url(#block-shadow)"/>
+  <text x="480" y="410" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="15" font-weight="bold" fill="#991B1B" text-anchor="middle">Hemodynamic Optical Encoder</text>
+  <text x="480" y="435" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12" fill="#0F172A" text-anchor="middle">Modified Beer-Lambert Law (MBLL)</text>
+  <text x="480" y="455" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12" fill="#0F172A" text-anchor="middle">Spatial Conv1D (72 → 32) + BatchNorm</text>
+  <text x="480" y="475" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12" fill="#0F172A" text-anchor="middle">Temporal Conv1D (Kernel 5, 32 → 64)</text>
+  <rect x="370" y="500" width="220" height="42" rx="6" fill="#FECACA" stroke="#DC2626" stroke-width="1"/>
+  <text x="480" y="526" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="13" font-weight="bold" fill="#991B1B" text-anchor="middle">Queries: Q ∈ ℝ^[B × 124 × 64]</text>
+</g>
+
+<!-- Shallow Biophysical Bypass Stream -->
+<g id="shallow-stream-group">
+  <rect x="80" y="585" width="530" height="95" rx="8" fill="#F8FAFC" stroke="#64748B" stroke-width="1.2" stroke-dasharray="5,4"/>
+  <text x="345" y="612" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="13.5" font-weight="bold" fill="#334155" text-anchor="middle">Shallow Biophysical Stream (Eq. 6)</text>
+  <text x="345" y="635" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="11.5" fill="#475569" text-anchor="middle">x_bio = [p_θ; p_α; p_β; x̄_n^delay; s_n] ∈ ℝ^[B × 234]  (Spectral Log-Powers + Slopes)</text>
+  <text x="345" y="658" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="11.5" font-weight="bold" fill="#059669" text-anchor="middle">Bottleneck Projection (234 → 32 → 64)  →  z_shallow ∈ ℝ^[B × 64]  (Preserves Transient Phase)</text>
+</g>
+
+
+<!-- ========================================================================================= -->
+<!-- STAGE 2: PHYSIOLOGY-GUIDED CROSS-ATTENTION CORE (x: 650..1350)                           -->
+<!-- ========================================================================================= -->
+<rect x="650" y="40" width="700" height="668" rx="12" fill="#FFFFFF" stroke="#D8B4FE" stroke-width="1.5"/>
+<text x="1000" y="75" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="19" font-weight="bold" fill="#581C87" text-anchor="middle">Stage 2: Physiology-Guided Cross-Attention Core (NVC)</text>
+
+<!-- Routing lines from Stage 1 into Cross-Attention Core -->
+<path d="M 610,246 L 680,246 L 680,180 L 710,180" fill="none" stroke="#0284C7" stroke-width="2" marker-end="url(#arrow-blue)"/>
+<text x="645" y="172" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="11.5" font-weight="bold" fill="#0284C7">K, V</text>
+
+<path d="M 610,521 L 680,521 L 680,210 L 710,210" fill="none" stroke="#DC2626" stroke-width="2" marker-end="url(#arrow-red)"/>
+<text x="645" y="225" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="11.5" font-weight="bold" fill="#DC2626">Q</text>
+
+<!-- Main Attention Formulation Card -->
+<rect x="710" y="110" width="580" height="95" rx="8" fill="#F3E8FF" stroke="#9333EA" stroke-width="1.5" filter="url(#block-shadow)"/>
+<text x="1000" y="140" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="14.5" font-weight="bold" fill="#6B21A8" text-anchor="middle">Physiology-Guided Cross-Attention Formulation (Eq. 5)</text>
+<text x="1000" y="175" font-family="Georgia,serif" font-size="17" font-weight="bold" fill="#4C1D95" text-anchor="middle">A^(h) = Softmax( (Q^(h) K^(h)⊤) / √16  +  P^(h)  +  M )</text>
+
+<!-- Operator (1): Multi-Center Gaussian Prior P -->
+<g id="operator-prior">
+  <rect x="680" y="235" width="300" height="235" rx="8" fill="#FAF5FF" stroke="#A855F7" stroke-width="1.2"/>
+  <text x="830" y="262" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="14" font-weight="bold" fill="#6B21A8" text-anchor="middle">1) Gaussian Delay Prior P (Eq. 3)</text>
+  <text x="830" y="285" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="11.5" fill="#475569" text-anchor="middle">Asymmetric Multi-Center Latency Prior</text>
+  <!-- Gaussian bell curves -->
+  <path d="M 700,380 C 720,380 725,310 740,310 C 755,310 760,380 780,380" fill="none" stroke="#38BDF8" stroke-width="2.2"/>
+  <path d="M 730,380 C 750,380 755,295 770,295 C 785,295 790,380 810,380" fill="none" stroke="#F43F5E" stroke-width="2.2"/>
+  <path d="M 760,380 C 780,380 785,300 800,300 C 815,300 820,380 840,380" fill="none" stroke="#10B981" stroke-width="2.2"/>
+  <path d="M 790,380 C 810,380 815,315 830,315 C 845,315 850,380 870,380" fill="none" stroke="#8B5CF6" stroke-width="2.2"/>
+  <line x1="695" y1="380" x2="880" y2="380" stroke="#94A3B8" stroke-width="1"/>
+  <text x="740" y="398" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="10" fill="#0369A1" text-anchor="middle">3.5s</text>
+  <text x="770" y="398" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="10" fill="#E11D48" text-anchor="middle">4.5s</text>
+  <text x="800" y="398" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="10" fill="#059669" text-anchor="middle">5.5s</text>
+  <text x="830" y="398" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="10" fill="#7C3AED" text-anchor="middle">6.5s</text>
+  <text x="830" y="425" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="11" fill="#475569" text-anchor="middle">Centers: τ_h ∈ {3.5, 4.5, 5.5, 6.5} s  (σ_h = 1.5 s)</text>
+  <text x="830" y="448" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="11" font-weight="bold" fill="#6B21A8" text-anchor="middle">Post-Peak Penalty Factor: +0.3 s^-1</text>
+</g>
+
+<!-- Operator (2): Semi-Plane Causal Mask M -->
+<g id="operator-mask">
+  <rect x="1010" y="235" width="310" height="235" rx="8" fill="#FAF5FF" stroke="#A855F7" stroke-width="1.2"/>
+  <text x="1165" y="262" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="14" font-weight="bold" fill="#6B21A8" text-anchor="middle">2) Semi-Plane Causal Mask M (Eq. 4)</text>
+  <text x="1165" y="285" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="11.5" fill="#475569" text-anchor="middle">Temporal Precedence Invariant</text>
+  <!-- Matrix Grid with Upper Allowed and Lower Masked -->
+  <g transform="translate(1085, 300)">
+    <rect x="0" y="0" width="150" height="90" fill="#FFFFFF" stroke="#64748B" stroke-width="1.2"/>
+    <!-- Diagonal division line -->
+    <line x1="0" y1="0" x2="150" y2="90" stroke="#0F172A" stroke-width="2"/>
+    <!-- Shaded lower triangle for -infinity -->
+    <polygon points="0,0 0,90 150,90" fill="#CBD5E1" opacity="0.6"/>
+    <!-- Grid lines -->
+    <line x1="30" y1="0" x2="30" y2="90" stroke="#E2E8F0" stroke-width="1"/>
+    <line x1="60" y1="0" x2="60" y2="90" stroke="#E2E8F0" stroke-width="1"/>
+    <line x1="90" y1="0" x2="90" y2="90" stroke="#E2E8F0" stroke-width="1"/>
+    <line x1="120" y1="0" x2="120" y2="90" stroke="#E2E8F0" stroke-width="1"/>
+    <line x1="0" y1="30" x2="150" y2="30" stroke="#E2E8F0" stroke-width="1"/>
+    <line x1="0" y1="60" x2="150" y2="60" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="110" y="35" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12" font-weight="bold" fill="#15803D">0 (Allowed)</text>
+    <text x="45" y="70" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12" font-weight="bold" fill="#DC2626">-∞</text>
+  </g>
+  <text x="1165" y="425" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="11.5" fill="#0F172A" text-anchor="middle">M_ij = 0 (δ_ij ≥ 0 s)  |  M_ij = -∞ (δ_ij &lt; 0 s)</text>
+  <text x="1165" y="448" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="11.5" font-weight="bold" fill="#DC2626" text-anchor="middle">Zero Future Information Leakage</text>
+</g>
+
+<!-- Attentive Temporal Pooling (TPP) & Deep Token Representation -->
+<g id="tpp-block">
+  <rect x="680" y="490" width="640" height="95" rx="8" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1.2"/>
+  <text x="1000" y="518" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="14" font-weight="bold" fill="#5B21B6" text-anchor="middle">Attentive Temporal Pyramid Pooling (TPP) &amp; Feature Aggregation</text>
+  <text x="1000" y="542" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="11.5" fill="#475569" text-anchor="middle">Multi-Head Values U_h = A^(h) V^(h) Projected via W_o ∈ ℝ^(64×64)  →  H_f = LN(H_n + Drop(U W_o))</text>
+  <text x="1000" y="566" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12" font-weight="bold" fill="#6B21A8" text-anchor="middle">Temporal Pyramid Intervals: [0, 3]s, (3, 7]s, (7, 12]s  →  z_deep ∈ ℝ^[B × 64]</text>
+</g>
+
+<!-- Direct stream pass-through line along bottom of Stage 2 -->
+<path d="M 610,632 L 1370,632" fill="none" stroke="#64748B" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow)"/>
+<text x="1000" y="622" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="11.5" font-weight="bold" fill="#64748B" text-anchor="middle">Direct Stream Bypass: z_shallow ∈ ℝ^[B × 64]</text>
+
+
+<!-- ========================================================================================= -->
+<!-- STAGE 3: GATING, CREA & TASK DECODING (x: 1370..1990)                                     -->
+<!-- ========================================================================================= -->
+<rect x="1370" y="40" width="620" height="668" rx="12" fill="#FFFFFF" stroke="#BBF7D0" stroke-width="1.5"/>
+<text x="1680" y="75" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="19" font-weight="bold" fill="#166534" text-anchor="middle">Stage 3: Adaptive Gating, Online CrEA &amp; Decoding</text>
+
+<!-- Connection from Stage 2 TPP into Gating -->
+<line x1="1320" y1="537" x2="1395" y2="537" stroke="#7C3AED" stroke-width="2"/>
+<path d="M 1395,537 L 1395,185 L 1410,185" fill="none" stroke="#7C3AED" stroke-width="2" marker-end="url(#arrow-purple)"/>
+<text x="1355" y="340" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="11.5" font-weight="bold" fill="#7C3AED" transform="rotate(-90 1355,340)">Deep Stream z_deep</text>
+
+<!-- Uncertainty-Aware Entropy Gating Network -->
+<g id="entropy-gating">
+  <rect x="1410" y="105" width="555" height="155" rx="8" fill="#DCFCE7" stroke="#16A34A" stroke-width="1.5" filter="url(#block-shadow)"/>
+  <text x="1687" y="135" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="15" font-weight="bold" fill="#15803D" text-anchor="middle">Uncertainty-Aware Entropy Gating Network (Eq. 7)</text>
+  <text x="1687" y="160" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12" fill="#166534" text-anchor="middle">Prediction Entropies: H(p̂) = -∑ p̂_c ln p̂_c Evaluated from Detached Readouts</text>
+  <rect x="1440" y="175" width="495" height="36" rx="6" fill="#F0FDF4" stroke="#16A34A" stroke-width="1"/>
+  <text x="1687" y="198" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="13" font-weight="bold" fill="#15803D" text-anchor="middle">g_b = σ( F_g([z_deep,b; z_shallow,b; H(p̂_deep); H(p̂_shallow)]) ) ∈ (0, 1)^64</text>
+  <text x="1687" y="235" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12.5" font-weight="bold" fill="#0F172A" text-anchor="middle">Fused Representation:  z_fused = g_b ⊙ z_deep + (1 - g_b) ⊙ z_shallow</text>
+</g>
+
+<!-- Connection from Gating to CrEA -->
+<line x1="1687" y1="260" x2="1687" y2="285" stroke="#16A34A" stroke-width="2" marker-end="url(#arrow-green)"/>
+
+<!-- Online CrEA Module -->
+<g id="crea-module">
+  <rect x="1410" y="285" width="555" height="195" rx="8" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.5" filter="url(#block-shadow)"/>
+  <text x="1687" y="315" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="15" font-weight="bold" fill="#1D4ED8" text-anchor="middle">Causal Recursive Euclidean Alignment (CrEA) (Eq. 10)</text>
+  
+  <!-- Mini Riemannian Sphere Drawing -->
+  <g transform="translate(1440, 335)">
+    <circle cx="50" cy="50" r="45" fill="#DBEAFE" stroke="#2563EB" stroke-width="1.5"/>
+    <ellipse cx="50" cy="50" rx="45" ry="16" fill="none" stroke="#60A5FA" stroke-width="1.2" stroke-dasharray="3,3"/>
+    <ellipse cx="50" cy="50" rx="16" ry="45" fill="none" stroke="#60A5FA" stroke-width="1.2" stroke-dasharray="3,3"/>
+    <path d="M 25,65 Q 50,35 75,40" fill="none" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow-blue)"/>
+    <circle cx="25" cy="65" r="3" fill="#1D4ED8"/>
+    <circle cx="75" cy="40" r="3" fill="#1D4ED8"/>
+    <text x="50" y="112" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="10.5" font-weight="bold" fill="#1E40AF" text-anchor="middle">Riemannian Space</text>
+  </g>
+  
+  <rect x="1560" y="335" width="380" height="42" rx="6" fill="#DBEAFE" stroke="#2563EB" stroke-width="1"/>
+  <text x="1750" y="361" font-family="Georgia,serif" font-size="14.5" font-weight="bold" fill="#1E40AF" text-anchor="middle">R_k = (κ_0 R_src + ∑_m=1^k C_m) / (κ_0 + k),   X̃_k = R_k^(-1/2) X_k</text>
+  <text x="1750" y="405" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12" fill="#1E3A8A" text-anchor="middle">• Empirical Bayes Shrinkage Prior: κ_0 = 5.0 (Cold-Start Stabilization)</text>
+  <text x="1750" y="425" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12" fill="#1E3A8A" text-anchor="middle">• Online Trial-by-Trial Streaming  |  Strict Zero Test-Set Information Leakage</text>
+  <text x="1750" y="445" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12" font-weight="bold" fill="#1D4ED8" text-anchor="middle">Per-Trial Update Complexity: O(C^2) vs Offline O(N_trials · C^3)</text>
+</g>
+
+<!-- Connection from CrEA to Task Classifier -->
+<line x1="1687" y1="480" x2="1687" y2="505" stroke="#2563EB" stroke-width="2" marker-end="url(#arrow-blue)"/>
+
+<!-- Task Classifier & Benchmarks Card -->
+<g id="task-classifier">
+  <rect x="1410" y="505" width="555" height="175" rx="8" fill="#F8FAFC" stroke="#475569" stroke-width="1.5" filter="url(#block-shadow)"/>
+  <text x="1687" y="535" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="15" font-weight="bold" fill="#0F172A" text-anchor="middle">Task Classification Head &amp; Empirical Benchmark</text>
+  
+  <!-- Benchmark Performance Bars -->
+  <g transform="translate(1440, 550)">
+    <!-- Mental Arithmetic Bar -->
+    <text x="0" y="20" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12" font-weight="bold" fill="#0F172A">Mental Arithmetic (MA):</text>
+    <rect x="200" y="7" width="220" height="18" rx="4" fill="#E2E8F0"/>
+    <rect x="200" y="7" width="174" height="18" rx="4" fill="#10B981"/>
+    <text x="430" y="21" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12" font-weight="bold" fill="#059669">79.37% (vs Concat 72.53%)</text>
+
+    <!-- Working Memory Bar -->
+    <text x="0" y="48" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12" font-weight="bold" fill="#0F172A">Working Memory (WM):</text>
+    <rect x="200" y="35" width="220" height="18" rx="4" fill="#E2E8F0"/>
+    <rect x="200" y="35" width="161" height="18" rx="4" fill="#10B981"/>
+    <text x="430" y="49" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12" font-weight="bold" fill="#059669">73.24% (vs Baseline 67.50%)</text>
+
+    <!-- Motor Imagery Bar -->
+    <text x="0" y="76" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12" font-weight="bold" fill="#0F172A">Motor Imagery (MI):</text>
+    <rect x="200" y="63" width="220" height="18" rx="4" fill="#E2E8F0"/>
+    <rect x="200" y="63" width="146" height="18" rx="4" fill="#10B981"/>
+    <text x="430" y="77" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="12" font-weight="bold" fill="#059669">66.32% (vs Baseline 62.10%)</text>
+  </g>
+  
+  <rect x="1440" y="642" width="495" height="28" rx="4" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="1687" y="661" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" font-size="11.5" font-weight="bold" fill="#334155" text-anchor="middle">Clinical Inference Latency: 2.22 ms  |  Model Parameters: 63,932  |  Compute: 0.22 MACs</text>
+</g>
+
+</svg>
