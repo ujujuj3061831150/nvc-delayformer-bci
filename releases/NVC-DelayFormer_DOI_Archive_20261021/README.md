@@ -3,7 +3,7 @@
 Companion software and saved research artifacts for:
 **Physiology-Guided Temporal Fusion for Cross-Subject EEG-fNIRS Brain-Computer Interfaces**.
 
-Release-series date: 2026-10-21. Snapshot built at: 2026-10-29T01:53:35+00:00. Software version in project metadata: 1.0.0.
+Release-series date: 2026-10-21. Snapshot built at: 2026-10-29T04:10:24+00:00. Software version in project metadata: 1.0.0.
 This is a snapshot of the current working files, including uncommitted changes.
 It is prepared for a DOI repository deposit; no DOI has been assigned by this ZIP.
 

@@ -8,7 +8,7 @@
 \usepackage{booktabs}
 \usepackage{microtype}
 \usepackage{url}
-\usepackage{cite}
+\usepackage[nocompress]{cite}
 \usepackage{hyperref}
 
 \hypersetup{
@@ -45,10 +45,10 @@
 \maketitle
 
 \begin{abstract}
-\textit{Objective:} To improve cross-subject EEG--fNIRS decoding by incorporating neurovascular delay priors into multimodal fusion.
+\textit{Objective:} To improve cross-subject electroencephalography--functional near-infrared spectroscopy (EEG--fNIRS) decoding by incorporating neurovascular delay priors into multimodal fusion.
 \textit{Approach:} NVC-DelayFormer combines convolutional EEG and optical encoders through cross-attention with delay priors and token timestamp masks. Entropy-guided gating integrates deep attention features with spectral summaries. Evaluation used participant-isolated leave-one-subject-out validation, with separate participants for training, checkpoint selection, and testing.
 \textit{Main results:} Across 29 participants and three seeds, mean accuracy was 78.22\%, compared with 72.89\% for standard 2D-EEGNet ($p = 1.10\times 10^{-4}$), with primary-seed accuracy reaching 79.37\%. Under trace-matched source reference initialization, recursive covariance alignment reduced relative covariance error from 45.15\% after one trial to 29.38\% after eight trials. In task-specific evaluations, accuracy was 73.24\% for working memory and 66.32\% for motor imagery.
-\textit{Significance:} By embedding neurovascular timing constraints, NVC-DelayFormer achieves cross-subject generalization across cognitive and sensorimotor tasks. Operating with 63,932 parameters ($17.5\times$ smaller than representative transformers) and 2.22\,ms single-trial forward execution latency on an NVIDIA RTX 4060 GPU, the compact architecture is suitable for prospective zero-calibration BCI deployment.
+\textit{Significance:} By embedding neurovascular timing constraints, NVC-DelayFormer achieves cross-subject generalization across cognitive and sensorimotor tasks. Operating with 63,932 parameters ($17.5\times$ smaller than representative transformers) and 2.22\,ms single-trial forward execution latency on an NVIDIA RTX 4060 GPU, the compact architecture is suitable for prospective zero-calibration brain--computer interface (BCI) deployment.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -414,6 +414,7 @@ The authors thank the contributors of the open-access TU Berlin and Shin et al.\
 \par\textbf{AI Use Disclosure:} During the preparation of this manuscript, the authors used OpenAI Codex to assist with manuscript editing and the preparation of plotting and verification scripts. The authors reviewed, validated and critically assessed all AI-assisted outputs and take full responsibility for the content of the manuscript.
 \par\textbf{Data and Code Availability:} The source datasets are identified in Section~\ref{sec:experiments}. Code and reproducibility artifacts are available at \url{https://github.com/ujujuj3061831150/nvc-delayformer-bci}.
 \par\textbf{Conflict of Interest:} The authors declare that they have no competing interests.
+\par\textbf{Funding Statement:} This research received no specific grant from any funding agency in the public, commercial, or not-for-profit sectors.
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 \end{document}
