@@ -18,10 +18,10 @@
 
 | 序号 | 投稿文件名称 | 格式/页数 | ScholarOne Portal File Designation | 核心校验指标与状态 |
 | :--- | :--- | :--- | :--- | :--- |
-| 1 | `manuscript/main.pdf` (或 `reports/manuscript.pdf`) | PDF / 9 页 | **Main Document** | 完整双栏图表、公式与参考文献；SHA-256 前 16 位：`674D8972597FD0EC`。 |
+| 1 | `manuscript/main.pdf` (或 `reports/manuscript.pdf`) | PDF / 9 页 | **Main Document** | 完整双栏图表、公式与参考文献；SHA-256 前 16 位：`133DCCF40A78DB43`。 |
 | 2 | `reports/Supplementary_Material.pdf` (或 `manuscript/supplementary.pdf`) | PDF / 4 页 | **Supplementary File** | Section S.I–S.V、Table S1–S3、Figure S1–S2；Buccino 独立队列单独训练的 15 折 LOSO 评测（79.83%）；SHA-256 前 16 位：`E474C317BC418AE3`。 |
 | 3 | `reports/Cover_Letter.pdf` | PDF / 1 页 | **Cover Letter** | 致 JNE 主编；包含通讯作者详细信息与 ORCID、原创性、伦理、利益冲突及开放代码声明；SHA-256 前 16 位：`0E01276266E56763`。 |
-| 4 | `reports/manuscript_latex_source.zip` | ZIP 压缩包 | **Source Files（如系统要求）** | 含主稿和补充材料 TeX、参考文献及全部被引用的图文件；SHA-256 前 16 位：`92E207CC9CEB90BA`；独立解压编译已通过。 |
+| 4 | `reports/manuscript_latex_source.zip` | ZIP 压缩包 | **Source Files（如系统要求）** | 含主稿和补充材料 TeX、参考文献及全部被引用的图文件；SHA-256 前 16 位：`6019A7C7ED79FDE0`；独立解压编译已通过。 |
 
 ---
 
