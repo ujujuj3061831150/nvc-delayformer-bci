@@ -10,7 +10,7 @@ from pathlib import Path
 
 def main():
     root = Path(__file__).resolve().parent.parent
-    builder_script = root / "tmp" / "build_doi_archive.py"
+    builder_script = root / "scripts" / "build_doi_archive.py"
     
     print(f"--- Running verified DOI archive builder ({builder_script}) ---")
     result = subprocess.run([sys.executable, str(builder_script)], cwd=str(root))

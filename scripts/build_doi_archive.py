@@ -51,7 +51,7 @@ for name in ['main.tex', 'main.pdf', 'main.bbl', 'references.bib', 'supplementar
     p = ROOT / 'manuscript' / name
     if p.is_file():
         copy_file(p)
-for name in ['Supplementary_Material.tex', 'Supplementary_Material.pdf', 'Cover_Letter.tex', 'Cover_Letter.pdf', 'Cover_Letter.md', 'Highlights.txt', 'Highlights.md', 'Submission_Package_Checklist.md']:
+for name in ['Supplementary_Material.tex', 'Supplementary_Material.pdf', 'Highlights.txt', 'Highlights.md']:
     p = ROOT / 'reports' / name
     if p.is_file():
         copy_file(p)
