@@ -1,8 +1,8 @@
 {
   "archive_date": "2026-10-21",
-  "snapshot_built_at_utc": "2026-10-29T10:01:27+00:00",
+  "snapshot_built_at_utc": "2026-10-29T10:29:08+00:00",
   "software_version": "1.0.0",
-  "base_git_commit": "6e58dc2a8873c2e7f3848d5ab056e51ff27660eb",
+  "base_git_commit": "e0850068371c158fece0c0933b8a169742e56bd8",
   "working_tree_has_changes": true,
   "source": "Current working-tree bytes; not only committed files",
   "doi": null,
