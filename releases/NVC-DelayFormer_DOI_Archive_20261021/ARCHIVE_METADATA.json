@@ -1,8 +1,8 @@
 {
   "archive_date": "2026-10-21",
-  "snapshot_built_at_utc": "2026-10-29T00:45:51+00:00",
+  "snapshot_built_at_utc": "2026-10-29T01:29:07+00:00",
   "software_version": "1.0.0",
-  "base_git_commit": "fe4ef5100232e525400b6b23d29fd504b02bf337",
+  "base_git_commit": "c6045c41587026a57e7566d2ee2c6d03bc0c5eb9",
   "working_tree_has_changes": true,
   "source": "Current working-tree bytes; not only committed files",
   "doi": null,
@@ -115,6 +115,7 @@
     "scripts/polish_figures.py",
     "scripts/polish_manuscript.py",
     "scripts/run_full_loso_crea_streaming.py",
+    "scripts/run_global_qc_audit.py",
     "scripts/run_mi_delay_and_priors_investigation.py",
     "scripts/run_real_negative_controls_and_sub05_curves.py",
     "scripts/run_rigorous_negative_controls.py",
